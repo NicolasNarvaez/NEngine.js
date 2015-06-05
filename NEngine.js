@@ -1,383 +1,39 @@
-//NEngine
+/**
+* An n-dimensional engine, works recursively projection dimension n into n-1 until n = 3.
+* it works over optimized functions, amd only dimensions 4 and 3 are precompiled, if
+* a given required dimension isnt compiled, uses nmath to create its library. <br/> <br/>
+* When you start ngine and specify the working dimension, you can use internal dimension-agnostic
+* objects to manipulate the engine elements, and make your app dimension-agnostic.
+* @fileoverview
+* @author Nicolás Narváez
+* @version 0.5
+*/
 try {
 if(glMatrix && twgl)  //requires
+try {
 (function() {
-
-  var GLMAT_ARRAY_TYPE = (typeof Float32Array !== 'undefined') ? Float32Array : Array,
-    GLCOLOR_ARRAY_TYPE = (typeof Uint8Array !== 'undefined') ? Float32Array : Array;
-
-  //we need a mat5 extension to glMatrix, to projection, and translation matrixes
-  this.mat5 = (function() {
-
-    function identity(out) {
-      out[0] = 1;
-      out[1] = 0;
-      out[2] = 0;
-      out[3] = 0;
-      out[4] = 0;
-
-      out[5] = 0;
-      out[6] = 1;
-      out[7] = 0;
-      out[8] = 0;
-      out[9] = 0;
-
-      out[10] = 0;
-      out[11] = 0;
-      out[12] = 1;
-      out[13] = 0;
-      out[14] = 0;
-
-      out[15] = 0;
-      out[16] = 0;
-      out[17] = 0;
-      out[18] = 1;
-      out[19] = 0;
-
-      out[20] = 0;
-      out[21] = 0;
-      out[22] = 0;
-      out[23] = 0;
-      out[24] = 1;
-    }
-
-    function create() {
-      var out = new GLMAT_ARRAY_TYPE(25);
-
-      out[0] = 0;
-      out[1] = 0;
-      out[2] = 0;
-      out[3] = 0;
-      out[4] = 0;
-
-      out[5] = 0;
-      out[6] = 0;
-      out[7] = 0;
-      out[8] = 0;
-      out[9] = 0;
-
-      out[10] = 0;
-      out[11] = 0;
-      out[12] = 0;
-      out[13] = 0;
-      out[14] = 0;
-
-      out[15] = 0;
-      out[16] = 0;
-      out[17] = 0;
-      out[18] = 0;
-      out[19] = 0;
-
-      out[20] = 0;
-      out[21] = 0;
-      out[22] = 0;
-      out[23] = 0;
-      out[24] = 0;
-      return out;
-    }
-
-    function createIdentity() {
-      var out = new GLMAT_ARRAY_TYPE(25);
-
-      out[0] = 1;
-      out[1] = 0;
-      out[2] = 0;
-      out[3] = 0;
-      out[4] = 0;
-
-      out[5] = 0;
-      out[6] = 1;
-      out[7] = 0;
-      out[8] = 0;
-      out[9] = 0;
-
-      out[10] = 0;
-      out[11] = 0;
-      out[12] = 1;
-      out[13] = 0;
-      out[14] = 0;
-
-      out[15] = 0;
-      out[16] = 0;
-      out[17] = 0;
-      out[18] = 1;
-      out[19] = 0;
-
-      out[20] = 0;
-      out[21] = 0;
-      out[22] = 0;
-      out[23] = 0;
-      out[24] = 1;
-      return out;
-    }
+  var global = this,
+    mat = NMath.mat,
+    vec = NMath.vec,
+    mat5 = NMath.mat5,
+    vec5 = NMath.vec5,
+    GLMAT_ARRAY_TYPE = NMath.GLMAT_ARRAY_TYPE,
+    GLCOLOR_ARRAY_TYPE = NMath.GLCOLOR_ARRAY_TYPE,
+    GLINDEX_ARRAY_TYPE = NMath.GLINDEX_ARRAY_TYPE;
 
 
-    function multiply(out, a, b) {
-      out[24] = a[24]*b[24] + a[19]*b[23] + a[14]*b[22] + a[9]*b[21] + a[4]*b[20];
-      out[23] = a[23]*b[24] + a[18]*b[23] + a[13]*b[22] + a[8]*b[21] + a[3]*b[20];
-      out[22] = a[22]*b[24] + a[17]*b[23] + a[12]*b[22] + a[7]*b[21] + a[2]*b[20];
-      out[21] = a[21]*b[24] + a[16]*b[23] + a[11]*b[22] + a[6]*b[21] + a[1]*b[20];
-      out[20] = a[20]*b[24] + a[15]*b[23] + a[10]*b[22] + a[5]*b[21] + a[0]*b[20];
-      out[19] = a[24]*b[19] + a[19]*b[18] + a[14]*b[17] + a[9]*b[16] + a[4]*b[15];
-      out[18] = a[23]*b[19] + a[18]*b[18] + a[13]*b[17] + a[8]*b[16] + a[3]*b[15];
-      out[17] = a[22]*b[19] + a[17]*b[18] + a[12]*b[17] + a[7]*b[16] + a[2]*b[15];
-      out[16] = a[21]*b[19] + a[16]*b[18] + a[11]*b[17] + a[6]*b[16] + a[1]*b[15];
-      out[15] = a[20]*b[19] + a[15]*b[18] + a[10]*b[17] + a[5]*b[16] + a[0]*b[15];
-      out[14] = a[24]*b[14] + a[19]*b[13] + a[14]*b[12] + a[9]*b[11] + a[4]*b[10];
-      out[13] = a[23]*b[14] + a[18]*b[13] + a[13]*b[12] + a[8]*b[11] + a[3]*b[10];
-      out[12] = a[22]*b[14] + a[17]*b[13] + a[12]*b[12] + a[7]*b[11] + a[2]*b[10];
-      out[11] = a[21]*b[14] + a[16]*b[13] + a[11]*b[12] + a[6]*b[11] + a[1]*b[10];
-      out[10] = a[20]*b[14] + a[15]*b[13] + a[10]*b[12] + a[5]*b[11] + a[0]*b[10];
-      out[9] = a[24]*b[9] + a[19]*b[8] + a[14]*b[7] + a[9]*b[6] + a[4]*b[5];
-      out[8] = a[23]*b[9] + a[18]*b[8] + a[13]*b[7] + a[8]*b[6] + a[3]*b[5];
-      out[7] = a[22]*b[9] + a[17]*b[8] + a[12]*b[7] + a[7]*b[6] + a[2]*b[5];
-      out[6] = a[21]*b[9] + a[16]*b[8] + a[11]*b[7] + a[6]*b[6] + a[1]*b[5];
-      out[5] = a[20]*b[9] + a[15]*b[8] + a[10]*b[7] + a[5]*b[6] + a[0]*b[5];
-      out[4] = a[24]*b[4] + a[19]*b[3] + a[14]*b[2] + a[9]*b[1] + a[4]*b[0];
-      out[3] = a[23]*b[4] + a[18]*b[3] + a[13]*b[2] + a[8]*b[1] + a[3]*b[0];
-      out[2] = a[22]*b[4] + a[17]*b[3] + a[12]*b[2] + a[7]*b[1] + a[2]*b[0];
-      out[1] = a[21]*b[4] + a[16]*b[3] + a[11]*b[2] + a[6]*b[1] + a[1]*b[0];
-      out[0] = a[20]*b[4] + a[15]*b[3] + a[10]*b[2] + a[5]*b[1] + a[0]*b[0];
-    }
+  function projection(out,va,vb) {
+    vec4.scale(out, vb, vec4.dot(va,vb)/vec4.length(va));
+  }
 
-    function traspose(out,a) {
-      out[24]=a[24];
-      out[23]=a[19];
-      out[22]=a[14];
-      out[21]=a[9];
-      out[20]=a[4];
-      out[19]=a[23];
-      out[18]=a[18];
-      out[17]=a[13];
-      out[16]=a[8];
-      out[15]=a[3];
-      out[14]=a[22];
-      out[13]=a[17];
-      out[12]=a[12];
-      out[11]=a[7];
-      out[10]=a[2];
-      out[9]=a[21];
-      out[8]=a[16];
-      out[7]=a[11];
-      out[6]=a[6];
-      out[5]=a[1];
-      out[4]=a[20];
-      out[3]=a[15];
-      out[2]=a[10];
-      out[1]=a[5];
-      out[0]=a[0];
-    }
-
-    function trasposeSelf(a) {
-      var tmp;
-      tmp = a[19]
-      a[19] = a[23];
-      a[23] = tmp
-      tmp = a[14]
-      a[14] = a[22];
-      a[22] = tmp
-      tmp = a[13]
-      a[13] = a[17];
-      a[17] = tmp
-      tmp = a[9]
-      a[9] = a[21];
-      a[21] = tmp
-      tmp = a[8]
-      a[8] = a[16];
-      a[16] = tmp
-      tmp = a[7]
-      a[7] = a[11];
-      a[11] = tmp
-      tmp = a[4]
-      a[4] = a[20];
-      a[20] = tmp
-      tmp = a[3]
-      a[3] = a[15];
-      a[15] = tmp
-      tmp = a[2]
-      a[2] = a[10];
-      a[10] = tmp
-      tmp = a[1]
-      a[1] = a[5];
-      a[5] = tmp
-    }
-
-    /**
-    * @param {vec4} p - vector de traslación
-    */
-    function translate(m, p) {
-      m[20] += m[20]+p[0];
-      m[21] += m[21]+p[1];
-      m[22] += m[22]+p[2];
-      m[23] += m[23]+p[3];
-    }
-
-    function scale(out, m, vec) {
-      out[0] = m[0]*vec[0];
-      out[1] = m[1]*vec[0];
-      out[2] = m[2]*vec[0];
-      out[3] = m[3]*vec[0];
-
-      out[5] = m[5]*vec[1];
-      out[6] = m[6]*vec[1];
-      out[7] = m[7]*vec[1];
-      out[8] = m[8]*vec[1];
-
-      out[10] = m[10]*vec[2];
-      out[11] = m[11]*vec[2];
-      out[12] = m[12]*vec[2];
-      out[13] = m[13]*vec[2];
-
-      out[15] = m[15]*vec[3];
-      out[16] = m[16]*vec[3];
-      out[17] = m[17]*vec[3];
-      out[18] = m[18]*vec[3];
-    }
-
-    /**
-    * @param {}
-    */
-    function rotationVecs(out, vx,vy,vz,vw) {
-      out[0] = vx[0];
-      out[1] = vx[1];
-      out[2] = vx[2];
-      out[3] = vx[3];
-      out[4] = 0;
-
-      out[5] = vy[0];
-      out[6] = vy[1];
-      out[7] = vy[2];
-      out[8] = vy[3];
-      out[9] = 0;
-
-      out[10] = vz[0];
-      out[11] = vz[1];
-      out[12] = vz[2];
-      out[13] = vz[3];
-      out[14] = 0;
-
-      out[15] = vw[0];
-      out[16] = vw[1];
-      out[17] = vw[2];
-      out[18] = vw[3];
-      out[19] = 0;
-
-      out[20] = 0;
-      out[21] = 0;
-      out[22] = 0;
-      out[23] = 0;
-      out[24] = 1;
-    }
-
-    function projectionLen(out, alfa, beta, gamma, near, far) {
-      var x = near/Math.tan(alfa/2),
-        y = near/Math.tan(beta/2),
-        z = near/Math.tan(gamma/2);
-      projection(out, -x, x, -y, y, -z, z, near, far);
-    }
-
-    function projection(out, left, right, back, front, bottom, top, near, far) {
-      out[0] = 2*near/(right-left);
-      out[1] = 0;
-      out[2] = 0;
-      out[3] = 0;
-      out[4] = 0;
-
-      out[5] = 0;
-      out[6] = 2*near/(front-back);
-      out[7] = 0;
-      out[8] = 0;
-      out[9] = 0;
-
-      out[10] = 0;
-      out[11] = 0;
-      out[12] = 2*near/(top-bottom);
-      out[13] = 0;
-      out[14] = 0;
-
-      out[15] = (-(right+left))/(right-left);
-      out[16] = (-(front+back))/(front-back);
-      out[17] = (-(top+bottom))/(top-bottom);
-      out[18] = (-(near+far))/(far-near);
-      out[19] = 1;
-
-      out[20] = 0;
-      out[21] = 0;
-      out[22] = 0;
-      out[23] = 2*far*near/(far-near);
-      out[24] = 0;
-    }
-
-    function inferiorProjection(out1, ou2, a) {
-      out1[0] = a[0];
-      out1[1] = a[1];
-      out1[2] = a[2];
-      out1[3] = a[3];
-      out2[0] = a[4];
-
-      out1[4] = a[5];
-      out1[5] = a[6];
-      out1[6] = a[7];
-      out1[7] = a[8];
-      out2[4] = a[9];
-
-      out1[8] = a[10];
-      out1[9] = a[11];
-      out1[10] = a[12];
-      out1[11] = a[13];
-      out2[8] = a[14];
-
-      out1[12] = a[15];
-      out1[13] = a[16];
-      out1[14] = a[17];
-      out1[15] = a[18];
-      out2[12] = a[19];
-
-      out2[1] = a[20];
-      out2[5] = a[21];
-      out2[9] = a[22];
-      out2[13] = a[23];
-
-      out2[2] = a[24];
-    }
-
-    return {
-      create: create,
-      createIdentity: createIdentity,
-      identity: identity,
-
-      multiply: multiply,
-      mul: multiply,
-
-      translate: translate,
-      scale: scale,
-      rotationVecs: rotationVecs,
-
-      projectionLen: projectionLen,
-      projection: projection
-    }
-  })();
-
-  this.NEngine = (function() {
+  global.NEngine = (function() {
 
     var math, Obj, renderer, geometry;
-
-    var GLMAT_ARRAY_TYPE = (typeof Float32Array !== 'undefined') ? Float32Array : Array;
 
     math = (function() {
       //front-vector : va
       //rotation-vector: vb
-      //all ortogonal
-
-      function rotateNormalized(va, vb, theta) {
-        var tmp = vec4.clone(va);
-
-        vec4.scaleAndAdd(va, va, Math.cos(theta)-1);
-        vec4.scaleAndAdd(va, vb, Math.sin(theta));
-
-        vec4.scaleAndAdd(vb, vb, Math.cos(theta)-1);
-        vec4.scaleAndAdd(vb, tmp, -Math.sin(theta));
-      }
+      //all ortogonal/
 
       //gets projection of va over vb
       function projection(out,va,vb) {
@@ -414,23 +70,60 @@ if(glMatrix && twgl)  //requires
       }
 
       return {
-        rotateNormalized: rotateNormalized,
-        ortogonalize: ortogonalize,
         projection: projection,
         repair: repair,
-        rotationMat: rotationMat,
-        projectionData: projectionData
+      };
+    })();
+
+    obj = (function() {
+      var camera, graphic, physic,
+        tmp_m_1 = mat5.create(),
+        tmp_m_2 = mat5.create(),
+        tmp_v_1 = vec4.create();
+
+      graphic = (function() {
+
+        return {
+
+        };
+      })();
+
+      camera = (function() {
+
+
+        function create() {
+
+        }
+
+        function walk(camera, vector, dt) {
+          var m_rotation = mat4.create(),
+            v_rotated = vec4.create();
+
+          mat.fromVecs(m_rotation, [camera.rx, camera.ry, camera.rz, camera.rw]);
+          mat4.invert(m_rotation, m_rotation);
+          mat4.multiplyVec(v_rotated, m_rotation, vector);
+          vec4.scaleAndAdd(camera.p, camera.p, v_rotated, dt);
+        };
+
+        return {
+          walk: walk,
+          create: create
+        };
+      })();
+
+      return {
+        camera: camera,
+        graphic: graphic,
+        physic: physic
       };
     })();
 
     Obj = (function(){
 
       function Obj(p, rx, ry, rz, rw) {
+        //graphical data:
         //position vectors
         this.p = (p)?p:new vec4.create();
-        //derivative
-        this.dp = new vec4.create();
-
         //rotation vectors
         this.rx = new vec4.create();
         this.ry = new vec4.create();
@@ -440,13 +133,17 @@ if(glMatrix && twgl)  //requires
         this.ry[1] = 1.0;
         this.rz[2] = 1.0;
         this.rw[3] = 1.0;
-        //derivative
-        /*  more complex than i need right now my friend ...
-        this.drx = new vec4();
-        this.dry = new vec4();
-        this.drz = new vec4();
-        this.drw = new vec4();
-        */
+
+        //physical data
+        //position derivative
+        this.dp = new vec4.create();
+        //rotation derivative
+          /*  more complex than i need right now my friend ...
+          this.drx = new vec4();
+          this.dry = new vec4();
+          this.drz = new vec4();
+          this.drw = new vec4();
+          */
         //better this relative-axis relative rotation angles for usage with math.rotateNormalized
         this.drx = 0.0;
         this.dry = 0.0;
@@ -454,12 +151,10 @@ if(glMatrix && twgl)  //requires
         this.drw = 0.0;
 
         this.geom = null;
-        this
       };
 
-      return Obj;
+      return  Obj
     })();
-
 
     geometry = (function() {
 
@@ -486,10 +181,10 @@ if(glMatrix && twgl)  //requires
             for(i_x = x; i_x--;) {
               i_dir = i_w*step_w + i_z*step_z + i_y*step_y + i_x*step_x;
 
-              positions[ i_dir ] =  i_x*step_length_x;
-              positions[i_dir+1] =  i_y*step_length_y;
-              positions[i_dir+2] =  i_z*step_length_z;
-              positions[i_dir+3] =  i_w*step_length_w;
+              position[ i_dir ] =  i_x*step_length_x;
+              position[i_dir+1] =  i_y*step_length_y;
+              position[i_dir+2] =  i_z*step_length_z;
+              position[i_dir+3] =  i_w*step_length_w;
             }
 
         //create indices
@@ -570,7 +265,8 @@ if(glMatrix && twgl)  //requires
           step_length_z = options.size_z/(z-1),
           step_length_y = options.size_y/(y-1),
           step_length_x = options.size_x/(x-1),
-          i_w, i_z, i_y, i_x, i_dir;
+          i_w, i_z, i_y, i_x, i_dir,
+          min=1, max = -1;
 
         //fill vertex position data
         for(i_w = w; i_w--;)
@@ -579,20 +275,32 @@ if(glMatrix && twgl)  //requires
               for(i_x = x; i_x--;) {
                 i_dir = i_w*step_w + i_z*step_z + i_y*step_y + i_x*step_x;
 
-                positions[ i_dir ] =  i_x*step_length_x;
-                positions[i_dir+1] =  i_y*step_length_y;
-                positions[i_dir+2] =  i_z*step_length_z;
-                positions[i_dir+3] =  i_w*step_length_w;
+                position[ i_dir ] =  ((x-1)/2-i_x)*step_length_x;
+                position[i_dir+1] =  ((y-1)/2-i_y)*step_length_y;
+                position[i_dir+2] =  ((z-1)/2-i_z)*step_length_z;
+                position[i_dir+3] =  ((w-1)/2-i_w)*step_length_w;
 
-                color[i_dir] = 127;
-                color[i_dir+1] = 127;
-                color[i_dir+2] = 127;
+                color[i_dir] = 105;
+                color[i_dir+1] = 105;
+                color[i_dir+2] = 105;
                 color[i_dir+3] = 255;
+
+                if( position[i_dir+0] < 0 )
+                  color[i_dir] += 150;
+
+                if( position[i_dir+2] < 0 )
+                  color[i_dir+1] += 150;
+
+                if( position[i_dir+3] < 0 )
+                  color[i_dir+2] += 150;
+
+                if( position[i_dir+1] < 0 )
+                  color[i_dir+1] -= 45;
               }
 
         //create indices
         if(!options.linestrip) {
-          indices = new GLMAT_ARRAY_TYPE(2*(
+          indices = new GLINDEX_ARRAY_TYPE(2*(
             w*z*y*(x-1) + w*z*(y-1)*x + w*(z-1)*y*x + (w-1)*z*y*x
           )); //wow ...
 
@@ -605,7 +313,7 @@ if(glMatrix && twgl)  //requires
               axis_a_step, axis_b_step, axis_c_step, axis_d_step) {
             var i_dir2;
 
-            var step_x = 2, //svs transformators
+            var step_x = 1, //svs transformators
               step_y = y*step_x,
               step_z = z*step_y,
               step_w = w*step_z;
@@ -618,8 +326,8 @@ if(glMatrix && twgl)  //requires
                     i_dir = offset + i_w*step_w + i_z*step_z + i_y*step_y + i_x*step_x;
                     i_dir2 =  i_w*axis_a_step + i_z*axis_b_step + i_y*axis_c_step + i_x*axis_d_step;
 
-                    indices[i_dir] = i_dir2;
-                    indices[i_dir+1] = i_dir2 + axis_d_step;
+                    indices[i_dir] = i_dir2/4;
+                    indices[i_dir+1] = (i_dir2 + axis_d_step)/4;
                   }
           }
 
@@ -630,10 +338,9 @@ if(glMatrix && twgl)  //requires
           createLinesOnAxis(0, step_w, step_z, step_y, step_x);
           createLinesOnAxis( 2*w*z*y*(x-1), step_w, step_z, step_x, step_y);
 
-          createLinesOnAxis( 2*w*z(y*(x-1) + (y-1)*x), step_w, step_y, step_x, step_z);
+          createLinesOnAxis( 2*w*z*(y*(x-1) + (y-1)*x), step_w, step_y, step_x, step_z);
 
-          createLinesOnAxis( 2*w(z*(y*(x-1) + (y-1)*x) + (z-1)*y*x),
-            step_z, step_y, step_x, step_w);
+          createLinesOnAxis( 2*w*(z*(y*(x-1) + (y-1)*x) + (z-1)*y*x),step_z, step_y, step_x, step_w);
         }
 
         return {
@@ -648,8 +355,8 @@ if(glMatrix && twgl)  //requires
           size_w: options.size_w,
 
           buffers: {
-            position: {numComponents: 4, data: position},
-            indices: {numComponents: 4, data: indices},
+            position: {numComponents: 4, data: position, type: Float32Array},
+            indices: {numComponents: 2, data: indices, type: Float32Array},
             color: {numComponents: 4, data: color, type: Uint8Array}
           }
           };
@@ -667,98 +374,379 @@ if(glMatrix && twgl)  //requires
 
     renderer = (function() {
       var obj_list = [],
+        options_init,
         context = null,
         canvas = null,
         shader_info = null,
-        uniforms,
+        vertexShader, fragmentShader,
+        attrib_vertex, attrib_color,
+        uniforms = {},
+        config = {
+          dimensions : null,
+          color_clear : [0.0, 0.0, 0.0, 1.0],
+          view_3d : 'mono',
+          view_3d_camera_disposition: 'hexagon',
+          view_3d_stereo_angle : Math.PI/60,
+          view_3d_stereo_separator : [-2.616,0,0,0],
+          view_3d_projection: 'perspective',
+          view_3d_projection_ortogonal_length : 100,
+          view_3d_projection_ortogonal_aspect_x : 1,
+          view_3d_projection_ortogonal_aspect_y : 1
+        },
+        math = {
+          mat : null,
+          mat_cartesian : null,
+          vec : null,
+          vec_homogenous : null,
+          vec_base : null
+        },
 
         PMVMatrix = mat5.create(),
+        PMVMatrix3 = mat4.create(),
         PMatrix = mat5.create(),
+        PMatrix3 = mat4.create(),
 
         uPMVMatrix1 = mat4.create(),
         uPMVMatrix2 = mat4.create(),
+        uPMVMatrix3D = PMVMatrix3,
 
         matrix_tmp = mat5.create(),
+        tmp_matrix5_1 = mat5.create(),
+        tmp_matrix5_2 = mat5.create(),
+        tmp_matrix5_3 = mat5.create(),
+        tmp_matrix4 = mat4.create(),
+        tmp_matrix4_1 = mat4.create(),
+        tmp_matrix4_2 = mat4.create(),
+        tmp_matrix4_3 = mat4.create(),
+        tmp_vec1 = vec4.create(),
+        tmp_vec2 = vec4.create(),
+        tmp_vec3 = vec4.create(),
+        tmp_vec4 = vec4.create(),
+        tmp_vec5 = vec4.create(),
         m_cameraRotation = mat5.create(),
+        m_cameraRotation3 = mat4.create(),
         m_objectRotation = mat5.create(),
         v_totalTraslation = vec4.create(),
-
+        v_totalTraslation3 = vec4.create(),
         obj_list_i,
         obj_list_obj,
-        camera = new Obj();
+        camera = new Obj(),
+        camera3 = new Obj(),
+        interface_obj;
+
+        global.tmp_debug = true;
+
+        uPMVMatrix2[0] = 0; uPMVMatrix2[5] = 0; uPMVMatrix2[10] = 0; uPMVMatrix2[15] = 0;
+
+
+        function pointerLock() {
+          if(!canvas.requestPointerLock)  return;
+          canvas.requestPointerLock();
+        }
+        function pointerUnlock() {
+          if(!document.exitPointerLock)
+            document.exitPointerLock = document.exitPointerLock ||
+              document.mozExitPointerLock || document.webkitExitPointerLock;
+
+          document.exitPointerLock();
+        }
+        function pointerLockAlternate() {
+          if(
+            document.pointerLockElement === canvas ||
+            document.mozPointerLockElement === canvas ||
+            document.webkitPointerLockElement === canvas
+          )
+            this.pointerUnlock();
+          else if(!document.pointerLockElement &&
+            !document.mozPointerLockElement &&
+            !document.webkitPointerLockElement)
+            this.pointerLock();
+        }
 
       function init(options) {
+        var options_default = {
+          dim : 4
+        }, field;
+        for(field in options_default)
+          if(options[field] === undefined)
+            options[field] = options_default[field];
+
         //create context
+        if(!options) options = {};
+        if(!options.container) options.container = document.body;
+        if(!options.projection_near) options.projection_near = 1.0;
+        if(!options.projection_far) options.projection_far = 100.0;
+        if(!options.projection_angle) options.projection_angle = Math.PI/2;
+
+        if(!options.projection_3d_near) options.projection_3d_near = 1.0;
+        if(!options.projection_3d_far) options.projection_3d_far = 100.0;
+        if(!options.projection_3d_angle) options.projection_3d_angle = Math.PI/2;
+
+        options_init = options;
+
+        config.dim = options.dim;
+        math.mat = global.NMath['mat'+(config.dim+1)];
+        math.mat_cartesian = global.NMath['mat'+config.dim];
+
+        math.vec = global.NMath['vec'+config.dim];
+        math.vec_homogenous = global.NMath['vec'+(config.dim+1)];
+
+        if(options.view_3d_projection)
+          config.view_3d_projection = options.view_3d_projection;
+        if(options.view_3d_camera_disposition)
+          config.view_3d_camera_disposition = options.view_3d_camera_disposition;
+        if(options.view_3d_projection_ortogonal_length)
+          config.view_3d_projection_ortogonal_length = options.view_3d_projection_ortogonal_length;
+        if(options.view_3d)
+          config.view_3d = options.view_3d;
+
+        if(config.view_3d_camera_disposition === 'hexagon') {
+          if(config.view_3d_projection === 'perspective')  {
+            vec3.rotateNormalizedRelative(camera3, camera3.rz, camera3.rx, -Math.PI/4);
+            vec3.rotateNormalizedRelative(camera3, camera3.rz, camera3.ry, Math.PI/5);
+            camera3.p[0] = +100;
+            camera3.p[1] = -100;
+          }
+          else if(config.view_3d_projection === 'ortogonal') {
+            vec3.rotateNormalizedRelative(camera3, camera3.rz, camera3.rx, -Math.PI/4);
+            vec3.rotateNormalizedRelative(camera3, camera3.rz, camera3.ry, Math.PI/5);
+            camera3.p[0] =100;
+            camera3.p[1] =-100;
+          }
+        }
+
+        if(options.container === document.body) {
+          options.container = document.createElement('canvas',
+            {alpha: false, premultipliedAlpha: false});
+          options.container.className = 'NEngine_canvas';
+          document.body.appendChild(options.container);
+        }
         context = twgl.getWebGLContext(options.container);
 
         //create shader program
-        shader_info = twgl.createProgramInfo(gl, ["vs", "fs"]);
-        program.useProgram(shader_info.program);
+        twgl.setAttributePrefix('a_');
+        shader_info = twgl.createProgramInfo(context, ["vs", "fs"]);
+        context.useProgram(shader_info.program);
 
         //fill uniform pointers
         uniforms.uPMVMatrix1 = uPMVMatrix1;
         uniforms.uPMVMatrix2 = uPMVMatrix2;
+        uniforms.uPMVMatrix3D = uPMVMatrix3D;
 
         //adjust canvas size
-        canvas = context.canvas;
+        interface_obj.canvas = canvas = context.canvas;
+
+        canvas.requestPointerLock = canvas.requestPointerLock ||
+                            canvas.mozRequestPointerLock ||
+                            canvas.webkitRequestPointerLock;
+
+
+        global.addEventListener('resize', resize, false);
+        resize();
+      }
+      function set(options) {
+        var config_field;
+        for(config_field in options.config)
+          config[config_field] = options.config[config_field];
+
+        if(options.mouse_axisRotation) {
+        }
+      }
+      function resize() {
+        var const_vert = 1,
+          const_hor = 1;
+
         twgl.resizeCanvasToDisplaySize( canvas );
-        context.viewport(0,0, canvas.width, canvas.height);
 
-        //create projection matrix
-        var projection_angle =
-          (options.projection_angle)? options.projection_angle: Math.PI/2;
+        mat5.projectionLen(PMatrix,
+          options_init.projection_angle,
+          options_init.projection_angle,
+          options_init.projection_angle,
+          options_init.projection_near, options_init.projection_far);
 
-        if(options.projection_automatic)
-          mat5.projectionLen(PMatrix,
-            projection_angle,
-            (canvas.height/canvas.width)* projection_angle,
-            projection_angle, 1, 150);
+
+        switch(config.view_3d) {
+          case 'stereo':
+            const_vert = canvas.height/canvas.width;
+            const_hor = 1/2;
+            break;
+          case 'mono':
+            const_vert = canvas.height/canvas.width;
+            const_hor = 1;
+            break;
+          default:
+            const_vert = canvas.height/canvas.width;
+            const_hor = 1;
+            return;
+        }
+        if(config.view_3d_projection === 'perspective')
+          mat4.projectionLen(PMatrix3,
+            options_init.projection_3d_angle*const_hor,
+            options_init.projection_3d_angle*const_vert,
+            options_init.projection_3d_near, options_init.projection_3d_far);
+        else if(config.view_3d_projection === 'ortogonal')
+          mat4.ortogonalLen(PMatrix3,
+            config.view_3d_projection_ortogonal_length,
+            config.view_3d_projection_ortogonal_aspect_x*const_hor,
+            config.view_3d_projection_ortogonal_aspect_y*const_vert);
       }
 
       function render() {
 
         if(obj_list.length) {
+          context.clearColor(config.color_clear[0],config.color_clear[1],config.color_clear[2],config.color_clear[3]);
+          context.clear(context.COLOR_BUFFER_BIT);
+
           //get camera rotation matrix
           mat5.rotationVecs(m_cameraRotation,
-            camera.x,
-            camera.y,
-            camera.z,
-            camera.w
+            camera.rx,
+            camera.ry,
+            camera.rz,
+            camera.rw
           );
-
           for(obj_list_i=obj_list.length; obj_list_i--;) {
+
             obj_list_obj = obj_list[obj_list_i]
 
             //get obj rotation matrix
             mat5.rotationVecs(m_objectRotation,
-              obj_list_obj.x,
-              obj_list_obj.y,
-              obj_list_obj.z,
-              obj_list_obj.w
+              obj_list_obj.rx,
+              obj_list_obj.ry,
+              obj_list_obj.rz,
+              obj_list_obj.rw
             );
-            mat5.multiply(matrix_tmp,m_cameraRotation, m_objectRotation); //multiply
 
-            vec4.add(v_totalTraslation, obj_list_obj.p, camera.p);  //get total translation
+            mat5.copy(matrix_tmp, m_objectRotation);
+            vec4.sub(v_totalTraslation, obj_list_obj.p, camera.p);  //get total translation
+            mat5.translate(m_objectRotation, v_totalTraslation);
 
-            //translate rotated matrix, and transpose to optimize usage
-            mat5.translate(matrix_tmp, v_totalTraslation);
+
+            mat5.multiply(matrix_tmp, m_cameraRotation, m_objectRotation); //multiply
             mat5.multiply(PMVMatrix, PMatrix, matrix_tmp);
-            mat5.trasposeSelf(PMVMatrix);
 
+            //create perspective uniforms;
             mat5.inferiorProjection(uPMVMatrix1, uPMVMatrix2, PMVMatrix);
 
+            //start drawing
             context.useProgram(shader_info.program);
-            twgl.setBuffersAndAttributes(program, shader_info, obj.geom.buffers_info);
-            twgl.setUniforms(shader_info, uniforms);
+            twgl.setBuffersAndAttributes(context, shader_info, obj_list_obj.geom.buffers_info);
 
-            twgl.drawBufferInfo(context, context.LINES, obj.geom.buffers_info);
+            if(config.view_3d === 'stereo') {
+              //left draw
+
+              //internal eye_translation*eye_rotation
+              //eye rotate
+              mat5.identity(tmp_matrix5_1);
+              mat5.rotateZX(tmp_matrix5_1, config.view_3d_stereo_angle);
+              mat.createFrom(tmp_matrix4_1, tmp_matrix5_1);
+              //eye translate
+              mat4.translate(tmp_matrix4_1, tmp_matrix4_1, config.view_3d_stereo_separator);
+
+              //world eye rotate, translation, translation*rotate
+              //console.log(vec.str(camera3.rx));
+              mat4.rotationVecs(tmp_matrix4_2, camera3.rx, camera3.ry, camera3.rz);
+              mat4.translate(tmp_matrix4_2, tmp_matrix4_2, camera3.p);
+
+              //world -> eye, global*local
+              mat4.multiply(tmp_matrix4_3, tmp_matrix4_2, tmp_matrix4_1);
+
+              //projection
+              mat4.multiply(PMVMatrix3, PMatrix3, tmp_matrix4_3);
+
+              twgl.setUniforms(shader_info, uniforms);
+              context.viewport(0,0, canvas.width/2, canvas.height);
+              twgl.drawBufferInfo(context, context.LINES, obj_list_obj.geom.buffers_info);
+
+              //right draw
+
+              //internal eye_translation*eye_rotation
+              //eye rotate
+              mat5.identity(tmp_matrix5_1);
+              mat5.rotateZX(tmp_matrix5_1, -config.view_3d_stereo_angle);
+              mat.createFrom(tmp_matrix4_1, tmp_matrix5_1);
+              //eye translate
+              vec4.scale(tmp_vec1, config.view_3d_stereo_separator, -1 );
+              mat4.translate(tmp_matrix4_1, tmp_matrix4_1, tmp_vec1);
+
+              //world eye rotate, translation, translation*rotate
+              mat4.rotationVecs(tmp_matrix4_2, camera3.rx, camera3.ry, camera3.rz);
+              mat4.translate(tmp_matrix4_2, tmp_matrix4_2, camera3.p);
+
+              //world -> eye, global*local
+              mat4.multiply(tmp_matrix4_3, tmp_matrix4_2, tmp_matrix4_1);
+
+              //projection
+              mat4.multiply(PMVMatrix3, PMatrix3, tmp_matrix4_3);
+              twgl.setUniforms(shader_info, uniforms);
+              context.viewport(canvas.width/2,0, canvas.width/2, canvas.height);
+              twgl.drawBufferInfo(context, context.LINES, obj_list_obj.geom.buffers_info);
+            }
+            else if(config.view_3d === 'mono' || !config.view_3d) {
+              //rotar mundo
+
+              mat4.rotationVecs(m_cameraRotation3, camera3.rx, camera3.ry, camera3.rz);
+
+              //trasladar a coordenadas relativas
+              vec4.copy(tmp_vec1, camera3.p);
+              vec4.scale(tmp_vec1, tmp_vec1, -1);
+              mat4.translate(tmp_matrix4, m_cameraRotation3, camera3.p);
+
+              //crear matriz de transformación total
+              mat4.multiply(PMVMatrix3, PMatrix3, tmp_matrix4);
+
+              twgl.setUniforms(shader_info, uniforms);
+              context.viewport(0,0, canvas.width, canvas.height);
+              twgl.drawBufferInfo(context, context.LINES, obj_list_obj.geom.buffers_info);
+            }
+
+            if(global.tmp_debug) { global.tmp_debug = false;
+              console.log(mat.str(PMatrix3));
+              console.log(mat.str(PMatrix));
+              console.log(mat.str(PMVMatrix));
+
+              var i = 0, data = obj_list_obj.geom.buffers.position.data;
+              for(; i < data.length; i+=4) {
+                var v = vec.createFrom(5, data, i, 4), v_tmp = vec5.create();
+                  v[4] = 1.0, h = 0,
+                  v4=null, v4_tmp=vec4.create(),
+                  depth = null;
+
+                //to NDC4
+                mat5.multiplyVec(v_tmp, PMVMatrix,v);
+                h = v_tmp[4];
+                vec5.scaleI(v_tmp, 1/h);
+                v_tmp[3] *= h;
+                ///alreaduy in NDC4!!
+
+                //to eye 3
+                v4 = vec.createFrom(4, v_tmp);
+                v4[2] += 1.0;
+                vec4.scale(v4, v4, 50);
+                v4[3] = 1.0;
+
+                //to NDC3
+                mat4.multiplyVec(v4_tmp, PMVMatrix3, v4);
+                h = v4_tmp[3];
+                vec4.scale(v4_tmp, v4_tmp, 1/h);
+                v4_tmp[2] = v_tmp[3];
+                //already in NDC3
+                /*
+                console.log(vec.str(v_tmp, 8));
+                console.log(vec.str(v4, 8));
+                console.log(vec.str(v4_tmp, 8));
+                console.log('');
+                */
+
+              }
+              global.tmp_debug = false;
+            }
           }
         }
       }
-
       function objAdd(obj) {
-        if(obj.geom.buffers_info === null)
-          obj.geom.buffers_info = twgl.createBufferInfoFromArrays(program, obj.geom.buffers );
+        if(obj.geom && obj.geom.buffers_info !== null) {
+          obj.geom.buffers_info = twgl.createBufferInfoFromArrays(context, obj.geom.buffers );
+        }
         obj_list.push(obj);
       }
 
@@ -767,18 +755,30 @@ if(glMatrix && twgl)  //requires
         obj_list[ obj_list.indexOf(obj) ] = obj_list.pop();
       }
 
-      return {
+      interface_obj = {
         objAdd: objAdd,
         objRm: objRm,
         init: init,
+        resize: resize,
         render: render,
-        obj_list: obj_list
+        canvas: canvas,
+        obj_list: obj_list,
+        camera: camera,
+        camera3: camera3,
+        math: math,
+        config: config,
+        pointerLock : pointerLock,
+        pointerUnlock: pointerUnlock,
+        pointerLockAlternate: pointerLockAlternate
       };
+
+      return interface_obj;
     })();
 
     return {
       Obj: Obj,
       geometry: geometry,
+      obj: obj,
       math: math,
       renderer: renderer
     };
@@ -786,40 +786,9 @@ if(glMatrix && twgl)  //requires
 })();
 }
 catch(e) {
-
+  console.log(e);
 }
-/*
-//math-compiler:
-//matrix multiplication
-var str='', operands=[], length=5;
-for(i_y = length; i_y--;)
-for(i_x = length; i_x--;){
-str += 'out['+((i_y*length)+i_x)+'] = ';
-operands=[];
-for(i_z = length; i_z--;)
- operands.push('a['+(i_z*length+i_x)+']*b['+(i_y*length+i_z)+']');
-str += operands.join(' + ');
-str += ';\n'
 }
-
-//traspose optimizado, sin out
-var str='', length=5, i_x=length, i_y=length, tmp, compress=false, continuar=true,
-  last_i = Math.floor(length/2)*5+Math.floor(length);
-for(;i_x--;)
-for(i_y=length;i_y--;) {
-  if( i_x >= i_y ) continue;
-str += 'tmp'+((compress)?'':' ')+'='+((compress)?'':' ')+
-  'a['+(i_x*length+i_y)+']'+((compress)?'':'\n');
-str += 'a['+(i_x*length+i_y)+']'+((compress)?'':' ')+'='+((compress)?'':' ')+
-  'a['+(i_x+i_y*length)+'];'+((compress)?'':'\n');
-str += 'a['+(i_x+i_y*length)+']'+((compress)?'':' ')+'='+((compress)?'':' ')+
-  'tmp'+((compress)?'':'\n');
+ catch(e) {
+  console.log('You dont have an NEngine requeriment, NEngine not loaded', e);
 }
-
-//traspose con out
-var str='', length=5, i_x=length, i_y=length, compress=true;
-
-for(;i_x--;)
-for(i_y=length;i_y--;)
-str += 'out['+(i_x*length+i_y)+']=a['+(i_x+i_y*length)+'];'+((compress)?'':'\n');
-*/
