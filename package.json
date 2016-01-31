@@ -1,0 +1,19 @@
+{
+  "name": "nengine.js",
+  "version": "0.1.0",
+  "description": "A full feature n-dimensional physics, graphics and game engine.",
+  "main": "dist/node/nengine.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicolasNarvaez/NEngine.js.git"
+  },
+  "author": "Nicolas Narvaez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NicolasNarvaez/NEngine.js/issues"
+  },
+  "homepage": "https://github.com/NicolasNarvaez/NEngine.js#readme"
+}
