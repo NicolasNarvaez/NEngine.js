@@ -24,11 +24,13 @@ function projection(out,va,vb) {
   vec4.scale(out, vb, vec4.dot(va,vb)/vec4.length(va));
 }
 
-root.NEngine = (function() {
+global_root.NEngine = (function() {
 
   var math, Obj, renderer, geometry,
     util,
     Engine,
+    Frame,
+    Physic,
     Camera,
     Renderer,
     //TODO Shader logic, optimization, generation, syntax, definition
@@ -45,7 +47,7 @@ root.NEngine = (function() {
     SubSpace, //minimal unit of SVS
     Space,  //module of a system
     System, //Physycal collection of data and transforms
-
+    GLNSLCompiler,
     vec4=NMath.vec4,
     vec5=NMath.vec5,
     mat4=NMath.mat4,
@@ -63,10 +65,15 @@ root.NEngine = (function() {
   @import 'Geometry.js'
   @import 'Object.js'
 
+  @import 'SpaceNet.js'
+
   @import 'Renderer.js'
   @import 'Shading.js'
   @import 'GLNSLCompiler.js'
-  @import 'NPhysics.js'
+
+  @import 'Physic.js'
+
+  @import 'NMusicPorts.js'
 
   @import 'Engine.js'
 
@@ -80,5 +87,7 @@ root.NEngine = (function() {
     Camera: Camera,
     Renderer: Renderer,
     Entity: Entity,
+    Physic: Physic,
+    GLNSLCompiler: GLNSLCompiler,
   };
 })();

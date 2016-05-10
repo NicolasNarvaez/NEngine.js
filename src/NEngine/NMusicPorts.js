@@ -21,23 +21,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-Shader = (function() {
-  function Shader() {
-    this.src = null;
-    this.src_compiled = null;
-    this.compiled = null;
-  }
-
-  Shader.prototype = {
-    compile: function compile() {
-      if(!this.src) return false;
-      this.src_compiled = ShaderCompiler.compile(this.src);
-    },
-    load: function load(context) {
-
-    }
-  }
-
-  return Shader;
-})();
