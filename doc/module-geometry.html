@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: geometry</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Module: geometry</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+        <h3 class="subsection-title">Namespaces</h3>
+
+        <dl>
+            <dt><a href="module-geometry-Object.html">Object</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~Engine"><span class="type-signature">(inner) </span>Engine<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line3075">line 3075</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~Frame"><span class="type-signature">(inner) </span>Frame<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    A frame is the minimal unit of execution managed by the engine
+It is a arbitrary functions that gets executed according to its
+configuration, this can include change its behaviour in response
+to the execution of other frames
+
+They disseminate the td parameter they recieve when executed into
+any other frame executed from it
+
+They can automatically loop, on 3 ways:
+  custom function, a requestAnimationFrame, and a normal timeout
+
+They can be linked to other frames to adapt to them
+the types of link are:
+  ends: this frame will trigger the execution of the next, next being
+          frames wich relate trought this relation, and those frames that
+          will be executed after this, are counted like being parts of
+          this, "endings"
+  requires: the frames here have to be executed at least one time in
+          between two executions of this frame
+  already: the frames here have to be executed this same execution frame
+          before the execution of this frame (like requires with
+          small time constrain)
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line3129">line 3129</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~Space"><span class="type-signature">(inner) </span>Space<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Space
+
+type - kind of space network that holds // add opts new types or separate them??
+dim - dims of SpaceNode network
+size - number of subnodes along an axis
+length - length of the subnode on depth 0, to generate space coordinates
+root - the root node of the SpaceNodes network, root.parent equals null
+level - the number of levels deper the network is
+lib_vec - corresponding vectorial lib
+lib_mat - corresponding matrix lib
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2287">line 2287</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~SpaceNode"><span class="type-signature">(inner) </span>SpaceNode<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Represents single space net unit, if its a bottom SpaceNode
+it will contain lists for objects inside their respective physic
+processor type (for example, Entities in Dynamic array)
+
+space - Space containing general configs
+level - Space Index depnes, 0 equals bottom
+p - system relative position,
+
+parent - Spatially containing node
+siblings - Siblings linear Array
+capsuled - indicates whether all siblings are occupied
+
+last_visited - last time it was processed by physic processor
+active - If registered for physics processing
+index - index for fast translation into parent relative position
+       the mapping is from a n-d vector such as
+        p[0] + p[1]*size + p[2]*size*size [..]
+
+childs - Child Spaces linear Array
+objects - Dictionary containing the objects inside the SpaceNode
+      separated in arrays, each for each corresponding processor type
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2437">line 2437</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-geometry.html">geometry</a></li><li><a href="module-NEngine.html">NEngine</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-geometry-Object.html">Object</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue May 10 2016 21:15:52 GMT-0400 (CLT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

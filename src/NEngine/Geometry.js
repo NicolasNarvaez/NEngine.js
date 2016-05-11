@@ -21,31 +21,62 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
+/**
+@namespace geometry
+@memberof NEngine
+@desc All geometry stuff, geoms and utilitary functions
+*/
 geometry = (function() {
 
+  /**
+  @memberof NEngine.geometry
+  @function clone
+  @desc Creates a copy in memory of the geometry
+  @param {Geom} original
+  @return {Geom} copy
+  */
   function clone(g) {
 
   }
 
+  /**
+  @memberof NEngine.geometry
+  @function boundingBox
+  @desc configures Geom boundingBox data
+  @param {Geom} geom
+  @return {Geom} this
+  @
+  */
   function boundingBox(g) {
     var box = {};
 
     return box;
   }
-
+  /**
+  @memberof NEngine.geometry
+  @function boundingSphere
+  @desc sets value of boundingSphereRadius
+  @param {Geom} geom
+  @return {Geom} this
+  */
   function boundingSphere(g) {
-
-  }
-
-  function merge() {
-
   }
 
   /*
-  creates new geom space and fills it with the geoms in the given order
-  if entity passed, applies transformatios before adding
-  TODO: n geoms to one (optimize), keep_geom applies to first
+  function join()
+  */
+
+  /**
+  @memberof NEngine.geometry
+  @method concat
+  @description
+  Creates new geom space and fills it with the geoms in the given order
+  if an entity is passed, applies transformations before adding
+  TODO: n geoms to one (optimize)
+  @param {Geom} a first geom
+  @param {Geom} b last geom
+  @param {Boolean} [keep_geom=false] if true, then the first geom will be
+  modified and returned as the joined geom
   */
   function concat(a, b, keep_geom) {
     var
@@ -205,10 +236,25 @@ geometry = (function() {
     return og;
   }
 
-  function forEach() {
+  /**
+  @memberof NEngine.geometry
+  @method forEach
+  @desc String forEach for geometries, applies transformations if it
+  recieves an entity
+  */
+  function forEach(src) {
 
   }
 
+
+  /**
+  @memberof NEngine.geometry
+  @method twglize
+  @desc Convierte una geometria desde el formato Geom a el de twgl para
+  usarse con la libreria
+  @param {Geom} Geom La geometria a convertir
+  @return {twglGeom} La geometria transformada
+  */
   function twglize(g) {
     g.buffers = {
       position: {
@@ -231,6 +277,51 @@ geometry = (function() {
     }
   }
 
+  /**
+  @memberof NEngine.geometry
+  @class Geom
+  @desc Represents a Geometry object, contains collision data, vertex,
+  colours and faces lists, those are in a data dictionary so adding more
+  data lists is easy (like uniform data)
+  it also contains the buffers generated for the shader
+
+  <br/><br/>
+  Al the data lists follow the webgl format for buffers, you can check the
+  format in their documentation, but here is a small review: <br/><br/>
+
+  A 3D vertex list looks like this: <br/> [ v1_x, v1_y, v1_z, v2_x, v2_y, ... ,
+  vn_y, vn_z ] <br/>
+  All elements being float type <br/><br/>
+  For colors, they correspond to the vertex they match:<br/>
+  [v1_cr, v1_cg, v1_cb, [v1_ca] , v2_cr, .. , vn_cb, [vn_ca] ] <br/>
+  v1_cr means vertex 1 colour red, as you can see, each color can
+  have 3 or four components (colour alpha is optional), but anyway this is
+  just shader dependant, better look at the webgl docs! <br/><br/>
+  The faces list and the edges list are the same, but their elements
+  are Integers instead of Floats and they represent an index in the vertex
+  data list, for example, a face list like this: [0, 2, 1] means a triangle
+  that has the first vertex in it first edge, the third on its second and so
+  on. <br/><br/><br/>
+  TODO: prepare standard simplex array for n-dimensional tesselation (faces for
+  n-dimensional objects have (n-1) dimensions) and a simple way to cut them
+  in shader program or a similar mechanism
+  @property {Object} data - contains data lists of elements
+  @property {Array} data.vertex
+  @property {Array} data.color
+  @property {Array} data.edges
+  @property {Array} data.faces
+
+  @property {Object} buffers - this contains the shader program buffers,
+  one of the is generated for each data list
+
+  @property {Integer} dim - dimensionality of the geom
+
+  @property {Float} boundingBoxMin - normally, shortest vertex component
+  @property {Float} boundingBoxMax - normally largest vertex component
+  @property {Float} boundingSphereRadius - bigger distance to a vertex
+
+  @property {Object} Prototype
+  */
   function Geom() {
     this.boundingBoxMin = 0;
     this.boundingBoxMax = 0;
@@ -247,13 +338,26 @@ geometry = (function() {
     };
     this.buffers = {};
   }
+
   Geom.prototype = (function() {
-    //function
+    /**
+    @memberof NEngine.geometry.Geom.prototype
+    @method concat
+    @param {Geom} joining_geom the geom to join into this
+    @desc a shortcut to concat, like calling concat(this, ...)
+    @return {Geom} concat(this, ...)
+    */
     function concat_geom(b) {
       return concat(this, b);
     }
+    /**
+    @memberof NEngine.geometry.Geom.prototype
+    @method twglize
+    @desc shortcut to twglize(this)
+    @return {twglGeom} twglize(this)
+    */
     function twglize_geom() {
-      twglize(this);
+      return twglize(this);
     }
     return {
       concat: concat_geom,

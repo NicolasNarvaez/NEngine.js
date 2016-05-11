@@ -6,9 +6,12 @@
 * objects to manipulate the engine elements, and make your app dimension-agnostic.
 * @fileoverview
 * @author Nicolás Narváez
-* @version 0.5
+* @version 0.5.8.10
 */
 
+/**
+@namespace NEngine
+*/
 var
   mat = NMath.mat,
   vec = NMath.vec,
@@ -64,8 +67,6 @@ global_root.NEngine = (function() {
 
   @import 'Geometry.js'
   @import 'Object.js'
-
-  @import 'SpaceNet.js'
 
   @import 'Renderer.js'
   @import 'Shading.js'

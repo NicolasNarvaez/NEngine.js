@@ -21,7 +21,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
+/**
+@namespace Physic
+@memberof NEngine
+@desc All physic related stuff, structures to index and optimize n-dimensional
+spaces with lots or hundreds of entities like space trees. It also holds the
+PhysicModules wich define diferent kinds of physic processors and physic
+types, and defines the SpaceGraph for easy space configuration (lots of TODO
+here)
+<br/><br/>
+Space and SpaceNode implement an axis oriented topology
+cappable of optimize them for collisisions and interspace
+intersections.
+<br/><br/>
+Space is the SpaceNode network container, and holds common configurations
+for every SpaceNode.<br/>
+SpaceNode is a recursive representation of a n-axis
+*/
 Physic = (function() {
 
   var SpaceGraph,
@@ -43,17 +59,6 @@ Physic = (function() {
 
     return SpaceGraph;
   })()
-
-  /**
-  * Space and SpaceNode implement an axis oriented topology
-  * cappable of optimize them for collisisions and interspace
-  * intersections.
-  *
-  * Space is the SpaceNode network container, and holds common configurations
-  * for every SpaceNode.
-  * SpaceNode is a recursive representation of a n-axis
-  *
-  */
 
   /**
   * Space
@@ -698,6 +703,10 @@ Physic = (function() {
 
   PhysicModulesEnum = [];
 
+  /**
+  interfaze PhysicModule
+  */
+
   PhysicModules = {
     /**
     * placeholder for normal entity instance
@@ -781,7 +790,9 @@ Physic = (function() {
       }
 
     })(),
+    register: function phy_module_reg(module) {
 
+    },
   };
   //instantiates the physic modules enumeration object for fastmodule access
   (function(){

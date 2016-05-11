@@ -22,6 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+@memberof NEngine.geometry
+@function grid{n}
+
+@param {Object} options cfg object
+@param {Integer} options.size the subdivisions of the grid for each axis
+@param {Integer} options.size_{component} you can target specific components
+(x, y, z, w) to override options.size on it
+@param {Float} options.length the length of the grid on all axis
+@param {Float} options.length_{component} you can target specific components
+(x, y, z, w) to override options.length on it
+@param {Boolean} options.wire if generate wire or face data on data buffers
+
+@desc creates a grid geometry, a grid is understod as a 2 dimensional net, this
+time we extend it to n dimensions. Each axis repeats the grid onto it,
+perpendicular to all the others. You specify de dimension choosing the n
+letter: (grid3, grid4)
+<br/><br/>
+TODO: extend to N
+@return {Geom} grid finished geometry
+*/
 function grid4(options) {
   if(!options) options = {};
 
@@ -218,6 +239,24 @@ function grid4(options) {
     return this;
 }
 grid4.prototype = Geom.prototype;
+
+/**
+@memberof NEngine.geometry
+@function simplex{n}
+
+@param {Object} options cfg object
+@param {Integer} options.size the size (length) of the simplex
+@param {Boolean} options.wire if generate wire or face data on data buffers
+
+@desc creates a simplex, a simplex is the simplest regular polyhedra on a given
+dimension, resembles the triangle but in the given dimension. For n-d a simplex
+has n-1 vertex and many faces has (n-1)-d subsimplex (subcollections) that
+tesellate it (dont collide when filling it)  <br/><br/>
+You specify de dimension choosing the n letter: (simplex3, simplex4)
+<br/><br/>
+TODO: extend to N
+@return {Geom} simplex finished geometry
+*/
 function simplex4(ops) {
   var size = ops.size, type = ops.enemy,
    p = new GLMAT_ARRAY_TYPE([
@@ -228,7 +267,7 @@ function simplex4(ops) {
       0, 0, 0, 0.6324555330964848
     ]),
     c,
-    i = (ops.wire)?new GLINDEX_ARRAY_TYPE([
+    i = (ops.wire)?new GLINDEX_ARRAY_TYPE([ //if a wire
       0, 1,
       0, 2,
       0, 3,
@@ -240,7 +279,7 @@ function simplex4(ops) {
       2,4,
       3,4,
     ]):
-    new GLINDEX_ARRAY_TYPE([
+    new GLINDEX_ARRAY_TYPE([  //if 3D face (4D sub-filling)
       0,1,2,
       0,1,3,
       0,1,4,
@@ -287,6 +326,22 @@ function simplex4(ops) {
       }
     }
 }
+
+/**
+@memberof NEngine.geometry
+@function octahedron{n}
+
+@param {Object} options cfg object
+@param {Float} size its length, size
+
+@desc just the n-dimensional extension of the octahedron
+<br/><br/>
+You specify de dimension choosing the n letter: (octahedron3, octahedron4)
+<br/><br/>
+TODO: extend to N
+@return {Geom} octahedron finished geometry
+*/
+
 function octahedron4(ops) {
   var size = ops.size,
     p = new GLMAT_ARRAY_TYPE([
@@ -407,6 +462,21 @@ function octahedron4(ops) {
       }
     }
 }
+
+/**
+@memberof NEngine.geometry
+@function axis{n}
+
+@param {Object} options cfg object
+
+@desc an axis in n-d is just n orthogonal lines that intersec in the origin
+this one has a different colour for each line so you can use it as a guide
+<br/><br/>
+You specify de dimension choosing the n letter: (axis3, axis4)
+<br/><br/>
+TODO: extend to N
+@return {Geom} axis finished geometry
+*/
 
 function axis4(options){
   var s = options.size,p = new GLMAT_ARRAY_TYPE([

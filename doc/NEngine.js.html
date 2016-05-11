@@ -1,4 +1,32 @@
-try {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: NEngine.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: NEngine.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>try {
   if(twgl)  //requires
     try {
       (function() {
@@ -8,7 +36,7 @@ try {
         	/**
 * An n-dimensional engine, works recursively projection dimension n into n-1 until n = 3.
 * it works over optimized functions, amd only dimensions 4 and 3 are precompiled, if
-* a given required dimension isnt compiled, uses nmath to create its library. <br/> <br/>
+* a given required dimension isnt compiled, uses nmath to create its library. &lt;br/> &lt;br/>
 * When you start ngine and specify the working dimension, you can use internal dimension-agnostic
 * objects to manipulate the engine elements, and make your app dimension-agnostic.
 * @fileoverview
@@ -225,7 +253,7 @@ geometry = (function() {
         v_tmp = lv.create();
 
         //a rotation is identity, and a position is identity => just copy
-        if( ari && api) {
+        if( ari &amp;&amp; api) {
           for(; i--;)
             ov[i] = av[i];
           }
@@ -261,7 +289,7 @@ geometry = (function() {
 
 
 
-        if( bri && bpi)
+        if( bri &amp;&amp; bpi)
           for(; i--;)
             ov[i] = bv[i];
 
@@ -359,23 +387,23 @@ geometry = (function() {
   data lists is easy (like uniform data)
   it also contains the buffers generated for the shader
 
-  <br/><br/>
+  &lt;br/>&lt;br/>
   Al the data lists follow the webgl format for buffers, you can check the
-  format in their documentation, but here is a small review: <br/><br/>
+  format in their documentation, but here is a small review: &lt;br/>&lt;br/>
 
-  A 3D vertex list looks like this: <br/> [ v1_x, v1_y, v1_z, v2_x, v2_y, ... ,
-  vn_y, vn_z ] <br/>
-  All elements being float type <br/><br/>
-  For colors, they correspond to the vertex they match:<br/>
-  [v1_cr, v1_cg, v1_cb, [v1_ca] , v2_cr, .. , vn_cb, [vn_ca] ] <br/>
+  A 3D vertex list looks like this: &lt;br/> [ v1_x, v1_y, v1_z, v2_x, v2_y, ... ,
+  vn_y, vn_z ] &lt;br/>
+  All elements being float type &lt;br/>&lt;br/>
+  For colors, they correspond to the vertex they match:&lt;br/>
+  [v1_cr, v1_cg, v1_cb, [v1_ca] , v2_cr, .. , vn_cb, [vn_ca] ] &lt;br/>
   v1_cr means vertex 1 colour red, as you can see, each color can
   have 3 or four components (colour alpha is optional), but anyway this is
-  just shader dependant, better look at the webgl docs! <br/><br/>
+  just shader dependant, better look at the webgl docs! &lt;br/>&lt;br/>
   The faces list and the edges list are the same, but their elements
   are Integers instead of Floats and they represent an index in the vertex
   data list, for example, a face list like this: [0, 2, 1] means a triangle
   that has the first vertex in it first edge, the third on its second and so
-  on. <br/><br/><br/>
+  on. &lt;br/>&lt;br/>&lt;br/>
   TODO: prepare standard simplex array for n-dimensional tesselation (faces for
   n-dimensional objects have (n-1) dimensions) and a simple way to cut them
   in shader program or a similar mechanism
@@ -480,7 +508,7 @@ SOFTWARE.
 time we extend it to n dimensions. Each axis repeats the grid onto it,
 perpendicular to all the others. You specify de dimension choosing the n
 letter: (grid3, grid4)
-<br/><br/>
+&lt;br/>&lt;br/>
 TODO: extend to N
 @return {Geom} grid finished geometry
 */
@@ -692,9 +720,9 @@ grid4.prototype = Geom.prototype;
 @desc creates a simplex, a simplex is the simplest regular polyhedra on a given
 dimension, resembles the triangle but in the given dimension. For n-d a simplex
 has n-1 vertex and many faces has (n-1)-d subsimplex (subcollections) that
-tesellate it (dont collide when filling it)  <br/><br/>
+tesellate it (dont collide when filling it)  &lt;br/>&lt;br/>
 You specify de dimension choosing the n letter: (simplex3, simplex4)
-<br/><br/>
+&lt;br/>&lt;br/>
 TODO: extend to N
 @return {Geom} simplex finished geometry
 */
@@ -776,9 +804,9 @@ function simplex4(ops) {
 @param {Float} size its length, size
 
 @desc just the n-dimensional extension of the octahedron
-<br/><br/>
+&lt;br/>&lt;br/>
 You specify de dimension choosing the n letter: (octahedron3, octahedron4)
-<br/><br/>
+&lt;br/>&lt;br/>
 TODO: extend to N
 @return {Geom} octahedron finished geometry
 */
@@ -912,9 +940,9 @@ function octahedron4(ops) {
 
 @desc an axis in n-d is just n orthogonal lines that intersec in the origin
 this one has a different colour for each line so you can use it as a guide
-<br/><br/>
+&lt;br/>&lt;br/>
 You specify de dimension choosing the n letter: (axis3, axis4)
-<br/><br/>
+&lt;br/>&lt;br/>
 TODO: extend to N
 @return {Geom} axis finished geometry
 */
@@ -1123,7 +1151,7 @@ Camera = (function() {
 @class Entity
 @desc Has minimal abstract object information position, rotation, meta-data,
 geometry, material, collision config.
-<br/><br/>
+&lt;br/>&lt;br/>
 Its extremely useful to represent a dynamic object that can interact physically
 with its environment, can be pluged into physic spaces and have meta-data.
 
@@ -1148,7 +1176,7 @@ Entity = (function() {
     //this.p = new NMath['vec'+cfg.dim].create();
     //this.r = new NMath['mat'+cfg.dim].createIdentity();
 
-    if(cfg.p && cfg.p.length === options.dim)
+    if(cfg.p &amp;&amp; cfg.p.length === options.dim)
       this.p = options.p;
 
     this.geometry = null;
@@ -1174,12 +1202,12 @@ Entity = (function() {
     @param {Object} opt - The options passed to the convert function of the
     module.
     @desc Requires that the entity is previously registered on a space node.
-    <br/><br/>
+    &lt;br/>&lt;br/>
     Sets a physic type on the entity, using a module object, module name, or
     module enum. Checks whether the objects array in the entity container (a
     SpaceNode) has the needed object type array instantiated, and conects this
     entity to it so it will be processed by the processors of the given type.
-    <br/><br/>
+    &lt;br/>&lt;br/>
     This way you can configure an entity to be of a given type and be
     processed by the processors that process that type in the SpaceTree
     */
@@ -1450,8 +1478,8 @@ renderer = (function() {
       document.webkitPointerLockElement === canvas
     )
       this.pointerUnlock();
-    else if(!document.pointerLockElement &&
-      !document.mozPointerLockElement &&
+    else if(!document.pointerLockElement &amp;&amp;
+      !document.mozPointerLockElement &amp;&amp;
       !document.webkitPointerLockElement)
       this.pointerLock();
   }
@@ -1503,7 +1531,7 @@ renderer = (function() {
         options[field] = options_default[field];
 
     //those are camera related configs
-    if(!options.stereo_separator && options.stereo_dim) {
+    if(!options.stereo_separator &amp;&amp; options.stereo_dim) {
       if(options.stereo_dim === 3) options.stereo_separator = [-1, 0, 0, 0];
       if(options.stereo_dim === 4) options.stereo_separator = [-1, 0, 0, 0];
 
@@ -1696,7 +1724,7 @@ renderer = (function() {
       mat4.translate(m_cameraRotation3, camera3.p);
 
       ///////////////////////////////////globalcamera matrix calculations
-      if(config.stereo_dim) for(i=0;i<2;i++) {
+      if(config.stereo_dim) for(i=0;i&lt;2;i++) {
         if(config.stereo_dim === 4) {
           //internal eye_translation*eye_rotation
           //eye rotate m_cameraRotation3
@@ -1764,7 +1792,7 @@ renderer = (function() {
         twgl.setBuffersAndAttributes(context, shader_info, obj_list_obj.geom.buffers_info);
 
         //optimize with metaprogramatic precompiler
-        for(i = 0, length = ( (config.stereo_dim)? 2:1 ) ; i < length; ++i) {
+        for(i = 0, length = ( (config.stereo_dim)? 2:1 ) ; i &lt; length; ++i) {
           //////////////////////////////////////4D level
           if(config.stereo_dim === 4) camera_rot_4 = stereo[i];
 
@@ -1796,7 +1824,7 @@ renderer = (function() {
   }
   //renderer handles ... iterator object copy??
   function objAdd(obj) {
-    if(obj.geom && obj.geom.buffers_info !== null) {
+    if(obj.geom &amp;&amp; obj.geom.buffers_info !== null) {
       obj.geom.buffers_info = twgl.createBufferInfoFromArrays(context, obj.geom.buffers );
     }
     obj_list.push(obj);
@@ -1931,7 +1959,7 @@ GLNSLCompiler = (function() {
         //EQUALITY REQUIRES THAT LEFT SIDE OPERAND ITS THE VARIABLE
         //CONTAINER AND NOT ITS VALUE, FOR ELEMENT SELECTION, THIS CHANGES
         //NORMAL TRANSLATION.
-        reg: /[^\+\-\^\|&!=<>%\*/](?:\+\+)*(?:--)*(=)[^=]/gi,
+        reg: /[^\+\-\^\|&amp;!=&lt;>%\*/](?:\+\+)*(?:--)*(=)[^=]/gi,
       },
       {
         id: '+',
@@ -1994,7 +2022,7 @@ GLNSLCompiler = (function() {
 
       //create parenthesis table
 
-      for(i=0,l=code.length, parenthesis_level=0; i<l;i++) {
+      for(i=0,l=code.length, parenthesis_level=0; i&lt;l;i++) {
         c = code[i];
         if(c == '(') {
           if(parenthesis_level == 0)
@@ -2018,9 +2046,9 @@ GLNSLCompiler = (function() {
 
       //start spliting the operators from lower precedence into higher
 
-      for(i = 0, l = code.length; i < l; i++) {
+      for(i = 0, l = code.length; i &lt; l; i++) {
         c = code[i];
-        for(j=0, l2=operators.length; j<l2; j++)
+        for(j=0, l2=operators.length; j&lt;l2; j++)
           if(c == operators[j]) {
 
             this.a = code.substr(0, i);
@@ -2139,8 +2167,8 @@ GLNSLCompiler = (function() {
 
     str = str.replace(/\n/ig, ' ');
 
-    for(i = 0, l = str.length; i < l; i++) {
-      if(!(str[i] == ' ' && post[post.length-1] == ' '))
+    for(i = 0, l = str.length; i &lt; l; i++) {
+      if(!(str[i] == ' ' &amp;&amp; post[post.length-1] == ' '))
         post += str[i];
     }
 
@@ -2225,7 +2253,7 @@ GLNSLCompiler = (function() {
     this.out = null;
 
 
-    if(this.src && this.scope && this.number)
+    if(this.src &amp;&amp; this.scope &amp;&amp; this.number)
       this.interpret();
   }
   Sentence.prototype = {
@@ -2328,7 +2356,7 @@ GLNSLCompiler = (function() {
     getVariable: function(varname) {
       var link, scope = this, variable;
 
-      while(!(variable = scope.variables[varname]) && scope.parent)
+      while(!(variable = scope.variables[varname]) &amp;&amp; scope.parent)
         scope = scope.parent;
 
       return variable;
@@ -2370,7 +2398,7 @@ GLNSLCompiler = (function() {
         scope_current = new Scope();
 
       for(i = 0, l = src.length, sentence_number = 0, index_a = 0;
-          i<l ; i++) {
+          i&lt;l ; i++) {
 
         c = src[i];
 
@@ -2468,13 +2496,13 @@ spaces with lots or hundreds of entities like space trees. It also holds the
 PhysicModules wich define diferent kinds of physic processors and physic
 types, and defines the SpaceGraph for easy space configuration (lots of TODO
 here)
-<br/><br/>
+&lt;br/>&lt;br/>
 Space and SpaceNode implement an axis oriented topology
 cappable of optimize them for collisisions and interspace
 intersections.
-<br/><br/>
+&lt;br/>&lt;br/>
 Space is the SpaceNode network container, and holds common configurations
-for every SpaceNode.<br/>
+for every SpaceNode.&lt;br/>
 SpaceNode is a recursive representation of a n-axis
 */
 Physic = (function() {
@@ -2606,8 +2634,8 @@ Physic = (function() {
 
         var objects = ent.container.objects,
           i = 0; l = objects.length;
-        for(;i<l;)
-          if(objects[i] && objects[i].indexOf(ent) != -1)
+        for(;i&lt;l;)
+          if(objects[i] &amp;&amp; objects[i].indexOf(ent) != -1)
             objects[i].splice( objects[i].indexOf(ent), 1 );
 
         ent.container = null;
@@ -2702,7 +2730,7 @@ Physic = (function() {
         this.parent.childs[this.index] = this;
 
       this.p = opts.p;
-      if(this.index >= 0 && opts.p === undefined)
+      if(this.index >= 0 &amp;&amp; opts.p === undefined)
         this.setP();
       this.childs = new Array( Math.pow(opts.size,opts.dim) );
 
@@ -2733,7 +2761,7 @@ Physic = (function() {
         var index_p_middle = this.space.size/2, dim, dims,
           length_transform = Math.pow(this.space.length, child_level);
 
-        for(dim = 0; dim < dims; dim++)
+        for(dim = 0; dim &lt; dims; dim++)
           p[dim] = (child_index[dim]+0.5  -index_p_middle)*length_transform;
 
         return p;
@@ -2785,7 +2813,7 @@ Physic = (function() {
           length_mid = length/2,
           unit_size = length/this.space.size;
 
-        for(;dim<dims;)
+        for(;dim&lt;dims;)
           p[dim] = Math.floor(coord[dim] - p_this[dim] + length_mid)/unit_size;
 
         return p;
@@ -2803,7 +2831,7 @@ Physic = (function() {
           unit_size = length/this.space.size,
           index=0;
 
-        for(;dim<dims;)
+        for(;dim&lt;dims;)
           index += Math.floor(coord[dim] - p_this[dim] + length_mid)/unit_size*
             Math.pow(size, dim);
 
@@ -2817,7 +2845,7 @@ Physic = (function() {
           p_this = this.p,
           limit = this.length/2;
 
-        for(;i<dim;)
+        for(;i&lt;dim;)
           if( Math.abs(coord[i] - p_this[i]) > limit)
             return false;
 
@@ -2880,7 +2908,7 @@ Physic = (function() {
         node_index = this.index + orientation*Math.pow(size, dim);
         //get parent
         //gets outside of parent, need to find a parent
-        if(node_index >= index_max || node_index < 0) {
+        if(node_index >= index_max || node_index &lt; 0) {
           //parent needed doesnt exists => extend parent into sibling
           if(!parent.siblings[i])
             parent.extend(direction, length);
@@ -2905,7 +2933,7 @@ Physic = (function() {
       */
       capsule: function(depth) {
         var direction=0, directions = this.space.dim*2;
-        for(;direction < directions;) {
+        for(;direction &lt; directions;) {
           this.extend(direction);
           if(depth)
             this.sibling[direction].capsule(depth-1);
@@ -2954,7 +2982,7 @@ Physic = (function() {
           pos[0]++;
           index++;
           // renormalize position vector
-          for(dim = 0; dim < dim_top_index; dim++)
+          for(dim = 0; dim &lt; dim_top_index; dim++)
             if(pos[dim] == opts.size) {
               pos[dim] = 0;
               pos[dim+1]++;
@@ -2989,7 +3017,7 @@ Physic = (function() {
 
           ////start connecting unconnected siblings
           //for each direction
-          for(dim=0; dim < directions;) if(!child_siblings[dim]) {
+          for(dim=0; dim &lt; directions;) if(!child_siblings[dim]) {
             i = ( dim%2 )? -1 : 1 ;//orientation
             d = Math.floor(dim/2);  //current dimension
 
@@ -3023,7 +3051,7 @@ Physic = (function() {
           ////common iteration code
           pos[0]++;
           index++;
-          for(dim=0; dim < dim_top_index; dim++) {
+          for(dim=0; dim &lt; dim_top_index; dim++) {
             if(pos[dim] == size) {
               pos[dim] = 0;
               pos[dim+1]++;
@@ -3045,7 +3073,7 @@ Physic = (function() {
           parent = this.parent,
           pos = this.indextop(this.index);
 
-        for(dim = 0; dim < directions;) if(!siblings[dim]) {
+        for(dim = 0; dim &lt; directions;) if(!siblings[dim]) {
           i = ( dim%2 )? -1 : 1;
           d = Math.floor(dim/2);
 
@@ -3085,7 +3113,7 @@ Physic = (function() {
         var i,
           l = p.length, index = 0, size = this.space.size;
 
-        for(i=0; i<l; i++)
+        for(i=0; i&lt;l; i++)
           index += p[i]*Math.pow(size, i);
 
         return index;
@@ -3116,10 +3144,10 @@ Physic = (function() {
       },
       iterate_bottom: function(f) {
         var i=0, childs=this.childs, l = childs.length, child;
-        for(;i<l;) {
+        for(;i&lt;l;) {
 
           child = childs[i];
-          if(child && child.active) {
+          if(child &amp;&amp; child.active) {
             if(!child.level)
               f(child);
             else
@@ -3180,7 +3208,7 @@ Physic = (function() {
         var i = 0; childs = node.objects[mod.i]; l = childs.length, child,
           vec_lib = node.space.vec_lib, mat_lib = node.space.mat_lib;
 
-        for(;i<l;) {
+        for(;i&lt;l;) {
           child = childs[i];
           vec_lib.scaleAndAdd(child.p, child.p, child.dp, dt);
           mat_lib.scaleAndAdd(child.r, child.r, child.dr, dt);
@@ -3397,7 +3425,7 @@ Frame = (function(){
     for(link in opts.link)
       this.links[link] = opts[link]
     //double link before links
-    for(i=0, l = this.links.starts.length; i<l ;i++)
+    for(i=0, l = this.links.starts.length; i&lt;l ;i++)
       this.links.starts[i].ends.push(this);
 
   }
@@ -3432,16 +3460,16 @@ Frame = (function(){
       /**
         start cycle
       */
-      for(i=0, l = this.links.requires.length; i<l; i++)
-        if(this.links.requires[i].tl < this.tl)
+      for(i=0, l = this.links.requires.length; i&lt;l; i++)
+        if(this.links.requires[i].tl &lt; this.tl)
           this.links.requires[i].execute();
 
-      for(i=0, l = this.links.already.length; i<l; i++)
+      for(i=0, l = this.links.already.length; i&lt;l; i++)
         if(tnow - this.links.already[i].tl > frame_already_threshold )
           this.links.already[i].execute();
 
       //execute the ones this is before
-      for(i=0, l = this.links.ends.length; i < l; i++)
+      for(i=0, l = this.links.ends.length; i &lt; l; i++)
         this.links.ends[i].execute();
 
       //cycle finished
@@ -3498,3 +3526,26 @@ Frame = (function(){
  catch(e) {
   console.log('You dont have an NEngine requeriment, NEngine not loaded', e);
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NEngine.Camera.html">Camera</a></li><li><a href="NEngine.Entity.html">Entity</a></li><li><a href="NEngine.geometry.Geom.html">Geom</a></li><li><a href="NEngine.Obj.html">Obj</a></li><li><a href="NEngine.SubSpace.html">SubSpace</a></li></ul><h3>Namespaces</h3><ul><li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">geometry</a></li><li><a href="NEngine.Physic.html">Physic</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed May 11 2016 15:26:13 GMT-0400 (CLT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
