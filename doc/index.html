@@ -1,43 +1,77 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>DocStrap Index</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+
 </head>
 
 <body>
 
-<div id="main">
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">DocStrap</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">NEngine.geometry</a></li><li><a href="NEngine.Physics.html">NEngine.Physics</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="NEngine.Camera.html">NEngine.Camera</a></li><li><a href="NEngine.Entity.html">NEngine.Entity</a></li><li><a href="NEngine.geometry.Geom.html">NEngine.geometry.Geom</a></li><li><a href="NEngine.Obj.html">NEngine.Obj</a></li><li><a href="NEngine.Physics.Space.html">NEngine.Physics.Space</a></li><li><a href="NEngine.Physics.SpaceGraph.html">NEngine.Physics.SpaceGraph</a></li><li><a href="NEngine.Physics.SpaceNode.html">NEngine.Physics.SpaceNode</a></li><li><a href="NEngine.SubSpace.html">NEngine.SubSpace</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
 
-    <h1 class="page-title">Home</h1>
-
-    
-
+</div>
+</div>
 
 
-    
+<div class="container" id="toc-content">
+<div class="row">
 
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
 
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
+	
+	
 
 
 
@@ -49,59 +83,96 @@
 
 
 
+	
+	
 
+
+
+
+
+
+
+
+
+
+
+	<h1 class="page-title">Index</h1>
 <section>
 
 <header>
     
-        <h2>NEngine.js</h2>
+        <h2>
+        NEngine.js
+        </h2>
         
     
 </header>
+
 
 <article>
     <div class="container-overview">
     
         
-            <div class="description">An n-dimensional engine, works recursively projection dimension n into n-1 until n = 3.
-it works over optimized functions, amd only dimensions 4 and 3 are precompiled, if
-a given required dimension isnt compiled, uses nmath to create its library. <br/> <br/>
-When you start ngine and specify the working dimension, you can use internal dimension-agnostic
-objects to manipulate the engine elements, and make your app dimension-agnostic.</div>
+            <div class="description"># NEngine.js
+  <br/>
+  A n-dimensional, full featured graphical-physical engine for the web.
+<br/><br/>
+
+  ## Features:
+<br/><br/>
+
+  ### N-dimensional geometry library and N-dimensional physical library:
+  <br/>
+  It contains basic n-dimensional polyhedrals and a basic geometry collision library to use in the physical system.
+<br/><br/>
+
+  ### Extended shader language:
+  <br/>
+  To create the n-dimensional shaders, it features an extended version of the Opengl Shading language called OpenGl N Shading Language or NSL using a small transcompiler that extends OGSL datatypes like matrices and vectors into N.
+<br/><br/>
+
+  ### Easy N-dimensional design and shader creation with Space Hierarchies:
+  <br/>
+  To manipulate multiple data spaces, and allow the existence of 3d spaces interacting with 5d spaces and handle simultaneously the two types of physics to later connect them into the same space, and to also simplify the shader organization and creation in the rendering, organizes its data into a Space Hierarchy that represents in a graph like manner, the spaces involved and the transformations in between them.
+<br/><br/>
+
+  ### New possible universes:
+  <br/>
+  Space Hierarchies allows to represent non-linear transformations like Bézier curves or fractal mappings from, for example object space into world space that modify the rendering and the physics for the interacting objects in those spaces. Thats right!, you can now create 3D hipersphere curved spaces inside 4D universes and simulate outer space accelerated expansion, or put many of those 4D universes inside six dimension spaces, curved like 4D hiperplanes, to construct complex space systems on which lot of different and interesting things can happen. You imagine literally seeing your galactic army crossing the universe bending into another reality?, now you can.
+<br/><br/>
+
+  ### Really fast:
+  <br/>
+  For all of its capabilities it has a good performance, that can work very good also in a smartphone, thanks to NMath optimization system on which it compiles extremely optimized hardcoded math operations in the given dimension in real time. Anyway, i need support improving the data structures in physics system and overall engine design because i´m not an expert.
+<br/><br/>
+
+  ## How it works:
+<br/><br/>
+
+  It builds its optimized mathematical functions from NMath, and directly projects dimension 'n' into dimension 'm' (commonly m = 3)  inside the vertex shader, using webgl. A port to other platforms, with other rendering power would be interesting, but always maintaining its web approach so currently i´m more interested in translate parts of it into something easy to translate into asm, like c.
+<br/><br/>
+
+  Currently uses a little bit of twgl to work.
+<br/><br/>
+  ## Usage:</div>
         
 
         
-
-
 <dl class="details">
-
-    
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>0.5.8.10</li></ul></dd>
     
 
-    
+	
+	<dt class="tag-version method-doc-label method-doc-details-label">Version:</dt>
+	<dd class="tag-version">
+		<ul class="dummy">
+			<li>0.5.8.10</li>
+		</ul>
+	</dd>
+	
 
-    
+	
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Nicolás Narváez</li>
-        </ul>
-    </dd>
-    
+	
 
     
 
@@ -110,17 +181,33 @@ objects to manipulate the engine elements, and make your app dimension-agnostic.
     
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line8">line 8</a>
-    </li></ul></dd>
-    
 
-    
+	
 
-    
+	
+	<dt class="tag-author method-doc-label method-doc-details-label">Author:</dt>
+	<dd class="tag-author">
+		<ul>
+			<li>Nicolás Narváez</li>
+			</ul>
+	</dd>
+	
 
-    
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
 </dl>
 
 
@@ -134,7 +221,7 @@ objects to manipulate the engine elements, and make your app dimension-agnostic.
 
     
 
-     
+    
 
     
 
@@ -152,19 +239,131 @@ objects to manipulate the engine elements, and make your app dimension-agnostic.
 
 
 
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NEngine.Camera.html">Camera</a></li><li><a href="NEngine.Entity.html">Entity</a></li><li><a href="NEngine.geometry.Geom.html">Geom</a></li><li><a href="NEngine.Obj.html">Obj</a></li><li><a href="NEngine.SubSpace.html">SubSpace</a></li></ul><h3>Namespaces</h3><ul><li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">geometry</a></li><li><a href="NEngine.Physic.html">Physic</a></li></ul>
-</nav>
-
-<br class="clear">
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed May 11 2016 15:26:13 GMT-0400 (CLT)
+
+
+	<span class="copyright">
+	DocStrap Copyright © 2012-2013 The contributors to the JSDoc3 and DocStrap projects.
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on 2016-05-25T23:40:23-04:00
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
 </body>
 </html>

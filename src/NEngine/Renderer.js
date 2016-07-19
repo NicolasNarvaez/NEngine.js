@@ -483,6 +483,8 @@ renderer = (function() {
     render: render,
     canvas: canvas,
     obj_list: obj_list,
+    PMatrix: PMatrix,
+    PMatrix3: PMatrix3,
     camera: camera,
     camera3: camera3,
     math: math,

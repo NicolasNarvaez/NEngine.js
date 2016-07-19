@@ -34,11 +34,49 @@
         var global_root = this;
 
         	/**
-* An n-dimensional engine, works recursively projection dimension n into n-1 until n = 3.
-* it works over optimized functions, amd only dimensions 4 and 3 are precompiled, if
-* a given required dimension isnt compiled, uses nmath to create its library. &lt;br/> &lt;br/>
-* When you start ngine and specify the working dimension, you can use internal dimension-agnostic
-* objects to manipulate the engine elements, and make your app dimension-agnostic.
+  # NEngine.js
+  &lt;br/>
+  A n-dimensional, full featured graphical-physical engine for the web.
+&lt;br/>&lt;br/>
+
+  ## Characteristics:
+&lt;br/>&lt;br/>
+
+  ### N-dimensional geometry library and N-dimensional physical library:
+  &lt;br/>
+  It contains basic n-dimensional polyhedrals and a basic geometry collision library to use in the physical system.
+&lt;br/>&lt;br/>
+
+  ### Extended shader language:
+  &lt;br/>
+  To create the n-dimensional shaders, it features an extended version of the Opengl Shading language called OpenGl N Shading Language or NSL using a small transcompiler that extends OGSL datatypes like matrices and vectors into N.
+&lt;br/>&lt;br/>
+
+  ### Easy N-dimensional design and shader creation with Space Hierarchies:
+  &lt;br/>
+  To manipulate multiple data spaces, and allow the existence of 3d spaces interacting with 5d spaces and handle simultaneously the two types of physics to later connect them into the same space, and to also simplify the shader organization and creation in the rendering, organizes its data into a Space Hierarchy that represents in a graph like manner, the spaces involved and the transformations in between them.
+&lt;br/>&lt;br/>
+
+  ### New possible universes:
+  &lt;br/>
+  Space Hierarchies allows to represent non-linear transformations like Bézier curves or fractal mappings from, for example object space into world space that modify the rendering and the physics for the interacting objects in those spaces. Thats right!, you can now create 3D hipersphere curved spaces inside 4D universes and simulate outer space accelerated expansion, or put many of those 4D universes inside six dimension spaces, curved like 4D hiperplanes, to construct complex space systems on which lot of different and interesting things can happen. You imagine literally seeing your galactic army crossing the universe bending into another reality?, now you can.
+&lt;br/>&lt;br/>
+
+  ### Really fast:
+  &lt;br/>
+  For all of its capabilities it has a good performance, that can work very good also in a smartphone, thanks to NMath optimization system on which it compiles extremely optimized hardcoded math operations in the given dimension in real time. Anyway, i need support improving the data structures in physic system and overall engine design because i´m not an expert.
+&lt;br/>&lt;br/>
+
+  ## How it works:
+&lt;br/>&lt;br/>
+
+  It builds its optimized mathematical functions from NMath, and directly projects dimension 'n' into dimension 'm' (commonly m = 3)  inside the vertex shader, using webgl. A port to other platforms, with other rendering power would be interesting, but always maintaining its web approach so currently i´m more interested in translate parts of it into something easy to translate into asm, like c.
+&lt;br/>&lt;br/>
+
+  Currently uses a little bit of twgl to work.
+&lt;br/>&lt;br/>
+  ## Usage:
+
 * @fileoverview
 * @author Nicolás Narváez
 * @version 0.5.8.10
@@ -2513,6 +2551,15 @@ Physic = (function() {
     Transform,
     PhysicModules;
 
+  /**
+  @memberof NEngine.Physic
+  @class SpaceGraph
+  @desc This is top secret work in progress! xD, SaceGraph represents using
+  a graph, the subspaces (nodes) and the transformations in between them
+  (links), this is used to generate the shaders and physic processing, but
+  it is partially incomplete, for now just use the renderer on Entity objects
+  and a common physic processor on a normal Space, directly
+  */
   SpaceGraph = (function() {
 
     function SpaceGraph() {
@@ -2527,24 +2574,55 @@ Physic = (function() {
     return SpaceGraph;
   })()
 
-  /**
-  * Space
-  *
-  * type - kind of space network that holds // add opts new types or separate them??
-
-  * dim - dims of SpaceNode network
-  * size - number of subnodes along an axis
-  * length - length of the subnode on depth 0, to generate space coordinates
-
-  * root - the root node of the SpaceNodes network, root.parent equals null
-  * level - the number of levels deper the network is
-
-  * lib_vec - corresponding vectorial lib
-  * lib_mat - corresponding matrix lib
-  */
-
   Space = (function() {
 
+    /**
+    @memberof NEngine.Physic
+    @class Space
+
+    @desc This holds a space tree, all the nodes on the tree reffer to this
+    object for their common properties, and it also holds a reference to the
+    main root. All the behaviour, meaning of properties, depends on the
+    "type" property. &lt;br/>
+    A space tree its a data structure that represents space like a fractal of
+    voxels, imagine a very big cube, and then this one gets splited into
+    smaller cubes, and those, into smaller ones, each one of this cubes is
+    referenced from the containing cube, so the biggest cube, that contains
+    all of the small ones, it is not referenced inside another. The siblings
+    of a cube, are the ones next to it, so that when an object moves from a
+    given cube into its border, when crossing this border, its reference is
+    moved from the old into the new one, see SpaceNode docs for more details.
+    All of this is to optimize resource usage during collision detection.
+    &lt;br/>&lt;br/>
+    Those are the current supported Space types:
+    &lt;br/>&lt;br/>
+    Euclid: &lt;br/>
+    It represents a n-dimensional euclid space, that means that for each
+    dimension there is another axis, and that each SpaceNode has 2*dim
+    different sibblings, one for each direction of each dimension, check the
+    SpaceNode doc for info on details.
+
+    @prop {String} type - kind of network that holds // add new types
+    or separate them??
+    @prop {Integer} dim
+    @prop {Integer} size - number of subnodes along an axis
+    @prop {Float} length - length on subnode of depth 0, to generate space
+    coordinates
+
+    @prop {SpaceNode} root - The root node of the SpaceNodes network, root.parent
+    equals null
+    @prop {Integer} level - the number of levels deeper the network is, this
+    value changes when the network grows
+    @prop {Object} lib_vec - The vectorial library to use (for caching pointer)
+    @prop {Object} lib_mat - The matrix library to use (pointer chaching purposes)
+
+    @param {Object} opts - The cfg options
+    @param {Integer} opts.dim
+    @param {Integer} opts.size
+    @param {Float} opts.length
+    @param {Integer} opts.level - Initial height of space tree
+    @param {Boolean} [opts.fill=false] - I fill all levels of tree on creation
+    */
     /**
     * Space Constructor
     *
@@ -2591,7 +2669,7 @@ Physic = (function() {
 
     Space.prototype = {
       /**
-      * add hupper levels to the space system
+      * add upper levels to the space system
       */
       enlarge: function(repeat) {
         //create new root node
@@ -3536,13 +3614,13 @@ Frame = (function(){
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NEngine.Camera.html">Camera</a></li><li><a href="NEngine.Entity.html">Entity</a></li><li><a href="NEngine.geometry.Geom.html">Geom</a></li><li><a href="NEngine.Obj.html">Obj</a></li><li><a href="NEngine.SubSpace.html">SubSpace</a></li></ul><h3>Namespaces</h3><ul><li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">geometry</a></li><li><a href="NEngine.Physic.html">Physic</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NEngine.Camera.html">Camera</a></li><li><a href="NEngine.Entity.html">Entity</a></li><li><a href="NEngine.geometry.Geom.html">Geom</a></li><li><a href="NEngine.Obj.html">Obj</a></li><li><a href="NEngine.Physic.Space.html">Space</a></li><li><a href="NEngine.Physic.SpaceGraph.html">SpaceGraph</a></li><li><a href="NEngine.SubSpace.html">SubSpace</a></li></ul><h3>Namespaces</h3><ul><li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">geometry</a></li><li><a href="NEngine.Physic.html">Physic</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed May 11 2016 15:26:13 GMT-0400 (CLT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed May 11 2016 22:19:09 GMT-0400 (CLT)
 </footer>
 
 <script> prettyPrint(); </script>

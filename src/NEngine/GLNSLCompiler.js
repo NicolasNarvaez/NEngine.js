@@ -234,11 +234,11 @@ GLNSLCompiler = (function() {
         'float',
         'sampler2D',
         'samplerCube',
-        'vec\d+',
-        'bvec\d+',
-        'ivec\d+',
-        'mat\d+',
-        'mat\d+_\d+', //n*m matrix
+        'vec.*\\s',
+        'bvec.*\\s',
+        'ivec.*\\s',
+        'mat.*\\s',
+        'mat.*\\s', //n*m matrix
       ],
       storage_qualifiers: [
         'const',
@@ -276,10 +276,21 @@ GLNSLCompiler = (function() {
 
   /**
   * represents a variable in a scope
+  *
+  * opts:
+  *   sentence
+  *   sentence_place: place in the declaration sentence
+  *   scope
+  *   type : prim or function, etc
+  *   qualifiers: storage, precission, return value, etc
+  *   value: given value, if this is a literal variable (value variable)
+  *   name: variable name
+  * props:
+  *   type_data: parsed type data from qualifiers
   */
   function Variable(opts) {
     this.sentence = opts.sentence || null;
-    this.sentence_place = opts.sentence_place || -1; //wtf why?
+    this.sentence_place = opts.sentence_place || 0;
     this.scope = opts.scope || null;
 
     //primitive or function
@@ -302,18 +313,22 @@ GLNSLCompiler = (function() {
     operation: function operation() {
 
     },
+    /**
+    registers to variable scope, fills type_data
+    */
     declare: function() {
       if(this.scope.variables[this.name])
         throw "variable "+this.name+" already declared";
 
+      //fill type_data
       if(this.type == 'primitive') {
-        if(this.qualifiers[3].match('vec')) {
+        if(this.qualifiers[3].match('vec')) {//vec
           this.type_data = {
               length: Number( (/\d+$/).exec(this.qualifiers[3]) )
           }
           this.qualifiers[3] = 'vec';
         }
-        if(this.qualifiers[3].match('mat')) {
+        if(this.qualifiers[3].match('mat')) {//mat
           this.type_data = {
             x: Number( (/\d+/).exec(this.qualifiers[3]) ),
             y: Number( (/\d+$/).exec(this.qualifiers[3]) )
@@ -322,6 +337,7 @@ GLNSLCompiler = (function() {
         }
       }
 
+      //register to variable scope
       this.scope.variables[this.name] = this;
     }
   }
@@ -329,9 +345,14 @@ GLNSLCompiler = (function() {
   /**
   * represents a single glsl sentence
   * has inf. about variables, post-translation, and source location
+  * every range is in global (rootScope) coordinates
   *
-  * this.number -> the number of sentences before this plus 1;
+  * this.number -> the index of this sentence in the scope sentence list;
   * this.thisScope -> filled only on sentence-block containing sentences
+  * types:  declaration, expression (this has subtypes: f.call, operation,
+  *         etc), null, etc
+  *       null represents an instruction that doesnt needs translation
+  *       or that does nothing at all
   */
   function Sentence(opts) {
     this.src = opts.src;
@@ -349,11 +370,14 @@ GLNSLCompiler = (function() {
     this.variables = null;
 
 
+    //result sentence
     this.out = null;
 
 
-    if(this.src && this.scope && this.number)
+    if(this.src && this.scope && this.number) {
+      this.scope.addSentence(this);
       this.interpret();
+    }
   }
   Sentence.prototype = {
     /**
@@ -361,54 +385,55 @@ GLNSLCompiler = (function() {
     * components list, its type and type related cfg,
     *
     * recognizes the sentence type and configures it accordingly
-    * types:  declaration, function call, expression,
-    *         null, etc
-    *     currently only types declaration, expression and null
-    *     are implemented, expression sentences include assignation
-    *       null represents an instruction that doesnt needs translation
-    *       or that does nothing at all
+    * currently only types declaration, expression and null
+    * are implemented, expression sentences include assignation
     */
     interpret: function interpret() {
       var src = this.src, re, str, res, i, opts,
-        lists = GrammarUtil.grammar_lists;
+        lists = GrammarUtil.grammar_lists, variable;
 
-        //declaration
-      if( res = RegExp(
-        "\s*(invariant)+\s*("+lists.storage_qualifiers.join('|')+")*\s*"+
-        "("+lists.precision_qualifiers.join('|')+")\s*"+
-        "("+lists.datatypes.join('|')+")\s*(.*)", 'gi'
+      if( res = RegExp( //detects declaration
+        "\\s*(invariant)*\\s*("+lists.storage_qualifiers.join('|')+")*\\s*"+
+        "("+lists.precision_qualifiers.join('|')+")*\\s*"+
+        "("+lists.datatypes.join('|')+")*\\s*(.*)", 'gi'
         ).exec(src) ) {
+
+        this.type = 'declaration'
 
         //verify sentence
         res.shift();
         res[0] = res[0] || null;
         res[1] = res[1] || 'none';
-        if(!res[2]) throw "no precision qualifier in variable declaration";
         if(!res[3]) throw "no datatype on variable declaration";
 
 
-        //variable constructor dara
+        //variable constructor data
         opts = {
           sentence: this,
           scope: this.scope,
           type: 'primitive',
-          qualifiers: [res[0], res[1], res[2], res[3]],
-
+          qualifiers: res,
           }
+
 
         str = res[4];
         re = /([^,]+)/g;
 
-        i = 0;
+        this.variables = [];  i = 0;
         while(res = re.exec(str)) {
-          opts.sentence_number = i++;
+          opts.sentence_place = i++;
           opts.name = (/\w+/g).exec(res);
           if(res.match('=')) {
-
+            //TODO fill with expression
           }
+
+          variable = new Variable(opts);
+          this.variables.push(variable);
         }
       }
       else if( src.match(/^\s*\w+\s*/gi) ) { //expression
+
+        this.type = "expression"
 
       }
 
@@ -426,9 +451,13 @@ GLNSLCompiler = (function() {
 
   /**
   * represents a single scope
+  * cachedVariables contains current new temp_variables for extended datatypes
   */
   function Scope() {
+    this.code_tree = null;
     this.rootScope = null;
+    this.src = null; //only rootScope has
+
     this.parent = null;
     this.childs = [];
 
@@ -471,7 +500,10 @@ GLNSLCompiler = (function() {
     ensureTypeCache: function ensureTypeCache(type) {
       if(this != this.rootScope )
         this.rootScope.ensureTypeCache(type)
-    }
+    },
+    addSentence: function(sentence) {
+      sentence.number = this.sentences.push[sentence];
+    },
   }
 
   /**
@@ -479,66 +511,96 @@ GLNSLCompiler = (function() {
   * variables and sentences
   */
   function CodeTree(src) {
+    if(!(this instanceof CodeTree))
+      return new CodeTree(src);
     this.src = src;
     this.rootScope = null;
     this.out = null;
-
+    this.sentences = [];
     if(src)
       this.interpret(src);
   }
   CodeTree.prototype = {
     /**
-    * create scope tree and fills data
+    * create scope tree and fills with sentences
     */
     interpret: function(src) {
-      var i, l, c,
-        sentence, sentence_number, index_a,
+      var i, l, c,  //index, length, character
+        sentence, //holds last created sentence object
+        index_a,  //start of current sentence ( for´s, if´s, etc, also count )
         scope_parent,
         scope_current = new Scope();
 
+      scope_current.src = src;
+      scope_current.range = [0, src.length - 1]
+      scope_current.code_tree = this;
       for(i = 0, l = src.length, sentence_number = 0, index_a = 0;
           i<l ; i++) {
 
         c = src[i];
 
-        if(c == '{') {
-          scope_parent = scope;
-          scope = new Scope();
-          scope.setParent(scope_parent);
+        //{: to recognize also scope-creating sentences
+        if(c == ';' || c == '{' || c == '}') {
+          sentence = new Sentence({
+            src: src.substr(index_a, i),
+            range: [index_a, i-1],
+            scope: scope_current,
+          });
+          this.sentences.push(sentence);
           index_a = i+1;
-          scope.range = [i];
+        }
+
+        if(c == '{') {
+          scope_parent = scope_current;
+          //TODO:program block scope generation on sentence parser
+          scope_current = new Scope();  //TODO:get scope from last sentence
+          scope_current.setParent(scope_parent);
+          scope_current.range = [i];
         }
         if(c == '}') {
-          scope.range.push(i);
-          scope = scope_parent;
-          index_a = i+1;
+          scope_current.range.push(i);
+          scope_current = scope_parent;
         }
 
-        //to recognize also scope-creating sentences
-        if(c == ';' || c == '{') {
-          sentence = new Sentence({
-            src: src.substr(index_a, i-1),
-            range: [index_a, i-1],
-            number: sentence_number++,
-            scope: scope,
-            });
-
-            index_a = i+1;
-        }
 
       }
 
-      this.rootScope = scope;
+      this.rootScope = scope_current;
     },
     /**
     * detects sentences that use glnsl syntax or datatypes and ask them to
     * translate
     */
-    translate: function() {
+    translate: function(cfg) {
+      if(cfg) this.cfg = cfg;
       if(!this.rootScope) return null;
 
+      var i, l, sentences = this.sentences, sentence,
+        src = this.src,
+        out = "",
+        a = 0, b;
+
+      //for each sentence that needs translation
+      for(i=0, l = this.sentences.length; i<l; i++) {
+        sentence = sentences[i];
+        if(sentence.needsTranslation()) {
+
+          //add translated sentence to previous non-translated content into out
+          b = sentence.range[0];
+          out += src.substr(a, b) + sentence.translate();
+          a = sentence.range[1]+1;
+        }
+      }
+
+      //add remaining piece.
+      b = src.length;
+      out += src.substr(a,b);
+      return this.out = out;
     },
     /**
+    * TODO separate code sintesis from code translation
+    * code translation should be able to detect specific regions that have
+    * changed, and write also should be
     * it uses the translated sentences versions to generate an
     * updated src string
     */
@@ -552,9 +614,7 @@ GLNSLCompiler = (function() {
   function compile(src, cfg) {
     var code_tree = CodeTree(src);
 
-    code_tree.translate();
-
-    return code_tree.write();
+    return code_tree.translate(cfg);
   }
 
   console.log(document.getElementById("testshader").innerHTML)

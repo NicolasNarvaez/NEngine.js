@@ -157,7 +157,7 @@ Camera = (function() {
 geometry, material, collision config.
 <br/><br/>
 Its extremely useful to represent a dynamic object that can interact physically
-with its environment, can be pluged into physic spaces and have meta-data.
+with its environment, can be pluged into physics spaces and have meta-data.
 
 @prop {Integer} dim - Dimensionality of Ent.
 @prop {Geom} geometry - The visual geometry for the entity
@@ -207,7 +207,7 @@ Entity = (function() {
     module.
     @desc Requires that the entity is previously registered on a space node.
     <br/><br/>
-    Sets a physic type on the entity, using a module object, module name, or
+    Sets a physics type on the entity, using a module object, module name, or
     module enum. Checks whether the objects array in the entity container (a
     SpaceNode) has the needed object type array instantiated, and conects this
     entity to it so it will be processed by the processors of the given type.
@@ -221,9 +221,9 @@ Entity = (function() {
 
       //sanitizes type parameter
       if(type instanceof String || typeof type == 'string')
-        type = NEngine.Physic.PhysicModules[type];
+        type = NEngine.Physics.PhysicModules[type];
       else  if(type instanceof 'Number' || typeof type == 'number')
-        type = NEngine.Physic.PhysicModulesEnum[type];
+        type = NEngine.Physics.PhysicModulesEnum[type];
 
       //sanitize objects array in ent.container
       objects = container.objects[type.i];

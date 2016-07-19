@@ -6,11 +6,49 @@ try {
         var global_root = this;
 
         	/**
-* An n-dimensional engine, works recursively projection dimension n into n-1 until n = 3.
-* it works over optimized functions, amd only dimensions 4 and 3 are precompiled, if
-* a given required dimension isnt compiled, uses nmath to create its library. <br/> <br/>
-* When you start ngine and specify the working dimension, you can use internal dimension-agnostic
-* objects to manipulate the engine elements, and make your app dimension-agnostic.
+  # NEngine.js
+  <br/>
+  A n-dimensional, full featured graphical-physical engine for the web.
+<br/><br/>
+
+  ## Features:
+<br/><br/>
+
+  ### N-dimensional geometry library and N-dimensional physical library:
+  <br/>
+  It contains basic n-dimensional polyhedrals and a basic geometry collision library to use in the physical system.
+<br/><br/>
+
+  ### Extended shader language:
+  <br/>
+  To create the n-dimensional shaders, it features an extended version of the Opengl Shading language called OpenGl N Shading Language or NSL using a small transcompiler that extends OGSL datatypes like matrices and vectors into N.
+<br/><br/>
+
+  ### Easy N-dimensional design and shader creation with Space Hierarchies:
+  <br/>
+  To manipulate multiple data spaces, and allow the existence of 3d spaces interacting with 5d spaces and handle simultaneously the two types of physics to later connect them into the same space, and to also simplify the shader organization and creation in the rendering, organizes its data into a Space Hierarchy that represents in a graph like manner, the spaces involved and the transformations in between them.
+<br/><br/>
+
+  ### New possible universes:
+  <br/>
+  Space Hierarchies allows to represent non-linear transformations like Bézier curves or fractal mappings from, for example object space into world space that modify the rendering and the physics for the interacting objects in those spaces. Thats right!, you can now create 3D hipersphere curved spaces inside 4D universes and simulate outer space accelerated expansion, or put many of those 4D universes inside six dimension spaces, curved like 4D hiperplanes, to construct complex space systems on which lot of different and interesting things can happen. You imagine literally seeing your galactic army crossing the universe bending into another reality?, now you can.
+<br/><br/>
+
+  ### Really fast:
+  <br/>
+  For all of its capabilities it has a good performance, that can work very good also in a smartphone, thanks to NMath optimization system on which it compiles extremely optimized hardcoded math operations in the given dimension in real time. Anyway, i need support improving the data structures in physics system and overall engine design because i´m not an expert.
+<br/><br/>
+
+  ## How it works:
+<br/><br/>
+
+  It builds its optimized mathematical functions from NMath, and directly projects dimension 'n' into dimension 'm' (commonly m = 3)  inside the vertex shader, using webgl. A port to other platforms, with other rendering power would be interesting, but always maintaining its web approach so currently i´m more interested in translate parts of it into something easy to translate into asm, like c.
+<br/><br/>
+
+  Currently uses a little bit of twgl to work.
+<br/><br/>
+  ## Usage:
+
 * @fileoverview
 * @author Nicolás Narváez
 * @version 0.5.8.10
@@ -40,7 +78,7 @@ global_root.NEngine = (function() {
     util,
     Engine,
     Frame,
-    Physic,
+    Physics,
     Camera,
     Renderer,
     //TODO Shader logic, optimization, generation, syntax, definition
@@ -393,8 +431,6 @@ geometry = (function() {
   @property {Float} boundingBoxMin - normally, shortest vertex component
   @property {Float} boundingBoxMax - normally largest vertex component
   @property {Float} boundingSphereRadius - bigger distance to a vertex
-
-  @property {Object} Prototype
   */
   function Geom() {
     this.boundingBoxMin = 0;
@@ -1125,7 +1161,7 @@ Camera = (function() {
 geometry, material, collision config.
 <br/><br/>
 Its extremely useful to represent a dynamic object that can interact physically
-with its environment, can be pluged into physic spaces and have meta-data.
+with its environment, can be pluged into physics spaces and have meta-data.
 
 @prop {Integer} dim - Dimensionality of Ent.
 @prop {Geom} geometry - The visual geometry for the entity
@@ -1175,7 +1211,7 @@ Entity = (function() {
     module.
     @desc Requires that the entity is previously registered on a space node.
     <br/><br/>
-    Sets a physic type on the entity, using a module object, module name, or
+    Sets a physics type on the entity, using a module object, module name, or
     module enum. Checks whether the objects array in the entity container (a
     SpaceNode) has the needed object type array instantiated, and conects this
     entity to it so it will be processed by the processors of the given type.
@@ -1189,9 +1225,9 @@ Entity = (function() {
 
       //sanitizes type parameter
       if(type instanceof String || typeof type == 'string')
-        type = NEngine.Physic.PhysicModules[type];
+        type = NEngine.Physics.PhysicModules[type];
       else  if(type instanceof 'Number' || typeof type == 'number')
-        type = NEngine.Physic.PhysicModulesEnum[type];
+        type = NEngine.Physics.PhysicModulesEnum[type];
 
       //sanitize objects array in ent.container
       objects = container.objects[type.i];
@@ -1815,6 +1851,8 @@ renderer = (function() {
     render: render,
     canvas: canvas,
     obj_list: obj_list,
+    PMatrix: PMatrix,
+    PMatrix3: PMatrix3,
     camera: camera,
     camera3: camera3,
     math: math,
@@ -2107,11 +2145,11 @@ GLNSLCompiler = (function() {
         'float',
         'sampler2D',
         'samplerCube',
-        'vec\d+',
-        'bvec\d+',
-        'ivec\d+',
-        'mat\d+',
-        'mat\d+_\d+', //n*m matrix
+        'vec.*\\s',
+        'bvec.*\\s',
+        'ivec.*\\s',
+        'mat.*\\s',
+        'mat.*\\s', //n*m matrix
       ],
       storage_qualifiers: [
         'const',
@@ -2149,10 +2187,21 @@ GLNSLCompiler = (function() {
 
   /**
   * represents a variable in a scope
+  *
+  * opts:
+  *   sentence
+  *   sentence_place: place in the declaration sentence
+  *   scope
+  *   type : prim or function, etc
+  *   qualifiers: storage, precission, return value, etc
+  *   value: given value, if this is a literal variable (value variable)
+  *   name: variable name
+  * props:
+  *   type_data: parsed type data from qualifiers
   */
   function Variable(opts) {
     this.sentence = opts.sentence || null;
-    this.sentence_place = opts.sentence_place || -1; //wtf why?
+    this.sentence_place = opts.sentence_place || 0;
     this.scope = opts.scope || null;
 
     //primitive or function
@@ -2175,18 +2224,22 @@ GLNSLCompiler = (function() {
     operation: function operation() {
 
     },
+    /**
+    registers to variable scope, fills type_data
+    */
     declare: function() {
       if(this.scope.variables[this.name])
         throw "variable "+this.name+" already declared";
 
+      //fill type_data
       if(this.type == 'primitive') {
-        if(this.qualifiers[3].match('vec')) {
+        if(this.qualifiers[3].match('vec')) {//vec
           this.type_data = {
               length: Number( (/\d+$/).exec(this.qualifiers[3]) )
           }
           this.qualifiers[3] = 'vec';
         }
-        if(this.qualifiers[3].match('mat')) {
+        if(this.qualifiers[3].match('mat')) {//mat
           this.type_data = {
             x: Number( (/\d+/).exec(this.qualifiers[3]) ),
             y: Number( (/\d+$/).exec(this.qualifiers[3]) )
@@ -2195,6 +2248,7 @@ GLNSLCompiler = (function() {
         }
       }
 
+      //register to variable scope
       this.scope.variables[this.name] = this;
     }
   }
@@ -2202,9 +2256,14 @@ GLNSLCompiler = (function() {
   /**
   * represents a single glsl sentence
   * has inf. about variables, post-translation, and source location
+  * every range is in global (rootScope) coordinates
   *
-  * this.number -> the number of sentences before this plus 1;
+  * this.number -> the index of this sentence in the scope sentence list;
   * this.thisScope -> filled only on sentence-block containing sentences
+  * types:  declaration, expression (this has subtypes: f.call, operation,
+  *         etc), null, etc
+  *       null represents an instruction that doesnt needs translation
+  *       or that does nothing at all
   */
   function Sentence(opts) {
     this.src = opts.src;
@@ -2222,11 +2281,14 @@ GLNSLCompiler = (function() {
     this.variables = null;
 
 
+    //result sentence
     this.out = null;
 
 
-    if(this.src && this.scope && this.number)
+    if(this.src && this.scope && this.number) {
+      this.scope.addSentence(this);
       this.interpret();
+    }
   }
   Sentence.prototype = {
     /**
@@ -2234,54 +2296,55 @@ GLNSLCompiler = (function() {
     * components list, its type and type related cfg,
     *
     * recognizes the sentence type and configures it accordingly
-    * types:  declaration, function call, expression,
-    *         null, etc
-    *     currently only types declaration, expression and null
-    *     are implemented, expression sentences include assignation
-    *       null represents an instruction that doesnt needs translation
-    *       or that does nothing at all
+    * currently only types declaration, expression and null
+    * are implemented, expression sentences include assignation
     */
     interpret: function interpret() {
       var src = this.src, re, str, res, i, opts,
-        lists = GrammarUtil.grammar_lists;
+        lists = GrammarUtil.grammar_lists, variable;
 
-        //declaration
-      if( res = RegExp(
-        "\s*(invariant)+\s*("+lists.storage_qualifiers.join('|')+")*\s*"+
-        "("+lists.precision_qualifiers.join('|')+")\s*"+
-        "("+lists.datatypes.join('|')+")\s*(.*)", 'gi'
+      if( res = RegExp( //detects declaration
+        "\\s*(invariant)*\\s*("+lists.storage_qualifiers.join('|')+")*\\s*"+
+        "("+lists.precision_qualifiers.join('|')+")*\\s*"+
+        "("+lists.datatypes.join('|')+")*\\s*(.*)", 'gi'
         ).exec(src) ) {
+
+        this.type = 'declaration'
 
         //verify sentence
         res.shift();
         res[0] = res[0] || null;
         res[1] = res[1] || 'none';
-        if(!res[2]) throw "no precision qualifier in variable declaration";
         if(!res[3]) throw "no datatype on variable declaration";
 
 
-        //variable constructor dara
+        //variable constructor data
         opts = {
           sentence: this,
           scope: this.scope,
           type: 'primitive',
-          qualifiers: [res[0], res[1], res[2], res[3]],
-
+          qualifiers: res,
           }
+
 
         str = res[4];
         re = /([^,]+)/g;
 
-        i = 0;
+        this.variables = [];  i = 0;
         while(res = re.exec(str)) {
-          opts.sentence_number = i++;
+          opts.sentence_place = i++;
           opts.name = (/\w+/g).exec(res);
           if(res.match('=')) {
-
+            //TODO fill with expression
           }
+
+          variable = new Variable(opts);
+          this.variables.push(variable);
         }
       }
       else if( src.match(/^\s*\w+\s*/gi) ) { //expression
+
+        this.type = "expression"
 
       }
 
@@ -2299,9 +2362,13 @@ GLNSLCompiler = (function() {
 
   /**
   * represents a single scope
+  * cachedVariables contains current new temp_variables for extended datatypes
   */
   function Scope() {
+    this.code_tree = null;
     this.rootScope = null;
+    this.src = null; //only rootScope has
+
     this.parent = null;
     this.childs = [];
 
@@ -2344,7 +2411,10 @@ GLNSLCompiler = (function() {
     ensureTypeCache: function ensureTypeCache(type) {
       if(this != this.rootScope )
         this.rootScope.ensureTypeCache(type)
-    }
+    },
+    addSentence: function(sentence) {
+      sentence.number = this.sentences.push[sentence];
+    },
   }
 
   /**
@@ -2352,66 +2422,96 @@ GLNSLCompiler = (function() {
   * variables and sentences
   */
   function CodeTree(src) {
+    if(!(this instanceof CodeTree))
+      return new CodeTree(src);
     this.src = src;
     this.rootScope = null;
     this.out = null;
-
+    this.sentences = [];
     if(src)
       this.interpret(src);
   }
   CodeTree.prototype = {
     /**
-    * create scope tree and fills data
+    * create scope tree and fills with sentences
     */
     interpret: function(src) {
-      var i, l, c,
-        sentence, sentence_number, index_a,
+      var i, l, c,  //index, length, character
+        sentence, //holds last created sentence object
+        index_a,  //start of current sentence ( for´s, if´s, etc, also count )
         scope_parent,
         scope_current = new Scope();
 
+      scope_current.src = src;
+      scope_current.range = [0, src.length - 1]
+      scope_current.code_tree = this;
       for(i = 0, l = src.length, sentence_number = 0, index_a = 0;
           i<l ; i++) {
 
         c = src[i];
 
-        if(c == '{') {
-          scope_parent = scope;
-          scope = new Scope();
-          scope.setParent(scope_parent);
+        //{: to recognize also scope-creating sentences
+        if(c == ';' || c == '{' || c == '}') {
+          sentence = new Sentence({
+            src: src.substr(index_a, i),
+            range: [index_a, i-1],
+            scope: scope_current,
+          });
+          this.sentences.push(sentence);
           index_a = i+1;
-          scope.range = [i];
+        }
+
+        if(c == '{') {
+          scope_parent = scope_current;
+          //TODO:program block scope generation on sentence parser
+          scope_current = new Scope();  //TODO:get scope from last sentence
+          scope_current.setParent(scope_parent);
+          scope_current.range = [i];
         }
         if(c == '}') {
-          scope.range.push(i);
-          scope = scope_parent;
-          index_a = i+1;
+          scope_current.range.push(i);
+          scope_current = scope_parent;
         }
 
-        //to recognize also scope-creating sentences
-        if(c == ';' || c == '{') {
-          sentence = new Sentence({
-            src: src.substr(index_a, i-1),
-            range: [index_a, i-1],
-            number: sentence_number++,
-            scope: scope,
-            });
-
-            index_a = i+1;
-        }
 
       }
 
-      this.rootScope = scope;
+      this.rootScope = scope_current;
     },
     /**
     * detects sentences that use glnsl syntax or datatypes and ask them to
     * translate
     */
-    translate: function() {
+    translate: function(cfg) {
+      if(cfg) this.cfg = cfg;
       if(!this.rootScope) return null;
 
+      var i, l, sentences = this.sentences, sentence,
+        src = this.src,
+        out = "",
+        a = 0, b;
+
+      //for each sentence that needs translation
+      for(i=0, l = this.sentences.length; i<l; i++) {
+        sentence = sentences[i];
+        if(sentence.needsTranslation()) {
+
+          //add translated sentence to previous non-translated content into out
+          b = sentence.range[0];
+          out += src.substr(a, b) + sentence.translate();
+          a = sentence.range[1]+1;
+        }
+      }
+
+      //add remaining piece.
+      b = src.length;
+      out += src.substr(a,b);
+      return this.out = out;
     },
     /**
+    * TODO separate code sintesis from code translation
+    * code translation should be able to detect specific regions that have
+    * changed, and write also should be
     * it uses the translated sentences versions to generate an
     * updated src string
     */
@@ -2425,9 +2525,7 @@ GLNSLCompiler = (function() {
   function compile(src, cfg) {
     var code_tree = CodeTree(src);
 
-    code_tree.translate();
-
-    return code_tree.write();
+    return code_tree.translate(cfg);
   }
 
   console.log(document.getElementById("testshader").innerHTML)
@@ -2461,11 +2559,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 /**
-@namespace Physic
+@namespace Physics
 @memberof NEngine
-@desc All physic related stuff, structures to index and optimize n-dimensional
+@desc All physics related stuff, structures to index and optimize n-dimensional
 spaces with lots or hundreds of entities like space trees. It also holds the
-PhysicModules wich define diferent kinds of physic processors and physic
+PhysicModules wich define diferent kinds of physics processors and physics
 types, and defines the SpaceGraph for easy space configuration (lots of TODO
 here)
 <br/><br/>
@@ -2475,9 +2573,9 @@ intersections.
 <br/><br/>
 Space is the SpaceNode network container, and holds common configurations
 for every SpaceNode.<br/>
-SpaceNode is a recursive representation of a n-axis
+SpaceNode is a recursive representation of a n-axis linked list
 */
-Physic = (function() {
+Physics = (function() {
 
   var SpaceGraph,
     Space,
@@ -2485,6 +2583,15 @@ Physic = (function() {
     Transform,
     PhysicModules;
 
+  /**
+  @memberof NEngine.Physics
+  @class SpaceGraph
+  @desc This is top secret work in progress! xD, SaceGraph represents using
+  a graph, the subspaces (nodes) and the transformations in between them
+  (links), this is used to generate the shaders and physics processing, but
+  it is partially incomplete, for now just use the renderer on Entity objects
+  and a common physics processor on a normal Space, directly
+  */
   SpaceGraph = (function() {
 
     function SpaceGraph() {
@@ -2499,24 +2606,55 @@ Physic = (function() {
     return SpaceGraph;
   })()
 
-  /**
-  * Space
-  *
-  * type - kind of space network that holds // add opts new types or separate them??
-
-  * dim - dims of SpaceNode network
-  * size - number of subnodes along an axis
-  * length - length of the subnode on depth 0, to generate space coordinates
-
-  * root - the root node of the SpaceNodes network, root.parent equals null
-  * level - the number of levels deper the network is
-
-  * lib_vec - corresponding vectorial lib
-  * lib_mat - corresponding matrix lib
-  */
-
   Space = (function() {
 
+    /**
+    @memberof NEngine.Physics
+    @class Space
+
+    @desc This holds a space tree, all the nodes on the tree reffer to this
+    object for their common properties, and it also holds a reference to the
+    main root. All the behaviour, meaning of properties, depends on the
+    "type" property. <br/>
+    A space tree its a data structure that represents space like a fractal of
+    voxels, imagine a very big cube, and then this one gets splited into
+    smaller cubes, and those, into smaller ones, each one of this cubes is
+    referenced from the containing cube, so the biggest cube, that contains
+    all of the small ones, it is not referenced inside another. The siblings
+    of a cube, are the ones next to it, so that when an object moves from a
+    given cube into its border, when crossing this border, its reference is
+    moved from the old into the new one, see SpaceNode docs for more details.
+    All of this is to optimize resource usage during collision detection.
+    <br/><br/>
+    Those are the current supported Space types:
+    <br/><br/>
+    Euclid: <br/>
+    It represents a n-dimensional euclid space, that means that for each
+    dimension there is another axis, and that each SpaceNode has 2*dim
+    different sibblings, one for each direction of each dimension, check the
+    SpaceNode doc for info on details.
+
+    @prop {String} type - kind of network that holds // add new types
+    or separate them??
+    @prop {Integer} dim
+    @prop {Integer} size - number of subnodes along an axis
+    @prop {Float} length - length on subnode of depth 0, to generate space
+    coordinates
+
+    @prop {SpaceNode} root - The root node of the SpaceNodes network, root.parent
+    equals null
+    @prop {Integer} level - the number of levels deeper the network is, this
+    value changes when the network grows
+    @prop {Object} lib_vec - The vectorial library to use (for caching pointer)
+    @prop {Object} lib_mat - The matrix library to use (pointer chaching purposes)
+
+    @param {Object} opts - The cfg options
+    @param {Integer} opts.dim
+    @param {Integer} opts.size
+    @param {Float} opts.length
+    @param {Integer} opts.level - Initial height of space tree
+    @param {Boolean} [opts.fill=false] - I fill all levels of tree on creation
+    */
     /**
     * Space Constructor
     *
@@ -2563,9 +2701,14 @@ Physic = (function() {
 
     Space.prototype = {
       /**
-      * add hupper levels to the space system
+      @memberof NEngine.Physics.Space.prototype.Space.prototype
+      @method enlarge
+      @desc adds levels to the space system, this doesnt fill the new siblings
+      of the old root node
+      @param {Integer} levels - The number of levels to add
+      @return {Space} this
       */
-      enlarge: function(repeat) {
+      enlarge: function enlarge_space(repeat) {
         //create new root node
         var root, old_root_index, i, opts;
         opts.level = ++this.level;
@@ -2597,11 +2740,17 @@ Physic = (function() {
 
         if(repeat)
           this.enlarge(--repeat);
+
+        return this;
       },
       /**
-      * removes an entity from the space system
+      @memberof NEngine.Physics.Space.prototype
+      @method remEnt
+      @desc removes an entity from the space system
+      @param {Entity} ent - The entity to remove
+      @return {Space} this
       */
-      remEnt: function(ent) {
+      remEnt: function remEnt(ent) {
         if(!ent.container) return;
 
         var objects = ent.container.objects,
@@ -2611,12 +2760,17 @@ Physic = (function() {
             objects[i].splice( objects[i].indexOf(ent), 1 );
 
         ent.container = null;
+        return this;
       },
       /**
-      * adds an entity to the space system
-      * checks that the systems has instantiated the corresponding space
-      * node and then adds it to the objects array[0] (entity) (checking
-      * coherent instantiation of it)
+      @memberof NEngine.Physics.Space.prototype
+      @method addEnt
+      @desc adds an entity to the space system checks that the systems has
+      instantiated the corresponding space node and then adds it to the objects
+      array[0] (entity) (checking coherent instantiation of it)
+      @param {Entity} ent - The entity to add
+      @return {SpaceNode} container_node - The node that now contains the
+      added entity
       */
       addEnt: function(ent) {
         var node, array;
@@ -2640,49 +2794,42 @@ Physic = (function() {
     return Space;
   })();
 
-  /**
-  * Represents single space net unit, if its a bottom SpaceNode
-  * it will contain lists for objects inside their respective physic
-  * processor type (for example, Entities in Dynamic array)
-  *
-  * space - Space containing general configs
-  * level - Space Index depnes, 0 equals bottom
-  * p - system relative position,
-  *
-  * parent - Spatially containing node
-  * siblings - Siblings linear Array
-  * capsuled - indicates whether all siblings are occupied
-  *
-  * last_visited - last time it was processed by physic processor
-  * active - If registered for physics processing
-  * index - index for fast translation into parent relative position
-  *        the mapping is from a n-d vector such as
-  *         p[0] + p[1]*size + p[2]*size*size [..]
-  *
-  * childs - Child Spaces linear Array
-  * objects - Dictionary containing the objects inside the SpaceNode
-  *       separated in arrays, each for each corresponding processor type
-  *
-  *
-  */
   SpaceNode = (function() {
-
     /**
-    * constructor
-    * fill isnt an automatic option because is rarely needed and
-    * extremply complicates code simplicity and opts caching
-    +
-    * space -
-    * parent -
-    * level -
-    *
-    * dim -
-    * size -
-    *
-    * index -
-    * p - requires
-    *          undefined = calculate with setP, index and parent required
-    *          null = leave empty
+    @memberof NEngine.Physics
+    @class SpaceNode
+    @desc Represents single space net unit, if its a bottom SpaceNode it will
+    contain lists for objects inside their respective physics processor type
+    (for example, Entities in Dynamic array)
+
+    @prop {Space} space - Space containing general configs
+    @prop {Integer} level - Space Index depness, 0 equals bottom
+    @prop {Vector} p - system relative position,
+
+    @prop {SpaceNode} parent - Spatially containing node
+    @prop {SpaceNode[]} siblings - Siblings linear Array
+    @prop {Boolean} capsuled - indicates whether all siblings are occupied
+
+    @prop {Integer} last_visited - last time it was processed by physics processor
+    @prop {Boolean} active - If registered for physics processing
+    @prop {Integer} index - index for fast translation into parent relative
+      position, the mapping is from a n-d vector such as p[0] + p[1]*size +
+      p[2]*size*size [..]
+
+    @prop {SpaceNode[]} childs - Child Spaces linear Array, null if this is a
+    floor node
+    @prop {Object[][]} objects - Contains the objects inside the SpaceNode,
+      separated in arrays, each for each corresponding processor type
+
+    @param {Space} space
+    @param {SpaceNode} parent
+    @param {Integer} level
+
+    @param {Integer} index - Index in parent childs array
+    @param {Vector} p - position vector of this node from the origin Node (this
+    is not the position-index!)<br/>
+      undefined = calculate with setP, index and parent required<br/>
+      null = leave empty
     */
     function SpaceNode(opts) {
 
@@ -2704,7 +2851,9 @@ Physic = (function() {
       this.p = opts.p;
       if(this.index >= 0 && opts.p === undefined)
         this.setP();
-      this.childs = new Array( Math.pow(opts.size,opts.dim) );
+      this.childs = (this.level)?
+        new Array( Math.pow(opts.size,opts.dim) ) :
+        null;
 
       this.last_visited = -1;
       this.active = false;
@@ -2715,17 +2864,21 @@ Physic = (function() {
         this.objects = [];
 
     }
-
-    /**
-    * for dynamic space generation
-    */
     SpaceNode.prototype = {
       /**
-      * calculates the position traslation from parent p vector
-      * to child p given the index and child level
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method parentPSeparation
+      @desc  calculates the position traslation vector from parent p vector to
+      child p given the index and child level
+      @param {Integer} child_index - Parent relative index of the node
+      @param {Integer} child_level - The level the child is on
+      @param {Vector} [p=new Vector] - It will contain final vector
+      @return {Vector} p - The final vector
       */
-      parentPSeparation: function(child_index, child_level, p) {
-        if(!p)  p = this.space.vec_lib.reate();
+      parentPSeparation: function parentPSeparation(child_index, child_level,
+        p) {
+
+        if(!p)  p = this.space.vec_lib.create();
 
         if(child_index instanceof Number)
           child_index = this.indextop(index);
@@ -2739,31 +2892,45 @@ Physic = (function() {
         return p;
         },
       /**
-      * configures p according to parent data
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method setP
+      @desc  configures p according to parent data
+      @param {Vector} [p=new Vector] - New p vector of this
+      @return {SpaceNode} this
       */
-      setP: function(p) {
+      setP: function setP(p) {
         if(!p) p = this.space.vec_lib.create();
 
         this.parentPSeparation(this.index, this.level, p);
         this.space.vec_lib.add(p, p, this.parent.p);
 
         this.p = p;
+        return this;
       },
       /**
-      * configures p using specific child data
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method setPChild
+      @desc  configures p using specific child data
+      @param {SpaceNode} child - the child to extract data
+      @param {Vector} [p=new Vector] - New p vector of this
+      @return {SpaceNode} this
       */
-      setPChild: function(child, p) {
+      setPChild: function setPChild(child, p) {
         if(!p) p = this.space.vec_lib.create();
 
         this.parentPSeparation(child.index, child.level, p);
         this.space.vec_lib.sub(p, child.p, p);
 
         this.p = p;
+        return this;
       },
       /**
-      * returns a parent and enlarges the space if necesary
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method parentEnsured
+      @desc  Always returns a parent and enlarges the space if it doesnt exists
+      @return {SpaceNode} parent - The parent of this node.
       */
-      parentEnsured: function() {
+      parentEnsured: function parentEnsured() {
         var parent = this.parent;
 
         if(!parent) {
@@ -2774,10 +2941,15 @@ Physic = (function() {
         return parent;
       },
       /**
-      * converts coord to a index vector
-      * doesnt check if coord is inside this node
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method coordtoindexp
+      @desc  converts coord to a index vector doesnt check if coord is inside
+      this node
+      @param {Integer} coord - The index to translate
+      @param {Vector} [p=new Vector] - For the end vector
+      @return {Vector} p - translated index position
       */
-      coordtoindexp: function(coord, p) {
+      coordtoindexp: function coordtoindexp(coord, p) {
         if(!p) p = this.space.vec_lib.create();
         var dim = 0, dims = this.space.dim,
           p_this = this.p,
@@ -2791,10 +2963,14 @@ Physic = (function() {
         return p;
       },
       /**
-      * converts coord to a index integer
-      * doesnt check if coord is inside this node
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method coordtoindex
+      @desc  converts coord to a index integer doesnt check if coord is inside
+      this node
+      @param {Vector} p - Index vector to translate
+      @return {Integer} index - The end index
       */
-      coordtoindex: function(coord) {
+      coordtoindex: function coordtoindex(coord) {
         var dim = 0, dims = this.space.dim,
           size = this.space.size,
           p_this = this.p,
@@ -2810,9 +2986,13 @@ Physic = (function() {
         return p;
       },
       /**
-      * informs whether coord is inside this node
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method isInside
+      @desc  informs whether coord is inside this node or not
+      @param {Vector} p - Position to test
+      @return {Boolean} inside
       */
-      isInside: function(coord) {
+      isInside: function isInside(coord) {
         var i=0, dim = this.space.dim,
           p_this = this.p,
           limit = this.length/2;
@@ -2824,9 +3004,15 @@ Physic = (function() {
         return true;
       },
       /**
-      * ensures that a given location is internalized
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method include
+      @desc  Ensures that a given location is internalized in the spacetree,
+      that means that the floor node that contains that position is
+      instantiated
+      @param {Vector} coord - Position to ensure
+      @return {SpaceNode} continer - The node that currently contains the coord
       */
-      include: function(coord) {
+      include: function include(coord) {
         //if coord doesnt fit this node search on parent
         if(!this.isInside(coord)) {
           this.parentEnsured().include(coord);
@@ -2855,71 +3041,89 @@ Physic = (function() {
         return child.include(coord);
       },
       /**
-      * creates sibling on given direction
-      * doesnt check tree consistency
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method extend
+      @desc  Creates sibling on given direction
+      @param {Integer} orientation - The sibling index in the node siblings array
+      @param {Float} length - Distance from the node center to ensure extension
+      @return {SpaceNode} last_node - the last node on the 'length' distance
       */
-      extend: function(direction, length) {
-        if(this.siblings[direction])
+      extend: function extend(orientation, length) {
+        //avoid tree consistency errors
+        if(this.siblings[orientation])
           return;
 
-        var orientation = (direction%2)? 1:-1,
-          dim = Math.floor(direction/2),
+        var direction = (orientation%2)? 1:-1,  //
+          dim = Math.floor(orientation/2),
           size = this.space.size;
           index_max = this.childs.length,
 
           parent = this.parentEnsured(),
-          node,  node_index,
+          sibling_node,  node_to_index,
           opts = this.space.nodesOpts,
 
-        opts.p = undefined;
-        opts.level = this.level;
 
         ///////////////////configure opts
 
+        //get parent, checks parent exists
         //get index
-        node_index = this.index + orientation*Math.pow(size, dim);
-        //get parent
+        node_to_index = this.index + direction*Math.pow(size, dim);
         //gets outside of parent, need to find a parent
-        if(node_index >= index_max || node_index < 0) {
+        if(node_to_index >= index_max || node_to_index < 0) {
           //parent needed doesnt exists => extend parent into sibling
           if(!parent.siblings[i])
-            parent.extend(direction, length);
+            parent.extend(orientation, length);
 
           opts.parent = parent.siblings[i];
-          node_index = this.index - orientation*(size-1)*Math.pow(size,dim);
+          node_to_index = this.index - direction*(size-1)*Math.pow(size,dim);
         }
         else
           opts.parent = parent;
-        opts.index = node_index;
 
-        /////////////////////create-link node
-        node = new SpaceNode(opts);
-        this.siblings[direction] = node;
-        node.siblings[direction - orientation] = this;
+        opts.p = undefined;
+        opts.level = this.level;
+        opts.index = node_to_index;
 
-        return node;
+        //create sibling node
+        sibling_node = new SpaceNode(opts);
+        /////////////////////double-link
+        this.siblings[orientation] = sibling_node;
+        sibling_node.siblings[orientation - direction] = this;
+
+        //keep consistency
+        sibling_node.connect()
+
+        if(length)
+          return sibling_node.extend(orientation, --length);
+        return sibling_node;
       },
       /**
-      * ensures that siblings of node are instantiated
-      * doesnt check tree conectivity
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method capsule
+      @desc  ensures that siblings of node within a buble of length depth are
+      instantiated
+      @param {Integer} [depth=0] - size of the capsule
+      @return {SpaceNode} this
       */
-      capsule: function(depth) {
+      capsule: function capsule(depth) {
         var direction=0, directions = this.space.dim*2;
-        for(;direction < directions;) {
+        for(;direction < directions; direction++) {
           this.extend(direction);
           if(depth)
             this.sibling[direction].capsule(depth-1);
         }
         return this;
       },
-      /*+
-      fills the childs array with childs
-      opts are the options passed to childs
-
-      travels to each child using a position vector and sets its index
+      /**
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method fill
+      @desc  fills the childs array with childs, opts are the options passed to
+      childs, travels to each child using a position vector and sets its index
       for each child, the process repeats recursively if fill == true
+      @param {Vector} [p=new Vector] - New p vector of this
+      @return {SpaceNode} this
       */
-      fill: function(opts) {
+      fill: function fill(opts) {
         //first creates childs, then executes connect_childs
         var  index = 0, dim, child, sibling,
           space = this.space,
@@ -2927,14 +3131,15 @@ Physic = (function() {
           size = space.size,
 
           pos = space.lib_vec.create(),
-          opts;
+          opts_nodes;
 
-        opts = {
+        opts_nodes = {
           parent: this,
           space: space,
           level: this.level-1,
 
           p: undefined,
+          index: 0,
           dim: dim_top_index+1,
           size: size,
         };
@@ -2945,7 +3150,7 @@ Physic = (function() {
           //create child only if it not exists
           if(!this.childs[index]) {
             opts.index = index;
-            child = new SpaceNode(opts);
+            child = new SpaceNode(opts_nodes);
 
             if(opts.fill)
               child.fill(opts);
@@ -2953,7 +3158,7 @@ Physic = (function() {
 
           pos[0]++;
           index++;
-          // renormalize position vector
+          //renormalize position vector
           for(dim = 0; dim < dim_top_index; dim++)
             if(pos[dim] == opts.size) {
               pos[dim] = 0;
@@ -2966,6 +3171,11 @@ Physic = (function() {
         return this;
       },
       /**
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method setP
+      @desc  returns a parent and enlarges the space if necesary
+      @param {Vector} [p=new Vector] - New p vector of this
+      @return {SpaceNode} this
       * connects childs of node
       * to their siblings, posibly in a recursive manner
       */
@@ -3034,51 +3244,86 @@ Physic = (function() {
 
       },
       /**
-      * check sibblings of itself using
-      * parent space data
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method connect
+      @desc Makes sure that if a sibling of this node existes, then they will
+      be double-linked on the siblings array of them. Otherwise, the link will
+      be null. Uses parent data recursively (if its a limit node) to reach
+      its siblings.
+      Depth makes the process to repeat for every existing sibling of the node.
+      (this doesnt checks if already passed over a node, so large depth numbers
+      will have exponential growth, not n-dimensional)
+      @param {Integer} [depth=0] - Depth of recursion
+      @return {SpaceNode} this
       */
-      connect: function() {
-        var dim, i, d,
-          directions = this.space.dim*2,
+      connect: function(depth) {
+        var parent = this.parent;
+        if(!parent) return this;
+
+        var orientation, direction, dim,
+          orientations = this.space.dim*2,
           size = this.space.size,
           siblings = this.siblings,
-          parent = this.parent,
           pos = this.indextop(this.index);
 
-        for(dim = 0; dim < directions;) if(!siblings[dim]) {
-          i = ( dim%2 )? -1 : 1;
-          d = Math.floor(dim/2);
+        for(orientation = 0; orientation < orientations;)
+        if(!siblings[orientation]) {
 
-          //its a limit conection
-          if( pos[d] == (i==-1)?0:(size-1) ) {
+          direction = ( orientation%2 )? -1 : 1;
+          dim = Math.floor(orientation/2);
 
-            /**if parent brother exists, check if sibling on that brother
-            * exists
-            */
-            if( parent.siblings[dim] )
+          //get sibling from parent
+          //its a limit conection, get from parent sibling, and ensure parent
+          //sibling
+          if( pos[dim] == (direction==-1)?0:(size-1) ) {
+
+            parent.connect(); //parent now is cohesive
+
+            //if !parent sibling, sibling = null
+            if( parent.siblings[orientation] )
               //check if searched child brother exists
-              sibling = parent.siblings[dim].
-                childs[ this.index - i*(size-1)*Math.pow(size, d) ];
+              sibling = parent.siblings[orientation].
+                childs[ this.index - direction*(size-1)*
+                Math.pow(size, dim) ];
             else
               sibling = null;
 
-          } else  //not a limit node
-            sibling = parent.childs[ this.index + i*Math.pow(size, d ) ]
+          }
+          else  //not a limit node
+            sibling = parent.childs[
+                              this.index + direction*Math.pow(size, dim ) ]
 
+          //if sibling, double-link
           if( sibling ) {
             //double link:
             //invert direction
-            siblings[dim] = sibling;
-            sibling.siblings[ dim-i ] = this;
+            siblings[orientation] = sibling;
+            sibling.siblings[ orientation-direction ] = this;
+
+            if(depth)
+              sibling.connect(depth-1);
           }
 
         }
 
+        return this;
       },
+      /**
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method setP
+      @desc  returns a parent and enlarges the space if necesary
+      @param {Vector} [p=new Vector] - New p vector of this
+      @return {SpaceNode} this
+      */
       sibling: function(axis, positive) {
         return this.siblings[ axis*2 + ((positive)?1:0) ];
       },
       /**
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method setP
+      @desc  returns a parent and enlarges the space if necesary
+      @param {Vector} [p=new Vector] - New p vector of this
+      @return {SpaceNode} this
       * converts p to its corresponding integer index
       */
       ptoindex: function(p) {
@@ -3091,6 +3336,11 @@ Physic = (function() {
         return index;
       },
       /**
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method setP
+      @desc  returns a parent and enlarges the space if necesary
+      @param {Vector} [p=new Vector] - New p vector of this
+      @return {SpaceNode} this
       * converts index to its corresponding n-d position
       */
       indextop: function(index, p) {
@@ -3114,6 +3364,13 @@ Physic = (function() {
 
         return p;
       },
+      /**
+      @memberof NEngine.Physics.SpaceNode.prototype
+      @method setP
+      @desc  returns a parent and enlarges the space if necesary
+      @param {Vector} [p=new Vector] - New p vector of this
+      @return {SpaceNode} this
+      */
       iterate_bottom: function(f) {
         var i=0, childs=this.childs, l = childs.length, child;
         for(;i<l;) {
@@ -3233,7 +3490,7 @@ Physic = (function() {
 
     },
   };
-  //instantiates the physic modules enumeration object for fastmodule access
+  //instantiates the physics modules enumeration object for fastmodule access
   (function(){
     PhysicModulesEnum.push(PhysicModules.Entity);
     PhysicModules.Entity.i = 0;
@@ -3483,7 +3740,7 @@ Frame = (function(){
     Camera: Camera,
     Renderer: Renderer,
     Entity: Entity,
-    Physic: Physic,
+    Physics: Physics,
     GLNSLCompiler: GLNSLCompiler,
   };
 })();

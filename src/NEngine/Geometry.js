@@ -319,8 +319,6 @@ geometry = (function() {
   @property {Float} boundingBoxMin - normally, shortest vertex component
   @property {Float} boundingBoxMax - normally largest vertex component
   @property {Float} boundingSphereRadius - bigger distance to a vertex
-
-  @property {Object} Prototype
   */
   function Geom() {
     this.boundingBoxMin = 0;

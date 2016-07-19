@@ -1,9 +1,47 @@
 	/**
-* An n-dimensional engine, works recursively projection dimension n into n-1 until n = 3.
-* it works over optimized functions, amd only dimensions 4 and 3 are precompiled, if
-* a given required dimension isnt compiled, uses nmath to create its library. <br/> <br/>
-* When you start ngine and specify the working dimension, you can use internal dimension-agnostic
-* objects to manipulate the engine elements, and make your app dimension-agnostic.
+  # NEngine.js
+  <br/>
+  A n-dimensional, full featured graphical-physical engine for the web.
+<br/><br/>
+
+  ## Features:
+<br/><br/>
+
+  ### N-dimensional geometry library and N-dimensional physical library:
+  <br/>
+  It contains basic n-dimensional polyhedrals and a basic geometry collision library to use in the physical system.
+<br/><br/>
+
+  ### Extended shader language:
+  <br/>
+  To create the n-dimensional shaders, it features an extended version of the Opengl Shading language called OpenGl N Shading Language or NSL using a small transcompiler that extends OGSL datatypes like matrices and vectors into N.
+<br/><br/>
+
+  ### Easy N-dimensional design and shader creation with Space Hierarchies:
+  <br/>
+  To manipulate multiple data spaces, and allow the existence of 3d spaces interacting with 5d spaces and handle simultaneously the two types of physics to later connect them into the same space, and to also simplify the shader organization and creation in the rendering, organizes its data into a Space Hierarchy that represents in a graph like manner, the spaces involved and the transformations in between them.
+<br/><br/>
+
+  ### New possible universes:
+  <br/>
+  Space Hierarchies allows to represent non-linear transformations like Bézier curves or fractal mappings from, for example object space into world space that modify the rendering and the physics for the interacting objects in those spaces. Thats right!, you can now create 3D hipersphere curved spaces inside 4D universes and simulate outer space accelerated expansion, or put many of those 4D universes inside six dimension spaces, curved like 4D hiperplanes, to construct complex space systems on which lot of different and interesting things can happen. You imagine literally seeing your galactic army crossing the universe bending into another reality?, now you can.
+<br/><br/>
+
+  ### Really fast:
+  <br/>
+  For all of its capabilities it has a good performance, that can work very good also in a smartphone, thanks to NMath optimization system on which it compiles extremely optimized hardcoded math operations in the given dimension in real time. Anyway, i need support improving the data structures in physics system and overall engine design because i´m not an expert.
+<br/><br/>
+
+  ## How it works:
+<br/><br/>
+
+  It builds its optimized mathematical functions from NMath, and directly projects dimension 'n' into dimension 'm' (commonly m = 3)  inside the vertex shader, using webgl. A port to other platforms, with other rendering power would be interesting, but always maintaining its web approach so currently i´m more interested in translate parts of it into something easy to translate into asm, like c.
+<br/><br/>
+
+  Currently uses a little bit of twgl to work.
+<br/><br/>
+  ## Usage:
+
 * @fileoverview
 * @author Nicolás Narváez
 * @version 0.5.8.10
@@ -33,7 +71,7 @@ global_root.NEngine = (function() {
     util,
     Engine,
     Frame,
-    Physic,
+    Physics,
     Camera,
     Renderer,
     //TODO Shader logic, optimization, generation, syntax, definition
@@ -72,7 +110,7 @@ global_root.NEngine = (function() {
   @import 'Shading.js'
   @import 'GLNSLCompiler.js'
 
-  @import 'Physic.js'
+  @import 'Physics.js'
 
   @import 'NMusicPorts.js'
 
@@ -88,7 +126,7 @@ global_root.NEngine = (function() {
     Camera: Camera,
     Renderer: Renderer,
     Entity: Entity,
-    Physic: Physic,
+    Physics: Physics,
     GLNSLCompiler: GLNSLCompiler,
   };
 })();
