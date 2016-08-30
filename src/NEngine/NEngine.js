@@ -110,7 +110,7 @@ global_root.NEngine = (function() {
   @import 'Shading.js'
   @import 'GLNSLCompiler.js'
 
-  @import 'Physics.js'
+  @import 'Physic.js'
 
   @import 'NMusicPorts.js'
 

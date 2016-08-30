@@ -1938,588 +1938,593 @@ GLNSLCompiler = (function() {
     Vartypes;
 
   /**
-  * Used to create recursive expressión trees
-  *
-  * a and b point to expresions (variable expression) and in
-  * operantor == null this.a contains a variable (literal expression)
+* Used to create recursive expressión trees
+*
+* a and b point to expresions (variable expression) and in
+* operantor == null this.a contains a variable (literal expression)
+*/
+function Expression(opts) {
+  this.src = opts.src || null;
+  this.scope = opts.scope || null;
+
+  this.a = opts.a || null;
+  this.b = opts.b || null;
+  this.operator = opts.op || null;
+  //if operator == "function"
+  this.function = opts.function || null;
+
+  if(this.src)
+    this.interpret();
+}
+
+Expression.prototype = {
+  /**
+  * each element its a regexp + operator identifier
+  * for each expression, there are 3 parenthesis operator a, operator b, and
+  * operation
   */
-  function Expression(opts) {
-    this.src = opts.src || null;
-    this.scope = opts.scope || null;
-
-    this.a = opts.a || null;
-    this.b = opts.b || null;
-    this.operator = opts.op || null;
-    //if operator == "function"
-    this.function = opts.function || null;
-
-    if(this.src)
-      this.interpret();
-  }
-
-  Expression.prototype = {
-    /**
-    * each element its a regexp + operator identifier
-    * for each expression, there are 3 parenthesis operator a, operator b, and
-    * operation
-    */
-    operators: [
-      {
-        id: '=',
-        //EQUALITY REQUIRES THAT LEFT SIDE OPERAND ITS THE VARIABLE
-        //CONTAINER AND NOT ITS VALUE, FOR ELEMENT SELECTION, THIS CHANGES
-        //NORMAL TRANSLATION.
-        reg: /[^\+\-\^\|&!=<>%\*/](?:\+\+)*(?:--)*(=)[^=]/gi,
-      },
-      {
-        id: '+',
-        reg: /[^\+](?:\+\+)*(\+)[^\+=]/gi,
-      },
-      {
-        id: '-',
-        reg: /[^\-](?:--)*(-)[^-=]/gi,
-      },
-      {
-        id: '*',
-        reg: /(\*)[^=]/gi,
-      },
-      {
-        id: '/',
-        reg: /(\/)[^=]/gi,
-      },
-    ],
-
-    /**
-    * returns te end variable type after aplication of the operation
-    */
-    vartype: function vartype() {
-
+  operators: [
+    {
+      id: '=',
+      //EQUALITY REQUIRES THAT LEFT SIDE OPERAND ITS THE VARIABLE
+      //CONTAINER AND NOT ITS VALUE, FOR ELEMENT SELECTION, THIS CHANGES
+      //NORMAL TRANSLATION.
+      reg: /[^\+\-\^\|&!=<>%\*/](?:\+\+)*(?:--)*(=)[^=]/gi,
     },
-    /**
-    * indicates wheter the operands-operand combination implicates a
-    * right-operator replication,this is for optimization purposes
-    * avoiding expresion operations multiplication on after-compilation
-    * sentences
-    */
-    replicates: function replicates() {
-
+    {
+      id: '+',
+      reg: /[^\+](?:\+\+)*(\+)[^\+=]/gi,
     },
-    /**
-    * first, if this is a parenthesis, cuts the borders so it can process
-    * the content. Then, converts all parenthesis into special variables
-    * so they dont interfere with operators on this precedence layer
-    * then, start from lowest precedence operators (the last executing)
-    * and splits the expression on the lower it finds into the next
-    * two expressions, then, starts the new expressions sending them
-    * the code with the parenthesis instead of the variables
-    */
-    interpret: function interpret() {
-      var re, res, i, j, l, l2, str_a, str_b
-        code,
-        c,
-        parenthesis_last,
-        parenthesis_level,
-        parenthesis,
-        parenthesis_symbol,
-        parenthesis_table = [],
-        operators = ['=', '+', '-', '*', '/'];
+    {
+      id: '-',
+      reg: /[^\-](?:--)*(-)[^-=]/gi,
+    },
+    {
+      id: '*',
+      reg: /(\*)[^=]/gi,
+    },
+    {
+      id: '/',
+      reg: /(\/)[^=]/gi,
+    },
+  ],
 
-      re = /^\s*\((.*)\)\s*$/gi;
+  /**
+  * returns te end variable type after aplication of the operation
+  */
+  vartype: function vartype() {
 
-      code = this.src;
-      while( res = re.exec(code) )
-        code = res[1];
+  },
+  /**
+  * indicates wheter the operands-operand combination implicates a
+  * right-operator replication,this is for optimization purposes
+  * avoiding expresion operations multiplication on after-compilation
+  * sentences
+  */
+  replicates: function replicates() {
 
-      //create parenthesis table
+  },
+  /**
+  * first, if this is a parenthesis, cuts the borders so it can process
+  * the content. Then, converts all parenthesis into special variables
+  * so they dont interfere with operators on this precedence layer
+  * then, start from lowest precedence operators (the last executing)
+  * and splits the expression on the lower it finds into the next
+  * two expressions, then, starts the new expressions sending them
+  * the code with the parenthesis instead of the variables
+  */
+  interpret: function interpret() {
+    var re, res, i, j, l, l2, str_a, str_b
+      code,
+      c,
+      parenthesis_last,
+      parenthesis_level,
+      parenthesis,
+      parenthesis_symbol,
+      parenthesis_table = [],
+      operators = ['=', '+', '-', '*', '/'];
 
-      for(i=0,l=code.length, parenthesis_level=0; i<l;i++) {
-        c = code[i];
-        if(c == '(') {
-          if(parenthesis_level == 0)
-            parenthesis_last = i;
+    re = /^\s*\((.*)\)\s*$/gi;
 
-          parenthesis_level++;
-        }
-        if(c == ')') {
-          parenthesis_level--;
-          if(parenthesis_level == 0) {
-            parenthesis = code.substr(parenthesis_last, i+1);
+    code = this.src;
+    while( res = re.exec(code) )
+      code = res[1];
 
-            parenthesis_table.push(parenthesis);
-            parenthesis_symbol = ' $'+(parenthesis_table.length-1)+" ";
+    //create parenthesis table
 
-            code = code.replace(parenthesis, parenthesis_symbol);
-            i = parenthesis_last + parenthesis_symbol.length - 1;
-          }
-        }
+    for(i=0,l=code.length, parenthesis_level=0; i<l;i++) {
+      c = code[i];
+      if(c == '(') {
+        if(parenthesis_level == 0)
+          parenthesis_last = i;
+
+        parenthesis_level++;
       }
+      if(c == ')') {
+        parenthesis_level--;
+        if(parenthesis_level == 0) {
+          parenthesis = code.substr(parenthesis_last, i+1);
 
-      //start spliting the operators from lower precedence into higher
+          parenthesis_table.push(parenthesis);
+          parenthesis_symbol = ' $'+(parenthesis_table.length-1)+" ";
 
-      for(i = 0, l = code.length; i < l; i++) {
-        c = code[i];
-        for(j=0, l2=operators.length; j<l2; j++)
-          if(c == operators[j]) {
-
-            this.a = code.substr(0, i);
-            this.b = code.substr(i+1, code.length-i);
-
-            this.operator = operators[j];
-            this.a =
-
-            l2 = l = 0;
-          }
-      }
-
-      //when there was no operator found, this is a variable
-      if(!this.a) {
-
+          code = code.replace(parenthesis, parenthesis_symbol);
+          i = parenthesis_last + parenthesis_symbol.length - 1;
+        }
       }
     }
-  }
 
-  Vartypes = (function() {
-    var types ={
+    //start spliting the operators from lower precedence into higher
+
+    for(i = 0, l = code.length; i < l; i++) {
+      c = code[i];
+      for(j=0, l2=operators.length; j<l2; j++)
+        if(c == operators[j]) {
+
+          this.a = code.substr(0, i);
+          this.b = code.substr(i+1, code.length-i);
+
+          this.operator = operators[j];
+          this.a =
+
+          l2 = l = 0;
+        }
+    }
+
+    //when there was no operator found, this is a variable
+    if(!this.a) {
+
+    }
+  }
+}
+
+
+  
+Vartypes = (function() {
+  var types ={
+    /**
+    *
+    */
+    vecn: {
+      exp: 'vec\d+',
       /**
-      *
+      * creates type info from variable declaration information
       */
-      vecn: {
-        exp: 'vec\d+',
-        /**
-        * creates type info from variable declaration information
-        */
-        constructor : function (data) {
-          this.size = data.datatype.match(/\d/gi);
-        },
-        /**
-        * expresion operator is an expression!!, not a variable!!
-        * expresions only contain datatype info and expresion identifier
-        * wich can be a variable identifier or a transparent temporary
-        * identifier for temporal operantions cache
-        *
-        * into_variable can be a variable name or false,indicating to
-        * return an array of the sentences without asignment instead
-        */
-        operations: {
-          '[+-]': function addminus(operation, expresion_operator, into_variable) {
+      constructor : function (data) {
+        this.size = data.datatype.match(/\d/gi);
+      },
+      /**
+      * expresion operator is an expression!!, not a variable!!
+      * expresions only contain datatype info and expresion identifier
+      * wich can be a variable identifier or a transparent temporary
+      * identifier for temporal operantions cache
+      *
+      * into_variable can be a variable name or false,indicating to
+      * return an array of the sentences without asignment instead
+      */
+      operations: {
+        '[+-]': function addminus(operation, expresion_operator, into_variable) {
 
-          }
+        }
+      }
+    },
+    matn_m: {
+      exp: 'mat\d(_\d+)',
+      constructor: function(data) {
+
+      },
+      operations: {
+        '\*': function multiply(operation, expresion_operator, into_variable) {
+
         }
       },
-      matn_m: {
-        exp: 'mat\d(_\d+)',
-        constructor: function(data) {
+      valueAt: function nmat_at(i,j,n) {
+        var p = j*n+i,
+          mat = Math.floor( p/16 ); //matrix holding position
+        p = mat*16 - p;
+        j = Math.floor( p/4 );
+        i = p - j*4;
+        return ''+mat+'['+i+']['+j+']';
+      }
+    }
+  }
 
-        },
-        operations: {
-          '\*': function multiply(operation, expresion_operator, into_variable) {
 
-          }
-        },
-        valueAt: function nmat_at(i,j,n) {
-          var p = j*n+i,
-            mat = Math.floor( p/16 ); //matrix holding position
-          p = mat*16 - p;
-          j = Math.floor( p/4 );
-          i = p - j*4;
-          return ''+mat+'['+i+']['+j+']';
+
+  return {
+    types: types,
+  }
+})();
+
+GrammarUtil = (function(){
+  var grammar_lists;
+
+  grammar_lists = {
+    datatypes: [
+      'void',
+      'bool',
+      'int',
+      'float',
+      'sampler2D',
+      'samplerCube',
+      'vec.*\\s',
+      'bvec.*\\s',
+      'ivec.*\\s',
+      'mat.*\\s',
+      'mat.*\\s', //n*m matrix
+    ],
+    storage_qualifiers: [
+      'const',
+      'attribute',
+      'uniform',
+      'varying',
+    ],
+    precision_qualifiers: [
+      'highp',
+      'mediump',
+      'lowp',
+    ]
+  };
+
+  return {
+    grammar_lists: grammar_lists,
+  }
+})()
+
+/**
+* removes extra spaces and line feeds
+*/
+function serialize(str) {
+  var i, l, post = '';
+
+  str = str.replace(/\n/ig, ' ');
+
+  for(i = 0, l = str.length; i < l; i++) {
+    if(!(str[i] == ' ' && post[post.length-1] == ' '))
+      post += str[i];
+  }
+
+  return post;
+}
+
+
+  /**
+* represents a variable in a scope
+*
+* opts:
+*   sentence
+*   sentence_place: place in the declaration sentence
+*   scope
+*   type : prim or function, etc
+*   qualifiers: storage, precission, return value, etc
+*   value: given value, if this is a literal variable (value variable)
+*   name: variable name
+* props:
+*   type_data: parsed type data from qualifiers
+*/
+function Variable(opts) {
+  this.sentence = opts.sentence || null;
+  this.sentence_place = opts.sentence_place || 0;
+  this.scope = opts.scope || null;
+
+  //primitive or function
+  this.type = opts.type || null;
+  //array with datatype dependant data
+  //primitives: variable declaration qualifiers
+  //function: return and parameters variables
+  this.qualifiers = opts.qualifiers || null;
+  //object with more specific datatype data for primitives
+  //like length
+  this.type_data = null;
+  //if this is a literal variable, this will contain the value string
+  this.value = opts.value || null;
+
+  this.name = opts.name || '';
+  if(qualifiers)
+    this.declare();
+}
+Variable.prototype = {
+  operation: function operation() {
+
+  },
+  /**
+  registers to variable scope, fills type_data
+  */
+  declare: function() {
+    if(this.scope.variables[this.name])
+      throw "variable "+this.name+" already declared";
+
+    //fill type_data
+    if(this.type == 'primitive') {
+      if(this.qualifiers[3].match('vec')) {//vec
+        this.type_data = {
+            length: Number( (/\d+$/).exec(this.qualifiers[3]) )
         }
+        this.qualifiers[3] = 'vec';
+      }
+      if(this.qualifiers[3].match('mat')) {//mat
+        this.type_data = {
+          x: Number( (/\d+/).exec(this.qualifiers[3]) ),
+          y: Number( (/\d+$/).exec(this.qualifiers[3]) )
+        }
+        this.qualifiers[3] = 'mat';
       }
     }
 
-
-
-    return {
-      types: types,
-    }
-  })();
-
-  GrammarUtil = (function(){
-    var grammar_lists;
-
-    grammar_lists = {
-      datatypes: [
-        'void',
-        'bool',
-        'int',
-        'float',
-        'sampler2D',
-        'samplerCube',
-        'vec.*\\s',
-        'bvec.*\\s',
-        'ivec.*\\s',
-        'mat.*\\s',
-        'mat.*\\s', //n*m matrix
-      ],
-      storage_qualifiers: [
-        'const',
-        'attribute',
-        'uniform',
-        'varying',
-      ],
-      precision_qualifiers: [
-        'highp',
-        'mediump',
-        'lowp',
-      ]
-    };
-
-    return {
-      grammar_lists: grammar_lists,
-    }
-  })()
-
-  /**
-  * removes extra spaces and line feeds
-  */
-  function serialize(str) {
-    var i, l, post = '';
-
-    str = str.replace(/\n/ig, ' ');
-
-    for(i = 0, l = str.length; i < l; i++) {
-      if(!(str[i] == ' ' && post[post.length-1] == ' '))
-        post += str[i];
-    }
-
-    return post;
+    //register to variable scope
+    this.scope.variables[this.name] = this;
   }
+}
+
 
   /**
-  * represents a variable in a scope
+* represents a single glsl sentence
+* has inf. about variables, post-translation, and source location
+* every range is in global (rootScope) coordinates
+*
+* this.number -> the index of this sentence in the scope sentence list;
+* this.thisScope -> filled only on sentence-block containing sentences
+* types:  declaration, expression (this has subtypes: f.call, operation,
+*         etc), null, etc
+*       null represents an instruction that doesnt needs translation
+*       or that does nothing at all
+*/
+function Sentence(opts) {
+  this.src = opts.src;
+  this.scope = opts.scope || null;
+  this.range = opts.range || null;
+  this.number = opts.number || -1;
+
+  this.type = opts.type || null;
+
+  //variables or expressions in declaration sentences
+  this.components = opts.components || [];
+  //only scope containing sentences (ifs, fors, etc)
+  this.thisScope = null;
+  //only in declaration sentences
+  this.variables = null;
+
+
+  //result sentence
+  this.out = null;
+
+
+  if(this.src && this.scope && this.number) {
+    this.scope.addSentence(this);
+    this.interpret();
+  }
+}
+Sentence.prototype = {
+  /**
+  * fills the sentence information interpreting the sentence str
+  * components list, its type and type related cfg,
   *
-  * opts:
-  *   sentence
-  *   sentence_place: place in the declaration sentence
-  *   scope
-  *   type : prim or function, etc
-  *   qualifiers: storage, precission, return value, etc
-  *   value: given value, if this is a literal variable (value variable)
-  *   name: variable name
-  * props:
-  *   type_data: parsed type data from qualifiers
+  * recognizes the sentence type and configures it accordingly
+  * currently only types declaration, expression and null
+  * are implemented, expression sentences include assignation
   */
-  function Variable(opts) {
-    this.sentence = opts.sentence || null;
-    this.sentence_place = opts.sentence_place || 0;
-    this.scope = opts.scope || null;
+  interpret: function interpret() {
+    var src = this.src, re, str, res, i, opts,
+      lists = GrammarUtil.grammar_lists, variable;
 
-    //primitive or function
-    this.type = opts.type || null;
-    //array with datatype dependant data
-    //primitives: variable declaration qualifiers
-    //function: return and parameters variables
-    this.qualifiers = opts.qualifiers || null;
-    //object with more specific datatype data for primitives
-    //like length
-    this.type_data = null;
-    //if this is a literal variable, this will contain the value string
-    this.value = opts.value || null;
+    if( res = RegExp( //detects declaration
+      "\\s*(invariant)*\\s*("+lists.storage_qualifiers.join('|')+")*\\s*"+
+      "("+lists.precision_qualifiers.join('|')+")*\\s*"+
+      "("+lists.datatypes.join('|')+")*\\s*(.*)", 'gi'
+      ).exec(src) ) {
 
-    this.name = opts.name || '';
-    if(qualifiers)
-      this.declare();
-  }
-  Variable.prototype = {
-    operation: function operation() {
+      this.type = 'declaration'
 
-    },
-    /**
-    registers to variable scope, fills type_data
-    */
-    declare: function() {
-      if(this.scope.variables[this.name])
-        throw "variable "+this.name+" already declared";
+      //verify sentence
+      res.shift();
+      res[0] = res[0] || null;
+      res[1] = res[1] || 'none';
+      if(!res[3]) throw "no datatype on variable declaration";
 
-      //fill type_data
-      if(this.type == 'primitive') {
-        if(this.qualifiers[3].match('vec')) {//vec
-          this.type_data = {
-              length: Number( (/\d+$/).exec(this.qualifiers[3]) )
-          }
-          this.qualifiers[3] = 'vec';
+
+      //variable constructor data
+      opts = {
+        sentence: this,
+        scope: this.scope,
+        type: 'primitive',
+        qualifiers: res,
         }
-        if(this.qualifiers[3].match('mat')) {//mat
-          this.type_data = {
-            x: Number( (/\d+/).exec(this.qualifiers[3]) ),
-            y: Number( (/\d+$/).exec(this.qualifiers[3]) )
-          }
-          this.qualifiers[3] = 'mat';
+
+
+      str = res[4];
+      re = /([^,]+)/g;
+
+      this.variables = [];  i = 0;
+      while(res = re.exec(str)) {
+        opts.sentence_place = i++;
+        opts.name = (/\w+/g).exec(res);
+        if(res.match('=')) {
+          //TODO fill with expression
         }
+
+        variable = new Variable(opts);
+        this.variables.push(variable);
       }
-
-      //register to variable scope
-      this.scope.variables[this.name] = this;
     }
+    else if( src.match(/^\s*\w+\s*/gi) ) { //expression
+
+      this.type = "expression"
+
+    }
+
+    //this.type obnviously is null => this will not be processed in any way
+  },
+  /**
+  * generates a valid GLSL sentence (or group of sentences) that mimics the
+  * functionality on this sentence and stores it in this.out as a str
+  * it works differently on each sentence type
+  */
+  translate: function() {
+
   }
+}
+
 
   /**
-  * represents a single glsl sentence
-  * has inf. about variables, post-translation, and source location
-  * every range is in global (rootScope) coordinates
-  *
-  * this.number -> the index of this sentence in the scope sentence list;
-  * this.thisScope -> filled only on sentence-block containing sentences
-  * types:  declaration, expression (this has subtypes: f.call, operation,
-  *         etc), null, etc
-  *       null represents an instruction that doesnt needs translation
-  *       or that does nothing at all
-  */
-  function Sentence(opts) {
-    this.src = opts.src;
-    this.scope = opts.scope || null;
-    this.range = opts.range || null;
-    this.number = opts.number || -1;
+* represents a single scope
+* cachedVariables contains current new temp_variables for extended datatypes
+*/
+function Scope() {
+  this.code_tree = null;
+  this.rootScope = null;
+  this.src = null; //only rootScope has
 
-    this.type = opts.type || null;
+  this.parent = null;
+  this.childs = [];
 
-    //variables or expressions in declaration sentences
-    this.components = opts.components || [];
-    //only scope containing sentences (ifs, fors, etc)
-    this.thisScope = null;
-    //only in declaration sentences
-    this.variables = null;
+  this.range = null;
+  this.variables = {};
+  this.sentences = [];
 
+  this.cacheVariables = [];
+}
+Scope.prototype = {
+  setParent: function(parent) {
+    this.unsetParent();
+    this.parent = parent;
+    parent.childs.push(this);
 
-    //result sentence
-    this.out = null;
+    this.rootScope = parent.rootScope || parent;
+  },
+  unsetParent: function() {
+    if(!this.parent) return;
 
-
-    if(this.src && this.scope && this.number) {
-      this.scope.addSentence(this);
-      this.interpret();
-    }
-  }
-  Sentence.prototype = {
-    /**
-    * fills the sentence information interpreting the sentence str
-    * components list, its type and type related cfg,
-    *
-    * recognizes the sentence type and configures it accordingly
-    * currently only types declaration, expression and null
-    * are implemented, expression sentences include assignation
-    */
-    interpret: function interpret() {
-      var src = this.src, re, str, res, i, opts,
-        lists = GrammarUtil.grammar_lists, variable;
-
-      if( res = RegExp( //detects declaration
-        "\\s*(invariant)*\\s*("+lists.storage_qualifiers.join('|')+")*\\s*"+
-        "("+lists.precision_qualifiers.join('|')+")*\\s*"+
-        "("+lists.datatypes.join('|')+")*\\s*(.*)", 'gi'
-        ).exec(src) ) {
-
-        this.type = 'declaration'
-
-        //verify sentence
-        res.shift();
-        res[0] = res[0] || null;
-        res[1] = res[1] || 'none';
-        if(!res[3]) throw "no datatype on variable declaration";
-
-
-        //variable constructor data
-        opts = {
-          sentence: this,
-          scope: this.scope,
-          type: 'primitive',
-          qualifiers: res,
-          }
-
-
-        str = res[4];
-        re = /([^,]+)/g;
-
-        this.variables = [];  i = 0;
-        while(res = re.exec(str)) {
-          opts.sentence_place = i++;
-          opts.name = (/\w+/g).exec(res);
-          if(res.match('=')) {
-            //TODO fill with expression
-          }
-
-          variable = new Variable(opts);
-          this.variables.push(variable);
-        }
-      }
-      else if( src.match(/^\s*\w+\s*/gi) ) { //expression
-
-        this.type = "expression"
-
-      }
-
-      //this.type obnviously is null => this will not be processed in any way
-    },
-    /**
-    * generates a valid GLSL sentence (or group of sentences) that mimics the
-    * functionality on this sentence and stores it in this.out as a str
-    * it works differently on each sentence type
-    */
-    translate: function() {
-
-    }
-  }
-
-  /**
-  * represents a single scope
-  * cachedVariables contains current new temp_variables for extended datatypes
-  */
-  function Scope() {
-    this.code_tree = null;
-    this.rootScope = null;
-    this.src = null; //only rootScope has
-
+    this.parent.childs.splice(this.parent.childs.indexOf(this),1);
     this.parent = null;
-    this.childs = [];
+  },
+  getVariable: function(varname) {
+    var link, scope = this, variable;
 
-    this.range = null;
-    this.variables = {};
-    this.sentences = [];
+    while(!(variable = scope.variables[varname]) && scope.parent)
+      scope = scope.parent;
 
-    this.cacheVariables = [];
-  }
-  Scope.prototype = {
-    setParent: function(parent) {
-      this.unsetParent();
-      this.parent = parent;
-      parent.childs.push(this);
+    return variable;
+  },
+  /**
+  * ensures that a given type has its cache variables instantiated for
+  * operations upon it
+  * this is useful only during translation and final code writting
+  *
+  * adds them to variables array and cacheVariables sentence array for
+  * post-writting usage
+  */
+  ensureTypeCache: function ensureTypeCache(type) {
+    if(this != this.rootScope )
+      this.rootScope.ensureTypeCache(type)
+  },
+  addSentence: function(sentence) {
+    sentence.number = this.sentences.push[sentence];
+  },
+}
 
-      this.rootScope = parent.rootScope || parent;
-    },
-    unsetParent: function() {
-      if(!this.parent) return;
-
-      this.parent.childs.splice(this.parent.childs.indexOf(this),1);
-      this.parent = null;
-    },
-    getVariable: function(varname) {
-      var link, scope = this, variable;
-
-      while(!(variable = scope.variables[varname]) && scope.parent)
-        scope = scope.parent;
-
-      return variable;
-    },
-    /**
-    * ensures that a given type has its cache variables instantiated for
-    * operations upon it
-    * this is useful only during translation and final code writting
-    *
-    * adds them to variables array and cacheVariables sentence array for
-    * post-writting usage
-    */
-    ensureTypeCache: function ensureTypeCache(type) {
-      if(this != this.rootScope )
-        this.rootScope.ensureTypeCache(type)
-    },
-    addSentence: function(sentence) {
-      sentence.number = this.sentences.push[sentence];
-    },
-  }
 
   /**
-  * represents the code structure as a scope recursive tree that contains
-  * variables and sentences
+* represents the code structure as a scope recursive tree that contains
+* variables and sentences
+*/
+function CodeTree(src) {
+  if(!(this instanceof CodeTree))
+    return new CodeTree(src);
+  this.src = src;
+  this.rootScope = null;
+  this.out = null;
+  this.sentences = [];
+  if(src)
+    this.interpret(src);
+}
+CodeTree.prototype = {
+  /**
+  * create scope tree and fills with sentences
   */
-  function CodeTree(src) {
-    if(!(this instanceof CodeTree))
-      return new CodeTree(src);
-    this.src = src;
-    this.rootScope = null;
-    this.out = null;
-    this.sentences = [];
-    if(src)
-      this.interpret(src);
-  }
-  CodeTree.prototype = {
-    /**
-    * create scope tree and fills with sentences
-    */
-    interpret: function(src) {
-      var i, l, c,  //index, length, character
-        sentence, //holds last created sentence object
-        index_a,  //start of current sentence ( for´s, if´s, etc, also count )
-        scope_parent,
-        scope_current = new Scope();
+  interpret: function(src) {
+    var i, l, c,  //index, length, character
+      sentence, //holds last created sentence object
+      index_a,  //start of current sentence ( for´s, if´s, etc, also count )
+      scope_parent,
+      scope_current = new Scope();
 
-      scope_current.src = src;
-      scope_current.range = [0, src.length - 1]
-      scope_current.code_tree = this;
-      for(i = 0, l = src.length, sentence_number = 0, index_a = 0;
-          i<l ; i++) {
+    scope_current.src = src;
+    scope_current.range = [0, src.length - 1]
+    scope_current.code_tree = this;
+    for(i = 0, l = src.length, sentence_number = 0, index_a = 0;
+        i<l ; i++) {
 
-        c = src[i];
+      c = src[i];
 
-        //{: to recognize also scope-creating sentences
-        if(c == ';' || c == '{' || c == '}') {
-          sentence = new Sentence({
-            src: src.substr(index_a, i),
-            range: [index_a, i-1],
-            scope: scope_current,
-          });
-          this.sentences.push(sentence);
-          index_a = i+1;
-        }
-
-        if(c == '{') {
-          scope_parent = scope_current;
-          //TODO:program block scope generation on sentence parser
-          scope_current = new Scope();  //TODO:get scope from last sentence
-          scope_current.setParent(scope_parent);
-          scope_current.range = [i];
-        }
-        if(c == '}') {
-          scope_current.range.push(i);
-          scope_current = scope_parent;
-        }
-
-
+      //{: to recognize also scope-creating sentences
+      if(c == ';' || c == '{' || c == '}') {
+        sentence = new Sentence({
+          src: src.substr(index_a, i),
+          range: [index_a, i-1],
+          scope: scope_current,
+        });
+        this.sentences.push(sentence);
+        index_a = i+1;
       }
 
-      this.rootScope = scope_current;
-    },
-    /**
-    * detects sentences that use glnsl syntax or datatypes and ask them to
-    * translate
-    */
-    translate: function(cfg) {
-      if(cfg) this.cfg = cfg;
-      if(!this.rootScope) return null;
-
-      var i, l, sentences = this.sentences, sentence,
-        src = this.src,
-        out = "",
-        a = 0, b;
-
-      //for each sentence that needs translation
-      for(i=0, l = this.sentences.length; i<l; i++) {
-        sentence = sentences[i];
-        if(sentence.needsTranslation()) {
-
-          //add translated sentence to previous non-translated content into out
-          b = sentence.range[0];
-          out += src.substr(a, b) + sentence.translate();
-          a = sentence.range[1]+1;
-        }
+      if(c == '{') {
+        scope_parent = scope_current;
+        //TODO:program block scope generation on sentence parser
+        scope_current = new Scope();  //TODO:get scope from last sentence
+        scope_current.setParent(scope_parent);
+        scope_current.range = [i];
+      }
+      if(c == '}') {
+        scope_current.range.push(i);
+        scope_current = scope_parent;
       }
 
-      //add remaining piece.
-      b = src.length;
-      out += src.substr(a,b);
-      return this.out = out;
-    },
-    /**
-    * TODO separate code sintesis from code translation
-    * code translation should be able to detect specific regions that have
-    * changed, and write also should be
-    * it uses the translated sentences versions to generate an
-    * updated src string
-    */
-    write: function() {
 
     }
-  }
 
+    this.rootScope = scope_current;
+  },
+  /**
+  * detects sentences that use glnsl syntax or datatypes and ask them to
+  * translate
+  */
+  translate: function(cfg) {
+    if(cfg) this.cfg = cfg;
+    if(!this.rootScope) return null;
+
+    var i, l, sentences = this.sentences, sentence,
+      src = this.src,
+      out = "",
+      a = 0, b;
+
+    //for each sentence that needs translation
+    for(i=0, l = this.sentences.length; i<l; i++) {
+      sentence = sentences[i];
+      if(sentence.needsTranslation()) {
+
+        //add translated sentence to previous non-translated content into out
+        b = sentence.range[0];
+        out += src.substr(a, b) + sentence.translate();
+        a = sentence.range[1]+1;
+      }
+    }
+
+    //add remaining piece.
+    b = src.length;
+    out += src.substr(a,b);
+    return this.out = out;
+  },
+  /**
+  * TODO separate code sintesis from code translation
+  * code translation should be able to detect specific regions that have
+  * changed, and write also should be
+  * it uses the translated sentences versions to generate an
+  * updated src string
+  */
+  write: function() {
+
+  }
+}
 
 
   function compile(src, cfg) {
@@ -2559,11 +2564,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 /**
-@namespace Physics
+@namespace Physic
 @memberof NEngine
-@desc All physics related stuff, structures to index and optimize n-dimensional
+@desc All physic related stuff, structures to index and optimize n-dimensional
 spaces with lots or hundreds of entities like space trees. It also holds the
-PhysicModules wich define diferent kinds of physics processors and physics
+PhysicModules wich define diferent kinds of physic processors and physic
 types, and defines the SpaceGraph for easy space configuration (lots of TODO
 here)
 <br/><br/>
@@ -2573,9 +2578,9 @@ intersections.
 <br/><br/>
 Space is the SpaceNode network container, and holds common configurations
 for every SpaceNode.<br/>
-SpaceNode is a recursive representation of a n-axis linked list
+SpaceNode is a recursive representation of a n-axis
 */
-Physics = (function() {
+Physic = (function() {
 
   var SpaceGraph,
     Space,
@@ -2583,15 +2588,6 @@ Physics = (function() {
     Transform,
     PhysicModules;
 
-  /**
-  @memberof NEngine.Physics
-  @class SpaceGraph
-  @desc This is top secret work in progress! xD, SaceGraph represents using
-  a graph, the subspaces (nodes) and the transformations in between them
-  (links), this is used to generate the shaders and physics processing, but
-  it is partially incomplete, for now just use the renderer on Entity objects
-  and a common physics processor on a normal Space, directly
-  */
   SpaceGraph = (function() {
 
     function SpaceGraph() {
@@ -2606,55 +2602,24 @@ Physics = (function() {
     return SpaceGraph;
   })()
 
+  /**
+  * Space
+  *
+  * type - kind of space network that holds // add opts new types or separate them??
+
+  * dim - dims of SpaceNode network
+  * size - number of subnodes along an axis
+  * length - length of the subnode on depth 0, to generate space coordinates
+
+  * root - the root node of the SpaceNodes network, root.parent equals null
+  * level - the number of levels deper the network is
+
+  * lib_vec - corresponding vectorial lib
+  * lib_mat - corresponding matrix lib
+  */
+
   Space = (function() {
 
-    /**
-    @memberof NEngine.Physics
-    @class Space
-
-    @desc This holds a space tree, all the nodes on the tree reffer to this
-    object for their common properties, and it also holds a reference to the
-    main root. All the behaviour, meaning of properties, depends on the
-    "type" property. <br/>
-    A space tree its a data structure that represents space like a fractal of
-    voxels, imagine a very big cube, and then this one gets splited into
-    smaller cubes, and those, into smaller ones, each one of this cubes is
-    referenced from the containing cube, so the biggest cube, that contains
-    all of the small ones, it is not referenced inside another. The siblings
-    of a cube, are the ones next to it, so that when an object moves from a
-    given cube into its border, when crossing this border, its reference is
-    moved from the old into the new one, see SpaceNode docs for more details.
-    All of this is to optimize resource usage during collision detection.
-    <br/><br/>
-    Those are the current supported Space types:
-    <br/><br/>
-    Euclid: <br/>
-    It represents a n-dimensional euclid space, that means that for each
-    dimension there is another axis, and that each SpaceNode has 2*dim
-    different sibblings, one for each direction of each dimension, check the
-    SpaceNode doc for info on details.
-
-    @prop {String} type - kind of network that holds // add new types
-    or separate them??
-    @prop {Integer} dim
-    @prop {Integer} size - number of subnodes along an axis
-    @prop {Float} length - length on subnode of depth 0, to generate space
-    coordinates
-
-    @prop {SpaceNode} root - The root node of the SpaceNodes network, root.parent
-    equals null
-    @prop {Integer} level - the number of levels deeper the network is, this
-    value changes when the network grows
-    @prop {Object} lib_vec - The vectorial library to use (for caching pointer)
-    @prop {Object} lib_mat - The matrix library to use (pointer chaching purposes)
-
-    @param {Object} opts - The cfg options
-    @param {Integer} opts.dim
-    @param {Integer} opts.size
-    @param {Float} opts.length
-    @param {Integer} opts.level - Initial height of space tree
-    @param {Boolean} [opts.fill=false] - I fill all levels of tree on creation
-    */
     /**
     * Space Constructor
     *
@@ -2701,14 +2666,9 @@ Physics = (function() {
 
     Space.prototype = {
       /**
-      @memberof NEngine.Physics.Space.prototype.Space.prototype
-      @method enlarge
-      @desc adds levels to the space system, this doesnt fill the new siblings
-      of the old root node
-      @param {Integer} levels - The number of levels to add
-      @return {Space} this
+      * add hupper levels to the space system
       */
-      enlarge: function enlarge_space(repeat) {
+      enlarge: function(repeat) {
         //create new root node
         var root, old_root_index, i, opts;
         opts.level = ++this.level;
@@ -2740,17 +2700,11 @@ Physics = (function() {
 
         if(repeat)
           this.enlarge(--repeat);
-
-        return this;
       },
       /**
-      @memberof NEngine.Physics.Space.prototype
-      @method remEnt
-      @desc removes an entity from the space system
-      @param {Entity} ent - The entity to remove
-      @return {Space} this
+      * removes an entity from the space system
       */
-      remEnt: function remEnt(ent) {
+      remEnt: function(ent) {
         if(!ent.container) return;
 
         var objects = ent.container.objects,
@@ -2760,17 +2714,12 @@ Physics = (function() {
             objects[i].splice( objects[i].indexOf(ent), 1 );
 
         ent.container = null;
-        return this;
       },
       /**
-      @memberof NEngine.Physics.Space.prototype
-      @method addEnt
-      @desc adds an entity to the space system checks that the systems has
-      instantiated the corresponding space node and then adds it to the objects
-      array[0] (entity) (checking coherent instantiation of it)
-      @param {Entity} ent - The entity to add
-      @return {SpaceNode} container_node - The node that now contains the
-      added entity
+      * adds an entity to the space system
+      * checks that the systems has instantiated the corresponding space
+      * node and then adds it to the objects array[0] (entity) (checking
+      * coherent instantiation of it)
       */
       addEnt: function(ent) {
         var node, array;
@@ -2794,42 +2743,49 @@ Physics = (function() {
     return Space;
   })();
 
+  /**
+  * Represents single space net unit, if its a bottom SpaceNode
+  * it will contain lists for objects inside their respective physic
+  * processor type (for example, Entities in Dynamic array)
+  *
+  * space - Space containing general configs
+  * level - Space Index depnes, 0 equals bottom
+  * p - system relative position,
+  *
+  * parent - Spatially containing node
+  * siblings - Siblings linear Array
+  * capsuled - indicates whether all siblings are occupied
+  *
+  * last_visited - last time it was processed by physic processor
+  * active - If registered for physics processing
+  * index - index for fast translation into parent relative position
+  *        the mapping is from a n-d vector such as
+  *         p[0] + p[1]*size + p[2]*size*size [..]
+  *
+  * childs - Child Spaces linear Array
+  * objects - Dictionary containing the objects inside the SpaceNode
+  *       separated in arrays, each for each corresponding processor type
+  *
+  *
+  */
   SpaceNode = (function() {
+
     /**
-    @memberof NEngine.Physics
-    @class SpaceNode
-    @desc Represents single space net unit, if its a bottom SpaceNode it will
-    contain lists for objects inside their respective physics processor type
-    (for example, Entities in Dynamic array)
-
-    @prop {Space} space - Space containing general configs
-    @prop {Integer} level - Space Index depness, 0 equals bottom
-    @prop {Vector} p - system relative position,
-
-    @prop {SpaceNode} parent - Spatially containing node
-    @prop {SpaceNode[]} siblings - Siblings linear Array
-    @prop {Boolean} capsuled - indicates whether all siblings are occupied
-
-    @prop {Integer} last_visited - last time it was processed by physics processor
-    @prop {Boolean} active - If registered for physics processing
-    @prop {Integer} index - index for fast translation into parent relative
-      position, the mapping is from a n-d vector such as p[0] + p[1]*size +
-      p[2]*size*size [..]
-
-    @prop {SpaceNode[]} childs - Child Spaces linear Array, null if this is a
-    floor node
-    @prop {Object[][]} objects - Contains the objects inside the SpaceNode,
-      separated in arrays, each for each corresponding processor type
-
-    @param {Space} space
-    @param {SpaceNode} parent
-    @param {Integer} level
-
-    @param {Integer} index - Index in parent childs array
-    @param {Vector} p - position vector of this node from the origin Node (this
-    is not the position-index!)<br/>
-      undefined = calculate with setP, index and parent required<br/>
-      null = leave empty
+    * constructor
+    * fill isnt an automatic option because is rarely needed and
+    * extremply complicates code simplicity and opts caching
+    +
+    * space -
+    * parent -
+    * level -
+    *
+    * dim -
+    * size -
+    *
+    * index -
+    * p - requires
+    *          undefined = calculate with setP, index and parent required
+    *          null = leave empty
     */
     function SpaceNode(opts) {
 
@@ -2851,9 +2807,7 @@ Physics = (function() {
       this.p = opts.p;
       if(this.index >= 0 && opts.p === undefined)
         this.setP();
-      this.childs = (this.level)?
-        new Array( Math.pow(opts.size,opts.dim) ) :
-        null;
+      this.childs = new Array( Math.pow(opts.size,opts.dim) );
 
       this.last_visited = -1;
       this.active = false;
@@ -2864,21 +2818,17 @@ Physics = (function() {
         this.objects = [];
 
     }
+
+    /**
+    * for dynamic space generation
+    */
     SpaceNode.prototype = {
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method parentPSeparation
-      @desc  calculates the position traslation vector from parent p vector to
-      child p given the index and child level
-      @param {Integer} child_index - Parent relative index of the node
-      @param {Integer} child_level - The level the child is on
-      @param {Vector} [p=new Vector] - It will contain final vector
-      @return {Vector} p - The final vector
+      * calculates the position traslation from parent p vector
+      * to child p given the index and child level
       */
-      parentPSeparation: function parentPSeparation(child_index, child_level,
-        p) {
-
-        if(!p)  p = this.space.vec_lib.create();
+      parentPSeparation: function(child_index, child_level, p) {
+        if(!p)  p = this.space.vec_lib.reate();
 
         if(child_index instanceof Number)
           child_index = this.indextop(index);
@@ -2892,45 +2842,31 @@ Physics = (function() {
         return p;
         },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method setP
-      @desc  configures p according to parent data
-      @param {Vector} [p=new Vector] - New p vector of this
-      @return {SpaceNode} this
+      * configures p according to parent data
       */
-      setP: function setP(p) {
+      setP: function(p) {
         if(!p) p = this.space.vec_lib.create();
 
         this.parentPSeparation(this.index, this.level, p);
         this.space.vec_lib.add(p, p, this.parent.p);
 
         this.p = p;
-        return this;
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method setPChild
-      @desc  configures p using specific child data
-      @param {SpaceNode} child - the child to extract data
-      @param {Vector} [p=new Vector] - New p vector of this
-      @return {SpaceNode} this
+      * configures p using specific child data
       */
-      setPChild: function setPChild(child, p) {
+      setPChild: function(child, p) {
         if(!p) p = this.space.vec_lib.create();
 
         this.parentPSeparation(child.index, child.level, p);
         this.space.vec_lib.sub(p, child.p, p);
 
         this.p = p;
-        return this;
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method parentEnsured
-      @desc  Always returns a parent and enlarges the space if it doesnt exists
-      @return {SpaceNode} parent - The parent of this node.
+      * returns a parent and enlarges the space if necesary
       */
-      parentEnsured: function parentEnsured() {
+      parentEnsured: function() {
         var parent = this.parent;
 
         if(!parent) {
@@ -2941,15 +2877,10 @@ Physics = (function() {
         return parent;
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method coordtoindexp
-      @desc  converts coord to a index vector doesnt check if coord is inside
-      this node
-      @param {Integer} coord - The index to translate
-      @param {Vector} [p=new Vector] - For the end vector
-      @return {Vector} p - translated index position
+      * converts coord to a index vector
+      * doesnt check if coord is inside this node
       */
-      coordtoindexp: function coordtoindexp(coord, p) {
+      coordtoindexp: function(coord, p) {
         if(!p) p = this.space.vec_lib.create();
         var dim = 0, dims = this.space.dim,
           p_this = this.p,
@@ -2963,14 +2894,10 @@ Physics = (function() {
         return p;
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method coordtoindex
-      @desc  converts coord to a index integer doesnt check if coord is inside
-      this node
-      @param {Vector} p - Index vector to translate
-      @return {Integer} index - The end index
+      * converts coord to a index integer
+      * doesnt check if coord is inside this node
       */
-      coordtoindex: function coordtoindex(coord) {
+      coordtoindex: function(coord) {
         var dim = 0, dims = this.space.dim,
           size = this.space.size,
           p_this = this.p,
@@ -2986,13 +2913,9 @@ Physics = (function() {
         return p;
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method isInside
-      @desc  informs whether coord is inside this node or not
-      @param {Vector} p - Position to test
-      @return {Boolean} inside
+      * informs whether coord is inside this node
       */
-      isInside: function isInside(coord) {
+      isInside: function(coord) {
         var i=0, dim = this.space.dim,
           p_this = this.p,
           limit = this.length/2;
@@ -3004,15 +2927,9 @@ Physics = (function() {
         return true;
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method include
-      @desc  Ensures that a given location is internalized in the spacetree,
-      that means that the floor node that contains that position is
-      instantiated
-      @param {Vector} coord - Position to ensure
-      @return {SpaceNode} continer - The node that currently contains the coord
+      * ensures that a given location is internalized
       */
-      include: function include(coord) {
+      include: function(coord) {
         //if coord doesnt fit this node search on parent
         if(!this.isInside(coord)) {
           this.parentEnsured().include(coord);
@@ -3041,89 +2958,71 @@ Physics = (function() {
         return child.include(coord);
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method extend
-      @desc  Creates sibling on given direction
-      @param {Integer} orientation - The sibling index in the node siblings array
-      @param {Float} length - Distance from the node center to ensure extension
-      @return {SpaceNode} last_node - the last node on the 'length' distance
+      * creates sibling on given direction
+      * doesnt check tree consistency
       */
-      extend: function extend(orientation, length) {
-        //avoid tree consistency errors
-        if(this.siblings[orientation])
+      extend: function(direction, length) {
+        if(this.siblings[direction])
           return;
 
-        var direction = (orientation%2)? 1:-1,  //
-          dim = Math.floor(orientation/2),
+        var orientation = (direction%2)? 1:-1,
+          dim = Math.floor(direction/2),
           size = this.space.size;
           index_max = this.childs.length,
 
           parent = this.parentEnsured(),
-          sibling_node,  node_to_index,
+          node,  node_index,
           opts = this.space.nodesOpts,
-
-
-        ///////////////////configure opts
-
-        //get parent, checks parent exists
-        //get index
-        node_to_index = this.index + direction*Math.pow(size, dim);
-        //gets outside of parent, need to find a parent
-        if(node_to_index >= index_max || node_to_index < 0) {
-          //parent needed doesnt exists => extend parent into sibling
-          if(!parent.siblings[i])
-            parent.extend(orientation, length);
-
-          opts.parent = parent.siblings[i];
-          node_to_index = this.index - direction*(size-1)*Math.pow(size,dim);
-        }
-        else
-          opts.parent = parent;
 
         opts.p = undefined;
         opts.level = this.level;
-        opts.index = node_to_index;
 
-        //create sibling node
-        sibling_node = new SpaceNode(opts);
-        /////////////////////double-link
-        this.siblings[orientation] = sibling_node;
-        sibling_node.siblings[orientation - direction] = this;
+        ///////////////////configure opts
 
-        //keep consistency
-        sibling_node.connect()
+        //get index
+        node_index = this.index + orientation*Math.pow(size, dim);
+        //get parent
+        //gets outside of parent, need to find a parent
+        if(node_index >= index_max || node_index < 0) {
+          //parent needed doesnt exists => extend parent into sibling
+          if(!parent.siblings[i])
+            parent.extend(direction, length);
 
-        if(length)
-          return sibling_node.extend(orientation, --length);
-        return sibling_node;
+          opts.parent = parent.siblings[i];
+          node_index = this.index - orientation*(size-1)*Math.pow(size,dim);
+        }
+        else
+          opts.parent = parent;
+        opts.index = node_index;
+
+        /////////////////////create-link node
+        node = new SpaceNode(opts);
+        this.siblings[direction] = node;
+        node.siblings[direction - orientation] = this;
+
+        return node;
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method capsule
-      @desc  ensures that siblings of node within a buble of length depth are
-      instantiated
-      @param {Integer} [depth=0] - size of the capsule
-      @return {SpaceNode} this
+      * ensures that siblings of node are instantiated
+      * doesnt check tree conectivity
       */
-      capsule: function capsule(depth) {
+      capsule: function(depth) {
         var direction=0, directions = this.space.dim*2;
-        for(;direction < directions; direction++) {
+        for(;direction < directions;) {
           this.extend(direction);
           if(depth)
             this.sibling[direction].capsule(depth-1);
         }
         return this;
       },
-      /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method fill
-      @desc  fills the childs array with childs, opts are the options passed to
-      childs, travels to each child using a position vector and sets its index
+      /*+
+      fills the childs array with childs
+      opts are the options passed to childs
+
+      travels to each child using a position vector and sets its index
       for each child, the process repeats recursively if fill == true
-      @param {Vector} [p=new Vector] - New p vector of this
-      @return {SpaceNode} this
       */
-      fill: function fill(opts) {
+      fill: function(opts) {
         //first creates childs, then executes connect_childs
         var  index = 0, dim, child, sibling,
           space = this.space,
@@ -3131,15 +3030,14 @@ Physics = (function() {
           size = space.size,
 
           pos = space.lib_vec.create(),
-          opts_nodes;
+          opts;
 
-        opts_nodes = {
+        opts = {
           parent: this,
           space: space,
           level: this.level-1,
 
           p: undefined,
-          index: 0,
           dim: dim_top_index+1,
           size: size,
         };
@@ -3150,7 +3048,7 @@ Physics = (function() {
           //create child only if it not exists
           if(!this.childs[index]) {
             opts.index = index;
-            child = new SpaceNode(opts_nodes);
+            child = new SpaceNode(opts);
 
             if(opts.fill)
               child.fill(opts);
@@ -3158,7 +3056,7 @@ Physics = (function() {
 
           pos[0]++;
           index++;
-          //renormalize position vector
+          // renormalize position vector
           for(dim = 0; dim < dim_top_index; dim++)
             if(pos[dim] == opts.size) {
               pos[dim] = 0;
@@ -3171,11 +3069,6 @@ Physics = (function() {
         return this;
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method setP
-      @desc  returns a parent and enlarges the space if necesary
-      @param {Vector} [p=new Vector] - New p vector of this
-      @return {SpaceNode} this
       * connects childs of node
       * to their siblings, posibly in a recursive manner
       */
@@ -3244,86 +3137,51 @@ Physics = (function() {
 
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method connect
-      @desc Makes sure that if a sibling of this node existes, then they will
-      be double-linked on the siblings array of them. Otherwise, the link will
-      be null. Uses parent data recursively (if its a limit node) to reach
-      its siblings.
-      Depth makes the process to repeat for every existing sibling of the node.
-      (this doesnt checks if already passed over a node, so large depth numbers
-      will have exponential growth, not n-dimensional)
-      @param {Integer} [depth=0] - Depth of recursion
-      @return {SpaceNode} this
+      * check sibblings of itself using
+      * parent space data
       */
-      connect: function(depth) {
-        var parent = this.parent;
-        if(!parent) return this;
-
-        var orientation, direction, dim,
-          orientations = this.space.dim*2,
+      connect: function() {
+        var dim, i, d,
+          directions = this.space.dim*2,
           size = this.space.size,
           siblings = this.siblings,
+          parent = this.parent,
           pos = this.indextop(this.index);
 
-        for(orientation = 0; orientation < orientations;)
-        if(!siblings[orientation]) {
+        for(dim = 0; dim < directions;) if(!siblings[dim]) {
+          i = ( dim%2 )? -1 : 1;
+          d = Math.floor(dim/2);
 
-          direction = ( orientation%2 )? -1 : 1;
-          dim = Math.floor(orientation/2);
+          //its a limit conection
+          if( pos[d] == (i==-1)?0:(size-1) ) {
 
-          //get sibling from parent
-          //its a limit conection, get from parent sibling, and ensure parent
-          //sibling
-          if( pos[dim] == (direction==-1)?0:(size-1) ) {
-
-            parent.connect(); //parent now is cohesive
-
-            //if !parent sibling, sibling = null
-            if( parent.siblings[orientation] )
+            /**if parent brother exists, check if sibling on that brother
+            * exists
+            */
+            if( parent.siblings[dim] )
               //check if searched child brother exists
-              sibling = parent.siblings[orientation].
-                childs[ this.index - direction*(size-1)*
-                Math.pow(size, dim) ];
+              sibling = parent.siblings[dim].
+                childs[ this.index - i*(size-1)*Math.pow(size, d) ];
             else
               sibling = null;
 
-          }
-          else  //not a limit node
-            sibling = parent.childs[
-                              this.index + direction*Math.pow(size, dim ) ]
+          } else  //not a limit node
+            sibling = parent.childs[ this.index + i*Math.pow(size, d ) ]
 
-          //if sibling, double-link
           if( sibling ) {
             //double link:
             //invert direction
-            siblings[orientation] = sibling;
-            sibling.siblings[ orientation-direction ] = this;
-
-            if(depth)
-              sibling.connect(depth-1);
+            siblings[dim] = sibling;
+            sibling.siblings[ dim-i ] = this;
           }
 
         }
 
-        return this;
       },
-      /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method setP
-      @desc  returns a parent and enlarges the space if necesary
-      @param {Vector} [p=new Vector] - New p vector of this
-      @return {SpaceNode} this
-      */
       sibling: function(axis, positive) {
         return this.siblings[ axis*2 + ((positive)?1:0) ];
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method setP
-      @desc  returns a parent and enlarges the space if necesary
-      @param {Vector} [p=new Vector] - New p vector of this
-      @return {SpaceNode} this
       * converts p to its corresponding integer index
       */
       ptoindex: function(p) {
@@ -3336,11 +3194,6 @@ Physics = (function() {
         return index;
       },
       /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method setP
-      @desc  returns a parent and enlarges the space if necesary
-      @param {Vector} [p=new Vector] - New p vector of this
-      @return {SpaceNode} this
       * converts index to its corresponding n-d position
       */
       indextop: function(index, p) {
@@ -3364,13 +3217,6 @@ Physics = (function() {
 
         return p;
       },
-      /**
-      @memberof NEngine.Physics.SpaceNode.prototype
-      @method setP
-      @desc  returns a parent and enlarges the space if necesary
-      @param {Vector} [p=new Vector] - New p vector of this
-      @return {SpaceNode} this
-      */
       iterate_bottom: function(f) {
         var i=0, childs=this.childs, l = childs.length, child;
         for(;i<l;) {
@@ -3490,7 +3336,7 @@ Physics = (function() {
 
     },
   };
-  //instantiates the physics modules enumeration object for fastmodule access
+  //instantiates the physic modules enumeration object for fastmodule access
   (function(){
     PhysicModulesEnum.push(PhysicModules.Entity);
     PhysicModules.Entity.i = 0;
