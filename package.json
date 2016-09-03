@@ -22,6 +22,7 @@
     "grunt-import": "^0.1.7"
   },
   "devDependencies": {
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-jsdoc": "^2.0.0",
     "ink-docstrap": "^1.1.4",
     "jsdoc": "^3.4.0"

@@ -5,10 +5,13 @@
 function CodeTree(src) {
   if(!(this instanceof CodeTree))
     return new CodeTree(src);
+
   this.src = src;
-  this.rootScope = null;
   this.out = null;
+
+  this.rootScope = null;
   this.sentences = [];
+
   if(src)
     this.interpret(src);
 }

@@ -38,6 +38,9 @@ GLNSLCompiler = (function() {
 
   @import 'GLNSLCompiler/CodeTree.js'
 
+  /**
+  
+  */
   function compile(src, cfg) {
     var code_tree = CodeTree(src);
 
