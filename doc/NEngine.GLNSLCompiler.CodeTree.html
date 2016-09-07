@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>DocStrap Namespace: NEngine</title>
+	<title>DocStrap Class: CodeTree</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -70,13 +70,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Namespace: NEngine</h1>
+	<h1 class="page-title">Class: CodeTree</h1>
 <section>
 
 <header>
     
         <h2>
-        NEngine
+            <span class="ancestors"><a href="NEngine.html">NEngine</a><a href="NEngine.GLNSLCompiler.html">.GLNSLCompiler</a>.</span>
+        
+        CodeTree
         </h2>
         
     
@@ -87,8 +89,307 @@
     <div class="container-overview">
     
         
+<hr>
+<dt>
+    <h4 class="name" id="CodeTree"><span class="type-signature"></span>new CodeTree()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Represents the code structure as a scope recursive tree that contains
+variables and sentences, it holds general tree data and objects, the
+recursive scope chain is implemented by the scope objects starting
+by the root "this.rootScope", it also gives you interfaces to manipulate it,
+generate an interpretation (interpret()) of the source, translate it
+(translate()) semantically-structurally, and then write it down (write()).
+:TODO:
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
 
         
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>src</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the source code for this tree</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>out</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The translated output from the last usage</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rootScope</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Scope</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The root of the scope tree, scope objects contain
+  most of the relevant data: variables, sentences, etc.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sentences</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Sentence></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The sentences in the whole codetree, they also
+  are indexed in their respective scopes, thought sentence.scope.sentences</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<hr>
+<dt>
+    <h4 class="name" id=".interpret"><span class="type-signature">&lt;static> </span>interpret(src)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        create scope tree and fills with sentences
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>src</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The source code to interpret, this.src is default</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
 <dl class="details">
     
 
@@ -128,51 +429,22 @@
 </dl>
 
 
-        
     
-    </div>
+
+    
+
+    
 
     
 
     
 
     
-        <h3 class="subsection-title">Classes</h3>
 
-        <dl>
-            <dt><a href="NEngine.Camera.html">Camera</a></dt>
-            <dd></dd>
-        
-            <dt><a href="NEngine.Entity.html">Entity</a></dt>
-            <dd></dd>
-        
-            <dt><a href="NEngine.Obj.html">Obj</a></dt>
-            <dd></dd>
-        
-            <dt><a href="NEngine.SubSpace.html">SubSpace</a></dt>
-            <dd></dd>
+    
+</dd>
+
         </dl>
-    
-
-    
-
-    
-        <h3 class="subsection-title">Namespaces</h3>
-
-        <dl>
-            <dt><a href="namespaces.html#NEngine.geometry"><a href="NEngine.geometry.html">geometry</a></a></dt>
-            <dd></dd>
-        
-            <dt><a href="namespaces.html#NEngine.GLNSLCompiler"><a href="NEngine.GLNSLCompiler.html">GLNSLCompiler</a></a></dt>
-            <dd></dd>
-        
-            <dt><a href="namespaces.html#NEngine.Physic"><a href="NEngine.Physic.html">Physic</a></a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-
     
 
     

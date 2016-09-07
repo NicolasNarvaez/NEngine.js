@@ -1,6 +1,20 @@
 /**
-* represents the code structure as a scope recursive tree that contains
-* variables and sentences
+* @memberof NEngine.GLNSLCompiler
+* @class CodeTree
+* @desc Represents the code structure as a scope recursive tree that contains
+* variables and sentences, it holds general tree data and objects, the
+* recursive scope chain is implemented by the scope objects starting
+* by the root "this.rootScope", it also gives you interfaces to manipulate it,
+* generate an interpretation (interpret()) of the source, translate it
+* (translate()) semantically-structurally, and then write it down (write()).
+* :TODO:
+*
+* @prop {String} src - the source code for this tree
+* @prop {String} out - The translated output from the last usage
+* @prop {Scope} rootScope - The root of the scope tree, scope objects contain
+*   most of the relevant data: variables, sentences, etc.
+* @prop {Sentence[]} sentences - The sentences in the whole codetree, they also
+*   are indexed in their respective scopes, thought sentence.scope.sentences
 */
 function CodeTree(src) {
   if(!(this instanceof CodeTree))
@@ -13,11 +27,14 @@ function CodeTree(src) {
   this.sentences = [];
 
   if(src)
-    this.interpret(src);
+    this.interpret();
 }
 CodeTree.prototype = {
   /**
-  * create scope tree and fills with sentences
+  * @memberof NEngine.GLNSLCompiler.CodeTree
+  * @method interpret
+  * @desc create scope tree and fills with sentences
+  * @param {String} src - The source code to interpret, this.src is default
   */
   interpret: function(src) {
     var i, l, c,  //index, length, character
@@ -25,6 +42,9 @@ CodeTree.prototype = {
       index_a,  //start of current sentence ( for´s, if´s, etc, also count )
       scope_parent,
       scope_current = new Scope();
+
+    if(!src) src = this.src
+    else this.src = src
 
     scope_current.src = src;
     scope_current.range = [0, src.length - 1]

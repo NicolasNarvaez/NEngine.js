@@ -1933,154 +1933,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-GLNSLCompiler = (function() {
-  var GrammarUtil,
-    Vartypes;
-
-  /**
-* Used to create recursive expressión trees
-*
-* a and b point to expresions (variable expression) and in
-* operantor == null this.a contains a variable (literal expression)
+/**
+@namespace GLNSLCompiler
+@memberof NEngine
+@desc Contains all related to GLNSLCompiler classes, functions and
+  utilities \n \n
+  Using the compiler: \n
+  Just call "compile(code, config)", extra information is
+  on the function docs
+  TODO: scope resolution, currently only non-creating scope sentences are
+  translated, like non [ifs, fors, functions, etc]
 */
-function Expression(opts) {
-  this.src = opts.src || null;
-  this.scope = opts.scope || null;
+GLNSLCompiler = (function() {
+  var module = {},
+    //used by Util.js
+    Util;
 
-  this.a = opts.a || null;
-  this.b = opts.b || null;
-  this.operator = opts.op || null;
-  //if operator == "function"
-  this.function = opts.function || null;
+  Util = (function() {
+var module = {}
 
-  if(this.src)
-    this.interpret();
-}
-
-Expression.prototype = {
-  /**
-  * each element its a regexp + operator identifier
-  * for each expression, there are 3 parenthesis operator a, operator b, and
-  * operation
-  */
-  operators: [
-    {
-      id: '=',
-      //EQUALITY REQUIRES THAT LEFT SIDE OPERAND ITS THE VARIABLE
-      //CONTAINER AND NOT ITS VALUE, FOR ELEMENT SELECTION, THIS CHANGES
-      //NORMAL TRANSLATION.
-      reg: /[^\+\-\^\|&!=<>%\*/](?:\+\+)*(?:--)*(=)[^=]/gi,
-    },
-    {
-      id: '+',
-      reg: /[^\+](?:\+\+)*(\+)[^\+=]/gi,
-    },
-    {
-      id: '-',
-      reg: /[^\-](?:--)*(-)[^-=]/gi,
-    },
-    {
-      id: '*',
-      reg: /(\*)[^=]/gi,
-    },
-    {
-      id: '/',
-      reg: /(\/)[^=]/gi,
-    },
-  ],
-
-  /**
-  * returns te end variable type after aplication of the operation
-  */
-  vartype: function vartype() {
-
-  },
-  /**
-  * indicates wheter the operands-operand combination implicates a
-  * right-operator replication,this is for optimization purposes
-  * avoiding expresion operations multiplication on after-compilation
-  * sentences
-  */
-  replicates: function replicates() {
-
-  },
-  /**
-  * first, if this is a parenthesis, cuts the borders so it can process
-  * the content. Then, converts all parenthesis into special variables
-  * so they dont interfere with operators on this precedence layer
-  * then, start from lowest precedence operators (the last executing)
-  * and splits the expression on the lower it finds into the next
-  * two expressions, then, starts the new expressions sending them
-  * the code with the parenthesis instead of the variables
-  */
-  interpret: function interpret() {
-    var re, res, i, j, l, l2, str_a, str_b
-      code,
-      c,
-      parenthesis_last,
-      parenthesis_level,
-      parenthesis,
-      parenthesis_symbol,
-      parenthesis_table = [],
-      operators = ['=', '+', '-', '*', '/'];
-
-    re = /^\s*\((.*)\)\s*$/gi;
-
-    code = this.src;
-    while( res = re.exec(code) )
-      code = res[1];
-
-    //create parenthesis table
-
-    for(i=0,l=code.length, parenthesis_level=0; i<l;i++) {
-      c = code[i];
-      if(c == '(') {
-        if(parenthesis_level == 0)
-          parenthesis_last = i;
-
-        parenthesis_level++;
-      }
-      if(c == ')') {
-        parenthesis_level--;
-        if(parenthesis_level == 0) {
-          parenthesis = code.substr(parenthesis_last, i+1);
-
-          parenthesis_table.push(parenthesis);
-          parenthesis_symbol = ' $'+(parenthesis_table.length-1)+" ";
-
-          code = code.replace(parenthesis, parenthesis_symbol);
-          i = parenthesis_last + parenthesis_symbol.length - 1;
-        }
-      }
-    }
-
-    //start spliting the operators from lower precedence into higher
-
-    for(i = 0, l = code.length; i < l; i++) {
-      c = code[i];
-      for(j=0, l2=operators.length; j<l2; j++)
-        if(c == operators[j]) {
-
-          this.a = code.substr(0, i);
-          this.b = code.substr(i+1, code.length-i);
-
-          this.operator = operators[j];
-          this.a =
-
-          l2 = l = 0;
-        }
-    }
-
-    //when there was no operator found, this is a variable
-    if(!this.a) {
-
-    }
-  }
-}
-
-
-  
-Vartypes = (function() {
+module.Vartypes = (function() {
   var types ={
     /**
     *
@@ -2136,7 +2008,7 @@ Vartypes = (function() {
   }
 })();
 
-GrammarUtil = (function(){
+module.Grammar = (function(){
   var grammar_lists;
 
   grammar_lists = {
@@ -2187,39 +2059,212 @@ function serialize(str) {
   return post;
 }
 
+return module
+})()
+
 
   /**
-* represents a variable in a scope
+* Used to create recursive translable expressión trees
 *
-* opts:
-*   sentence
-*   sentence_place: place in the declaration sentence
-*   scope
-*   type : prim or function, etc
-*   qualifiers: storage, precission, return value, etc
-*   value: given value, if this is a literal variable (value variable)
-*   name: variable name
-* props:
-*   type_data: parsed type data from qualifiers
+*
+* a and b point to expresions (variable expression) and in
+* operator == null this.a contains a variable ("literal expression")
+*/
+function Expression(opts) {
+  this.src = opts.src || null;
+  this.scope = opts.scope || null;
+
+  this.a = opts.a || null;
+  this.b = opts.b || null;
+  this.operator = opts.op || null;
+  //if operator == "function"
+  this.function = opts.function || null;
+
+  if(this.src)
+    this.interpret();
+}
+
+Expression.prototype = {
+  /**
+  * each element its a regexp + operator identifier
+  * for each expression, there are 3 parenthesis operator a, operator b, and
+  * operation
+  */
+  operators: [
+    {
+      id: '=',
+      //EQUALITY REQUIRES THAT LEFT SIDE OPERAND ITS THE VARIABLE
+      //CONTAINER AND NOT ITS VALUE, FOR ELEMENT SELECTION, THIS CHANGES
+      //NORMAL TRANSLATION.
+      reg: /[^\+\-\^\|&!=<>%\*/](?:\+\+)*(?:--)*(=)[^=]/gi,
+    },
+    {
+      id: '+',
+      reg: /[^\+](?:\+\+)*(\+)[^\+=]/gi,
+    },
+    {
+      id: '-',
+      reg: /[^\-](?:--)*(-)[^-=]/gi,
+    },
+    {
+      id: '*',
+      reg: /(\*)[^=]/gi,
+    },
+    {
+      id: '/',
+      reg: /(\/)[^=]/gi,
+    },
+  ],
+
+  /**
+  the variable type of the object returned by the expressión
+  */
+  vartype: function vartype() {
+
+    return {
+      replicates: false
+    }
+  },
+  /**
+  * indicates wheter the operands-operand combination implicates a
+  * right-operator replication,this is for optimization purposes
+  * avoiding expresion operations multiplication on after-compilation
+  * sentences
+  */
+  replicates: function replicates() {
+
+  },
+  /**
+  * first, if this is a parenthesis, cuts the borders so it can process
+  * the content. Then, converts all parenthesis into special variables
+  * so they dont interfere with operators on this precedence layer
+  * then splits the text by the lower precedence operator, and starts
+  * the new expressions sending them the code with the parenthesis instead
+  * of the variables
+  */
+  interpret: function interpret() {
+    var re, res, i, j, l, l2, str_a, str_b
+      code,
+      c,
+      parenthesis_last,
+      parenthesis_level,
+      parenthesis,
+      parenthesis_symbol,
+      parenthesis_table = [],
+      operators = ['=', '+', '-', '*', '/'];
+
+    re = /^\s*\((.*)\)\s*$/gi;
+
+    code = this.src;
+    while( res = re.exec(code) )
+      code = res[1];
+
+    //create parenthesis table
+
+    for(i=0,l=code.length, parenthesis_level=0; i<l;i++) {
+      c = code[i];
+      if(c == '(') {
+        if(parenthesis_level == 0)
+          parenthesis_last = i;
+
+        parenthesis_level++;
+      }
+      if(c == ')') {
+        parenthesis_level--;
+        if(parenthesis_level == 0) {
+          parenthesis = code.substr(parenthesis_last, i+1);
+
+          parenthesis_table.push(parenthesis);
+          parenthesis_symbol = ' $'+(parenthesis_table.length-1)+" ";
+
+          code = code.replace(parenthesis, parenthesis_symbol);
+          i = parenthesis_last + parenthesis_symbol.length - 1;
+        }
+      }
+    }
+
+    //split by the lower operator precedence
+    for(i = 0, l = code.length; i < l; i++) {
+      c = code[i];
+      for(j=0, l2=operators.length; j<l2; j++)
+        if(c == operators[j]) {
+
+          this.a = code.substr(0, i);
+          this.b = code.substr(i+1, code.length-i);
+
+          this.operator = operators[j];
+          this.a =
+
+          l2 = l = 0;
+        }
+    }
+
+    //when there was no operator found, this is a variable
+    if(!this.a) {
+
+    }
+
+  }
+}
+
+
+  /**
+@memberof NEngine.GLNSLCompiler
+@class Variable
+@desc Represents a variable in a scope
+
+opts:
+  sentence
+  sentence_place:
+  scope
+  type : prim or function, etc
+  qualifiers: storage, precission, return value, etc
+  value:
+  name: variable name
+
+@prop {Sentence} sentence - The sentence containing var declaration
+@prop {Integer} sentence_place - Place in the declaration sentence
+@prop {Scope} scope - Container Scope
+
+@prop {String} type - "primitive" or "function"
+@prop {Object} type_data: object with more specific datatype data
+  for primitives
+  parsed type data from qualifiers, like length
+@prop {Array} qualifiers - array with datatype dependant data
+  primitives: variable declaration qualifiers
+  function: return and parameters variables
+
+@prop {String} value - Given value, if this is a literal
+  variable (value variable)
+@prop {String} name - Variable name
+
+
+
+@param {Object} opts - The options object
+  @param {Sentence} opts.sentence - The sentence containing var declaration
+  @param {Integer} opts.sentence_place -
+  @param {Scope} opts.scope -
+
+  @param {String} opts.type - "primitive" or "function"
+  @param {Array} opts.qualifiers - storage, precission, return value, etc
+
+  @param {String} opts.value -
+  @param {String} opts.name -
 */
 function Variable(opts) {
   this.sentence = opts.sentence || null;
   this.sentence_place = opts.sentence_place || 0;
   this.scope = opts.scope || null;
 
-  //primitive or function
+  //typological data
   this.type = opts.type || null;
-  //array with datatype dependant data
-  //primitives: variable declaration qualifiers
-  //function: return and parameters variables
-  this.qualifiers = opts.qualifiers || null;
-  //object with more specific datatype data for primitives
-  //like length
+  this.qualifiers = opts.qualifiers || nul
   this.type_data = null;
-  //if this is a literal variable, this will contain the value string
-  this.value = opts.value || null;
 
+  //variable specific
+  this.value = opts.value || null;
   this.name = opts.name || '';
+
   if(qualifiers)
     this.declare();
 }
@@ -2228,7 +2273,9 @@ Variable.prototype = {
 
   },
   /**
-  registers to variable scope, fills type_data
+  @memberof NEngine.GLNSLCompiler.Variable
+  @desc registers to variable dict. in scope, fills type_data,
+  @throws Error if its identifier was  already declared
   */
   declare: function() {
     if(this.scope.variables[this.name])
@@ -2366,11 +2413,28 @@ Sentence.prototype = {
 
 
   /**
-* represents a single scope
-* cachedVariables contains current new temp_variables for extended datatypes
+@memberof NEngine.GLNSLCompiler
+@class Scope
+@desc Represents a recursive Scope tree
+
+@prop {CodeTree} code_tree - On rootScope, points to container CodeTree
+@prop {Scope} rootScope - Root Scope of the tree
+@prop {String} src - Contained code, currently only root-scope has
+
+@prop {Scope} parent - Parent Scope
+@prop {Scope[]} childs - Child Scopes
+
+@prop {Integer[]} range - Start and end index of code in rootScope.src
+@prop {Object.<String, Variable>} variables - Dictionary object for scope variables
+@prop {Sentence[]} sentences - Holds scope sentences
+
+@prop {Variable[]} cachedVariables -  contains current new temp_variables for
+  extended datatypes
+
 */
 function Scope() {
   this.code_tree = null;
+
   this.rootScope = null;
   this.src = null; //only rootScope has
 
@@ -2384,6 +2448,10 @@ function Scope() {
   this.cacheVariables = [];
 }
 Scope.prototype = {
+  /**
+  @memberof NEngine.GLNSLCompiler.Scope 
+  @desc Correctly sets the parentScope
+  */
   setParent: function(parent) {
     this.unsetParent();
     this.parent = parent;
@@ -2391,12 +2459,23 @@ Scope.prototype = {
 
     this.rootScope = parent.rootScope || parent;
   },
+  /**
+  @memberof NEngine.GLNSLCompiler.Scope
+  @desc Correctly unsets the parentScope
+  */
   unsetParent: function() {
     if(!this.parent) return;
 
     this.parent.childs.splice(this.parent.childs.indexOf(this),1);
     this.parent = null;
   },
+  /**
+  @memberof NEngine.GLNSLCompiler.Scope
+  @desc Recursively in the scope tree searches the variable
+
+  @param {String} varname - Target variable name
+  @return {Variable} Return null if it cant be find
+  */
   getVariable: function(varname) {
     var link, scope = this, variable;
 
@@ -2424,8 +2503,22 @@ Scope.prototype = {
 
 
   /**
-* represents the code structure as a scope recursive tree that contains
-* variables and sentences
+* @memberof NEngine.GLNSLCompiler
+* @class CodeTree
+* @desc Represents the code structure as a scope recursive tree that contains
+* variables and sentences, it holds general tree data and objects, the
+* recursive scope chain is implemented by the scope objects starting
+* by the root "this.rootScope", it also gives you interfaces to manipulate it,
+* generate an interpretation (interpret()) of the source, translate it
+* (translate()) semantically-structurally, and then write it down (write()).
+* :TODO:
+*
+* @prop {String} src - the source code for this tree
+* @prop {String} out - The translated output from the last usage
+* @prop {Scope} rootScope - The root of the scope tree, scope objects contain
+*   most of the relevant data: variables, sentences, etc.
+* @prop {Sentence[]} sentences - The sentences in the whole codetree, they also
+*   are indexed in their respective scopes, thought sentence.scope.sentences
 */
 function CodeTree(src) {
   if(!(this instanceof CodeTree))
@@ -2438,11 +2531,14 @@ function CodeTree(src) {
   this.sentences = [];
 
   if(src)
-    this.interpret(src);
+    this.interpret();
 }
 CodeTree.prototype = {
   /**
-  * create scope tree and fills with sentences
+  * @memberof NEngine.GLNSLCompiler.CodeTree
+  * @method interpret
+  * @desc create scope tree and fills with sentences
+  * @param {String} src - The source code to interpret, this.src is default
   */
   interpret: function(src) {
     var i, l, c,  //index, length, character
@@ -2450,6 +2546,9 @@ CodeTree.prototype = {
       index_a,  //start of current sentence ( for´s, if´s, etc, also count )
       scope_parent,
       scope_current = new Scope();
+
+    if(!src) src = this.src
+    else this.src = src
 
     scope_current.src = src;
     scope_current.range = [0, src.length - 1]
@@ -2531,18 +2630,22 @@ CodeTree.prototype = {
 
 
   /**
-  
+  @memberof NEngine.GLNSLCompiler
+  @function compile
+  @desc Compiles src using cfg
+  @param {String} src - Contains the raw GLSL code
+  @param {Object} cfg - Config container
+  @return {String} translated
   */
   function compile(src, cfg) {
     var code_tree = CodeTree(src);
 
     return code_tree.translate(cfg);
   }
+  module.compile = compile
 
   console.log(document.getElementById("testshader").innerHTML)
-  return {
-    compile: compile
-  }
+  return module
 })();
 
 

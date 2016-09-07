@@ -1,8 +1,9 @@
 /**
-* Used to create recursive expressión trees
+* Used to create recursive translable expressión trees
+*
 *
 * a and b point to expresions (variable expression) and in
-* operantor == null this.a contains a variable (literal expression)
+* operator == null this.a contains a variable ("literal expression")
 */
 function Expression(opts) {
   this.src = opts.src || null;
@@ -51,10 +52,13 @@ Expression.prototype = {
   ],
 
   /**
-  * returns te end variable type after aplication of the operation
+  the variable type of the object returned by the expressión
   */
   vartype: function vartype() {
 
+    return {
+      replicates: false
+    }
   },
   /**
   * indicates wheter the operands-operand combination implicates a
@@ -69,10 +73,9 @@ Expression.prototype = {
   * first, if this is a parenthesis, cuts the borders so it can process
   * the content. Then, converts all parenthesis into special variables
   * so they dont interfere with operators on this precedence layer
-  * then, start from lowest precedence operators (the last executing)
-  * and splits the expression on the lower it finds into the next
-  * two expressions, then, starts the new expressions sending them
-  * the code with the parenthesis instead of the variables
+  * then splits the text by the lower precedence operator, and starts
+  * the new expressions sending them the code with the parenthesis instead
+  * of the variables
   */
   interpret: function interpret() {
     var re, res, i, j, l, l2, str_a, str_b
@@ -115,8 +118,7 @@ Expression.prototype = {
       }
     }
 
-    //start spliting the operators from lower precedence into higher
-
+    //split by the lower operator precedence
     for(i = 0, l = code.length; i < l; i++) {
       c = code[i];
       for(j=0, l2=operators.length; j<l2; j++)
@@ -136,5 +138,6 @@ Expression.prototype = {
     if(!this.a) {
 
     }
+
   }
 }

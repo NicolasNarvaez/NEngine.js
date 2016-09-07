@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>DocStrap Namespace: NEngine</title>
+	<title>DocStrap Namespace: GLNSLCompiler</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -70,13 +70,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Namespace: NEngine</h1>
+	<h1 class="page-title">Namespace: GLNSLCompiler</h1>
 <section>
 
 <header>
     
         <h2>
-        NEngine
+            <span class="ancestors"><a href="NEngine.html">NEngine</a>.</span>
+        
+        GLNSLCompiler
         </h2>
         
     
@@ -86,6 +88,14 @@
 <article>
     <div class="container-overview">
     
+        
+            <div class="description">Contains all related to GLNSLCompiler classes, functions and
+  utilities \n \n
+  Using the compiler: \n
+  Just call "compile(code, config)", extra information is
+  on the function docs
+  TODO: scope resolution, currently only non-creating scope sentences are
+  translated, like non [ifs, fors, functions, etc]</div>
         
 
         
@@ -140,16 +150,13 @@
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
-            <dt><a href="NEngine.Camera.html">Camera</a></dt>
+            <dt><a href="NEngine.GLNSLCompiler.CodeTree.html">CodeTree</a></dt>
             <dd></dd>
         
-            <dt><a href="NEngine.Entity.html">Entity</a></dt>
+            <dt><a href="NEngine.GLNSLCompiler.Scope.html">Scope</a></dt>
             <dd></dd>
         
-            <dt><a href="NEngine.Obj.html">Obj</a></dt>
-            <dd></dd>
-        
-            <dt><a href="NEngine.SubSpace.html">SubSpace</a></dt>
+            <dt><a href="NEngine.GLNSLCompiler.Variable.html">Variable</a></dt>
             <dd></dd>
         </dl>
     
@@ -157,22 +164,189 @@
     
 
     
-        <h3 class="subsection-title">Namespaces</h3>
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         <dl>
-            <dt><a href="namespaces.html#NEngine.geometry"><a href="NEngine.geometry.html">geometry</a></a></dt>
-            <dd></dd>
+            
+<hr>
+<dt>
+    <h4 class="name" id=".compile"><span class="type-signature">&lt;static> </span>compile(src, cfg)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Compiles src using cfg
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
         
-            <dt><a href="namespaces.html#NEngine.GLNSLCompiler"><a href="NEngine.GLNSLCompiler.html">GLNSLCompiler</a></a></dt>
-            <dd></dd>
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
         
-            <dt><a href="namespaces.html#NEngine.Physic"><a href="NEngine.Physic.html">Physic</a></a></dt>
-            <dd></dd>
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>src</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the raw GLSL code</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cfg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Config container</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    translated
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
         </dl>
-    
-
-    
-
     
 
     

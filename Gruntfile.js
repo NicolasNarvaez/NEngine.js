@@ -6,20 +6,28 @@ module.exports = function(grunt) {
 
     watch: {
       main: {
-        files: ['src/NEngine/*.js', 'src/browser.js'],
+        files: ['src/NEngine/**', 'src/browser.js'],
         tasks: ['import:main', 'jsdoc']
       },
-      project: {
-        files: ['**'],
-        tasks: ['copy:project']
+      dist: {
+        files: ['dist/**'],
+        tasks: ['copy:dist']
+      },
+      doc: {
+        files: ['doc/**'],
+        tasks: ['copy:doc']
       }
     },
 
     copy: {
-      project: {
-        src: '**',
-        dest: '/var/www/NEngine/'
-      }
+      doc: {
+        src: 'doc/**',
+        dest: '/var/www/NEngine/doc/'
+      },
+      dist: {
+        src: 'dist/**',
+        dest: '/var/www/NEngine/dist/'
+      },
     },
 
     import: {
@@ -48,7 +56,8 @@ module.exports = function(grunt) {
   npm_tasks.forEach(function(e){grunt.loadNpmTasks(e)})
 
   grunt.registerTask('default', ['import:main', 'watch:main'])
-  grunt.registerTask('testing', ['copy:project', 'watch:project'])
+  grunt.registerTask('wdoc', ['copy:doc', 'watch:doc'])
+  grunt.registerTask('wdist', ['copy:dist', 'watch:dist'])
   grunt.registerTask('doc', 'jsdoc')
 
 }

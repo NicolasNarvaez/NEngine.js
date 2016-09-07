@@ -22,13 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+@namespace GLNSLCompiler
+@memberof NEngine
+@desc Contains all related to GLNSLCompiler classes, functions and
+  utilities \n \n
+  Using the compiler: \n
+  Just call "compile(code, config)", extra information is
+  on the function docs
+  TODO: scope resolution, currently only non-creating scope sentences are
+  translated, like non [ifs, fors, functions, etc]
+*/
 GLNSLCompiler = (function() {
-  var GrammarUtil,
-    Vartypes;
-
-  @import "GLNSLCompiler/Expression.js"
+  var module = {},
+    //used by Util.js
+    Util;
 
   @import 'GLNSLCompiler/Util.js'
+
+  @import "GLNSLCompiler/Expression.js"
 
   @import 'GLNSLCompiler/Variable.js'
 
@@ -39,16 +51,20 @@ GLNSLCompiler = (function() {
   @import 'GLNSLCompiler/CodeTree.js'
 
   /**
-  
+  @memberof NEngine.GLNSLCompiler
+  @function compile
+  @desc Compiles src using cfg
+  @param {String} src - Contains the raw GLSL code
+  @param {Object} cfg - Config container
+  @return {String} translated
   */
   function compile(src, cfg) {
     var code_tree = CodeTree(src);
 
     return code_tree.translate(cfg);
   }
+  module.compile = compile
 
   console.log(document.getElementById("testshader").innerHTML)
-  return {
-    compile: compile
-  }
+  return module
 })();

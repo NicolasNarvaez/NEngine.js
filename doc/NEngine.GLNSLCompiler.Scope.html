@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>DocStrap Class: Geom</title>
+	<title>DocStrap Class: Scope</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -70,15 +70,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: Geom</h1>
+	<h1 class="page-title">Class: Scope</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="NEngine.html">NEngine</a><a href="NEngine.geometry.html">.geometry</a>.</span>
+            <span class="ancestors"><a href="NEngine.html">NEngine</a><a href="NEngine.GLNSLCompiler.html">.GLNSLCompiler</a>.</span>
         
-        Geom
+        Scope
         </h2>
         
     
@@ -91,7 +91,7 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="Geom"><span class="type-signature"></span>new Geom()</h4>
+    <h4 class="name" id="Scope"><span class="type-signature"></span>new Scope()</h4>
     
     
 </dt>
@@ -99,31 +99,7 @@
 
     
     <div class="description">
-        Represents a Geometry object, contains collision data, vertex,
-  colours and faces lists, those are in a data dictionary so adding more
-  data lists is easy (like uniform data)
-  it also contains the buffers generated for the shader
-
-  <br/><br/>
-  Al the data lists follow the webgl format for buffers, you can check the
-  format in their documentation, but here is a small review: <br/><br/>
-
-  A 3D vertex list looks like this: <br/> [ v1_x, v1_y, v1_z, v2_x, v2_y, ... ,
-  vn_y, vn_z ] <br/>
-  All elements being float type <br/><br/>
-  For colors, they correspond to the vertex they match:<br/>
-  [v1_cr, v1_cg, v1_cb, [v1_ca] , v2_cr, .. , vn_cb, [vn_ca] ] <br/>
-  v1_cr means vertex 1 colour red, as you can see, each color can
-  have 3 or four components (colour alpha is optional), but anyway this is
-  just shader dependant, better look at the webgl docs! <br/><br/>
-  The faces list and the edges list are the same, but their elements
-  are Integers instead of Floats and they represent an index in the vertex
-  data list, for example, a face list like this: [0, 2, 1] means a triangle
-  that has the first vertex in it first edge, the third on its second and so
-  on. <br/><br/><br/>
-  TODO: prepare standard simplex array for n-dimensional tesselation (faces for
-  n-dimensional objects have (n-1) dimensions) and a simple way to cut them
-  in shader program or a similar mechanism
+        Represents a recursive Scope tree
     </div>
     
 
@@ -164,13 +140,13 @@
 
         <tr>
             
-                <td class="name"><code>data</code></td>
+                <td class="name"><code>code_tree</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">CodeTree</span>
 
 
 
@@ -181,62 +157,20 @@
 
             
 
-            <td class="description last">contains data lists of elements
-                <h6>Properties</h6>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>vertex</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
+            <td class="description last">On rootScope, points to container CodeTree</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>color</code></td>
+                <td class="name"><code>rootScope</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Scope</span>
 
 
 
@@ -247,20 +181,20 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Root Scope of the tree</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>edges</code></td>
+                <td class="name"><code>src</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">String</span>
 
 
 
@@ -271,20 +205,20 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Contained code, currently only root-scope has</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>faces</code></td>
+                <td class="name"><code>parent</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Scope</span>
 
 
 
@@ -295,27 +229,20 @@
 
             
 
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last">Parent Scope</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>buffers</code></td>
+                <td class="name"><code>childs</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Array.&lt;Scope></span>
 
 
 
@@ -326,21 +253,20 @@
 
             
 
-            <td class="description last">this contains the shader program buffers,
-  one of the is generated for each data list</td>
+            <td class="description last">Child Scopes</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>dim</code></td>
+                <td class="name"><code>range</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Integer</span>
+<span class="param-type">Array.&lt;Integer></span>
 
 
 
@@ -351,20 +277,20 @@
 
             
 
-            <td class="description last">dimensionality of the geom</td>
+            <td class="description last">Start and end index of code in rootScope.src</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>boundingBoxMin</code></td>
+                <td class="name"><code>variables</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Float</span>
+<span class="param-type">Object.&lt;String, Variable></span>
 
 
 
@@ -375,20 +301,20 @@
 
             
 
-            <td class="description last">normally, shortest vertex component</td>
+            <td class="description last">Dictionary object for scope variables</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>boundingBoxMax</code></td>
+                <td class="name"><code>sentences</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Float</span>
+<span class="param-type">Array.&lt;Sentence></span>
 
 
 
@@ -399,20 +325,20 @@
 
             
 
-            <td class="description last">normally largest vertex component</td>
+            <td class="description last">Holds scope sentences</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>boundingSphereRadius</code></td>
+                <td class="name"><code>cachedVariables</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Float</span>
+<span class="param-type">Array.&lt;Variable></span>
 
 
 
@@ -423,7 +349,8 @@
 
             
 
-            <td class="description last">bigger distance to a vertex</td>
+            <td class="description last">contains current new temp_variables for
+  extended datatypes</td>
         </tr>
 
     
@@ -506,7 +433,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="concat"><span class="type-signature"></span>concat(joining_geom)</h4>
+    <h4 class="name" id=".getVariable"><span class="type-signature">&lt;static> </span>getVariable(varname)</h4>
     
     
 </dt>
@@ -514,7 +441,7 @@
 
     
     <div class="description">
-        a shortcut to concat, like calling concat(this, ...)
+        Recursively in the scope tree searches the variable
     </div>
     
 
@@ -549,13 +476,13 @@
 
         <tr>
             
-                <td class="name"><code>joining_geom</code></td>
+                <td class="name"><code>varname</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Geom</span>
+<span class="param-type">String</span>
 
 
 
@@ -566,7 +493,7 @@
 
             
 
-            <td class="description last">the geom to join into this</td>
+            <td class="description last">Target variable name</td>
         </tr>
 
     
@@ -630,7 +557,7 @@
     
             
 <div class="param-desc">
-    concat(this, ...)
+    Return null if it cant be find
 </div>
 
 
@@ -641,7 +568,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Geom</span>
+<span class="param-type">Variable</span>
 
 
 
@@ -658,7 +585,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="twglize"><span class="type-signature"></span>twglize()</h4>
+    <h4 class="name" id=".setParent"><span class="type-signature">&lt;static> </span>setParent()</h4>
     
     
 </dt>
@@ -666,7 +593,7 @@
 
     
     <div class="description">
-        shortcut to twglize(this)
+        Correctly sets the parentScope
     </div>
     
 
@@ -728,30 +655,84 @@
     
 
     
-    <h5>Returns:</h5>
+
     
-            
-<div class="param-desc">
-    twglize(this)
-</div>
+</dd>
 
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
         
-<span class="param-type">twglGeom</span>
+            
+<hr>
+<dt>
+    <h4 class="name" id=".unsetParent"><span class="type-signature">&lt;static> </span>unsetParent()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Correctly unsets the parentScope
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
 
 
 
-    </dd>
+	
+
+	
+
+	
+
+	
 </dl>
 
 
-        
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 </dd>

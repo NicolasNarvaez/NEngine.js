@@ -1,5 +1,7 @@
+Util = (function() {
+var module = {}
 
-Vartypes = (function() {
+module.Vartypes = (function() {
   var types ={
     /**
     *
@@ -55,7 +57,7 @@ Vartypes = (function() {
   }
 })();
 
-GrammarUtil = (function(){
+module.Grammar = (function(){
   var grammar_lists;
 
   grammar_lists = {
@@ -105,3 +107,6 @@ function serialize(str) {
 
   return post;
 }
+
+return module
+})()
