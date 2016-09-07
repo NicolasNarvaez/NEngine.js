@@ -2213,15 +2213,6 @@ Expression.prototype = {
 @class Variable
 @desc Represents a variable in a scope
 
-opts:
-  sentence
-  sentence_place:
-  scope
-  type : prim or function, etc
-  qualifiers: storage, precission, return value, etc
-  value:
-  name: variable name
-
 @prop {Sentence} sentence - The sentence containing var declaration
 @prop {Integer} sentence_place - Place in the declaration sentence
 @prop {Scope} scope - Container Scope
@@ -2415,7 +2406,7 @@ Sentence.prototype = {
   /**
 @memberof NEngine.GLNSLCompiler
 @class Scope
-@desc Represents a recursive Scope tree
+@desc Represents a recursive Scope treessss
 
 @prop {CodeTree} code_tree - On rootScope, points to container CodeTree
 @prop {Scope} rootScope - Root Scope of the tree
@@ -2425,12 +2416,11 @@ Sentence.prototype = {
 @prop {Scope[]} childs - Child Scopes
 
 @prop {Integer[]} range - Start and end index of code in rootScope.src
-@prop {Object.<String, Variable>} variables - Dictionary object for scope variables
+@prop {Object.<String, Variable>} variables - ddDictionary object for scope variables
 @prop {Sentence[]} sentences - Holds scope sentences
 
 @prop {Variable[]} cachedVariables -  contains current new temp_variables for
   extended datatypes
-
 */
 function Scope() {
   this.code_tree = null;
@@ -2449,7 +2439,8 @@ function Scope() {
 }
 Scope.prototype = {
   /**
-  @memberof NEngine.GLNSLCompiler.Scope 
+  @memberof NEngine.GLNSLCompiler.Scope
+  @function setParent
   @desc Correctly sets the parentScope
   */
   setParent: function(parent) {
@@ -2472,10 +2463,9 @@ Scope.prototype = {
   /**
   @memberof NEngine.GLNSLCompiler.Scope
   @desc Recursively in the scope tree searches the variable
-
-  @param {String} varname - Target variable name
-  @return {Variable} Return null if it cant be find
   */
+  // @param {String} varname - Target variable name
+  // @return {Variable} Return null if it cant be find
   getVariable: function(varname) {
     var link, scope = this, variable;
 

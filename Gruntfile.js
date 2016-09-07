@@ -22,11 +22,11 @@ module.exports = function(grunt) {
     copy: {
       doc: {
         src: 'doc/**',
-        dest: '/var/www/NEngine/doc/'
+        dest: '/var/www/NEngine/'
       },
       dist: {
         src: 'dist/**',
-        dest: '/var/www/NEngine/dist/'
+        dest: '/var/www/NEngine/'
       },
     },
 

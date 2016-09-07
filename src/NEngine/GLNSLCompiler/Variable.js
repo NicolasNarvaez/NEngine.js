@@ -3,15 +3,6 @@
 @class Variable
 @desc Represents a variable in a scope
 
-opts:
-  sentence
-  sentence_place:
-  scope
-  type : prim or function, etc
-  qualifiers: storage, precission, return value, etc
-  value:
-  name: variable name
-
 @prop {Sentence} sentence - The sentence containing var declaration
 @prop {Integer} sentence_place - Place in the declaration sentence
 @prop {Scope} scope - Container Scope
