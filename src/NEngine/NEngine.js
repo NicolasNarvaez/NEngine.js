@@ -65,7 +65,7 @@ function projection(out,va,vb) {
   vec4.scale(out, vb, vec4.dot(va,vb)/vec4.length(va));
 }
 
-global_root.NEngine = (function() {
+global_root.NEngine = (function NEngineInit () {
 
   var math, Obj, renderer, geometry,
     util,

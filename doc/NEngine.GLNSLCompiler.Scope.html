@@ -33,14 +33,14 @@
 			<li class="dropdown">
 				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">NEngine.geometry</a></li><li><a href="NEngine.GLNSLCompiler.html">NEngine.GLNSLCompiler</a></li><li><a href="NEngine.Physic.html">NEngine.Physic</a></li>
+					<li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">NEngine.geometry</a></li><li><a href="NEngine.GLNSLCompiler.html">NEngine.GLNSLCompiler</a></li><li><a href="NEngine.GLNSLCompiler.Util.html">NEngine.GLNSLCompiler.Util</a></li><li><a href="NEngine.GLNSLCompiler.Util.Grammar.html">NEngine.GLNSLCompiler.Util.Grammar</a></li><li><a href="NEngine.GLNSLCompiler.Vartypes.html">NEngine.GLNSLCompiler.Vartypes</a></li><li><a href="NEngine.Physic.html">NEngine.Physic</a></li>
 				</ul>
 			</li>
 			
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="NEngine.Camera.html">NEngine.Camera</a></li><li><a href="NEngine.Entity.html">NEngine.Entity</a></li><li><a href="NEngine.geometry.Geom.html">NEngine.geometry.Geom</a></li><li><a href="NEngine.GLNSLCompiler.CodeTree.html">NEngine.GLNSLCompiler.CodeTree</a></li><li><a href="NEngine.GLNSLCompiler.Scope.html">NEngine.GLNSLCompiler.Scope</a></li><li><a href="NEngine.GLNSLCompiler.Variable.html">NEngine.GLNSLCompiler.Variable</a></li><li><a href="NEngine.Obj.html">NEngine.Obj</a></li><li><a href="NEngine.SubSpace.html">NEngine.SubSpace</a></li>
+					<li><a href="NEngine.Camera.html">NEngine.Camera</a></li><li><a href="NEngine.Entity.html">NEngine.Entity</a></li><li><a href="NEngine.geometry.Geom.html">NEngine.geometry.Geom</a></li><li><a href="NEngine.GLNSLCompiler.CodeTree.html">NEngine.GLNSLCompiler.CodeTree</a></li><li><a href="NEngine.GLNSLCompiler.Expression.html">NEngine.GLNSLCompiler.Expression</a></li><li><a href="NEngine.GLNSLCompiler.Scope.html">NEngine.GLNSLCompiler.Scope</a></li><li><a href="NEngine.GLNSLCompiler.Sentence.html">NEngine.GLNSLCompiler.Sentence</a></li><li><a href="NEngine.GLNSLCompiler.Shader.html">NEngine.GLNSLCompiler.Shader</a></li><li><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html">NEngine.GLNSLCompiler.Util.SymbolTree</a></li><li><a href="NEngine.GLNSLCompiler.Variable.html">NEngine.GLNSLCompiler.Variable</a></li><li><a href="NEngine.GLNSLCompiler.Vartypes.VarType.html">NEngine.GLNSLCompiler.Vartypes.VarType</a></li><li><a href="NEngine.Obj.html">NEngine.Obj</a></li><li><a href="NEngine.SubSpace.html">NEngine.SubSpace</a></li>
 				</ul>
 			</li>
 			
@@ -99,7 +99,10 @@
 
     
     <div class="description">
-        Represents a recursive Scope treessss
+        Represents a recursive Scope tree. <br/> <br/>
+  The rootScope contains the cache of the temp variables
+  used in intermediate operations (on translated code). This cache
+  gets added to the begining during translation
     </div>
     
 
@@ -301,7 +304,32 @@
 
             
 
-            <td class="description last">ddDictionary object for scope variables</td>
+            <td class="description last">Dictionary object for scope variables</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>variables</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, Variable></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">scope variables generated on ask
+		constructor functions, dim-dependant functions, etc</td>
         </tr>
 
     
@@ -332,7 +360,92 @@
 
         <tr>
             
-                <td class="name"><code>cachedVariables</code></td>
+                <td class="name"><code>cacheVariables</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;TypeCodeName, CacheData></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">contains
+  current new temp_variables for extended datatypes
+                <h6>Properties</h6>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>typeCodeName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A specific datatype cache
+                <h6>Properties</h6>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>vars</code></td>
             
 
             <td class="type">
@@ -349,8 +462,46 @@
 
             
 
-            <td class="description last">contains current new temp_variables for
-  extended datatypes</td>
+            <td class="description last">The cache variables</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>history</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Variable></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The cachevariables
+  arranged by last used</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -433,7 +584,296 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".getVariable"><span class="type-signature">&lt;static> </span>getVariable()</h4>
+    <h4 class="name" id=".ensureTypeCache"><span class="type-signature">&lt;static> </span>ensureTypeCache(variable)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Ensures that a given type has its cache variables instantiated for
+    operations upon it, this is useful only during translation and final
+    code writting. <br/>
+    Adds them to variables array (avoid colisions) and cacheVariables
+    (inform cache creation) sentence array. This affects only rootScope
+    (only a single copy of each typecache is necessary) <br/> <br/>
+    cache variable names: ___GLNSL_cache_(typeCodeName)_(cacheindex)
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>variable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Variable</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The variable to ensure cache, needs to
+    have its qualifiers, and type_data set</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".getTypeCache"><span class="type-signature">&lt;static> </span>getTypeCache(variable)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Iterates over the cached variables to avoid dataloss on
+    two-handed cache operations (they require 3 cache vars)
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>variable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Variable</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains datatype description
+    (precision+datatype)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    variable - The cache variable you needed
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Variable</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".getVariable"><span class="type-signature">&lt;static> </span>getVariable(varname)</h4>
     
     
 </dt>
@@ -442,6 +882,158 @@
     
     <div class="description">
         Recursively in the scope tree searches the variable
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>varname</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Target variable name</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Return null if it cant be find
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Variable</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".isRoot"><span class="type-signature">&lt;static> </span>isRoot()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        If this scope is the scopeRoot or not
     </div>
     
 
@@ -503,6 +1095,30 @@
     
 
     
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    isScopeRoot
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
@@ -715,7 +1331,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 	
-		on 2016-09-07T01:17:29-03:00
+		on 2016-12-12T09:11:36-03:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

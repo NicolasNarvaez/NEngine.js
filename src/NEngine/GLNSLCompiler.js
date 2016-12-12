@@ -33,38 +33,43 @@ SOFTWARE.
   TODO: scope resolution, currently only non-creating scope sentences are
   translated, like non [ifs, fors, functions, etc]
 */
-GLNSLCompiler = (function() {
-  var module = {},
-    //used by Util.js
-    Util;
+GLNSLCompiler = (function GLNSLCompilerLoader() {
+	var module = {}
 
-  @import 'GLNSLCompiler/Util.js'
+	@import 'GLNSLCompiler/Util.js'
+	module.Util = Util
+	@import "GLNSLCompiler/Expression.js"
+	module.Expression = Expression
+	@import 'GLNSLCompiler/Variable.js'
+	module.Variable = Variable
+	@import 'GLNSLCompiler/VarTypes.js'
+	module.VarTypes = VarTypes
+	@import 'GLNSLCompiler/Sentence.js'
+	module.Sentence = Sentence
+	@import 'GLNSLCompiler/Scope.js'
+	module.Scope = Scope
+	@import 'GLNSLCompiler/CodeTree.js'
+	module.CodeTree = CodeTree
+	@import 'GLNSLCompiler/Shader.js'
+	module.Shader = Shader
 
-  @import "GLNSLCompiler/Expression.js"
+	/**
+	@memberof NEngine.GLNSLCompiler
+	@function compile
+	@desc Compiles src using cfg
+	@param {String} src - Contains the raw GLSL code
+	@param {Object} cfg - Config container
+	@return {String} translated
+	*/
+	function compile(src, js_variables) {
+		return CodeTree(src, js_variables).translate()
+	}
+	module.compile = compile
 
-  @import 'GLNSLCompiler/Variable.js'
+	var test_code = document.getElementById("testshader").innerHTML;
 
-  @import 'GLNSLCompiler/Sentence.js'
+	console.log('precompiled: ', test_code)
+	console.log('compiled', compile(test_code) )
 
-  @import 'GLNSLCompiler/Scope.js'
-
-  @import 'GLNSLCompiler/CodeTree.js'
-
-  /**
-  @memberof NEngine.GLNSLCompiler
-  @function compile
-  @desc Compiles src using cfg
-  @param {String} src - Contains the raw GLSL code
-  @param {Object} cfg - Config container
-  @return {String} translated
-  */
-  function compile(src, cfg) {
-    var code_tree = CodeTree(src);
-
-    return code_tree.translate(cfg);
-  }
-  module.compile = compile
-
-  console.log(document.getElementById("testshader").innerHTML)
-  return module
+	return module
 })();

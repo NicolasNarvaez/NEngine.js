@@ -1,7 +1,7 @@
 try {
   if(twgl)  //requires
     try {
-      (function() {
+      (function NEngineBootStrap () {
 
         var global_root = this;
 

@@ -1,16 +1,22 @@
+var Expression = (function ExpressionLoader() {
 /**
+* @memberof NEngine.GLNSLCompiler
+* @class Expression
+* @desc a and b point to expresions (variable expression) and in
 * Used to create recursive translable expressión trees
 *
-*
-* a and b point to expresions (variable expression) and in
 * operator == null this.a contains a variable ("literal expression")
+* if operator == 'function' then a points to function and b to parametters
+*   expressions
 */
 function Expression(opts) {
   this.src = opts.src || null;
-  this.scope = opts.scope || null;
+  this.sentence = opts.sentence || null
+  this.scope = opts.scope || opts.sentence.scope || null;
 
   this.a = opts.a || null;
   this.b = opts.b || null;
+  this.inside_parenthesis = false;
   this.operator = opts.op || null;
   //if operator == "function"
   this.function = opts.function || null;
@@ -31,23 +37,23 @@ Expression.prototype = {
       //EQUALITY REQUIRES THAT LEFT SIDE OPERAND ITS THE VARIABLE
       //CONTAINER AND NOT ITS VALUE, FOR ELEMENT SELECTION, THIS CHANGES
       //NORMAL TRANSLATION.
-      reg: /[^\+\-\^\|&!=<>%\*/](?:\+\+)*(?:--)*(=)[^=]/gi,
+      reg: /([^\+\-\^\|&!=<>%\*/](?:\+\+)*(?:--)*)(=)([^=])/gi,
     },
     {
       id: '+',
-      reg: /[^\+](?:\+\+)*(\+)[^\+=]/gi,
+      reg: /([^\+](?:\+\+)*)(\+)([^\+=])/gi,
     },
     {
       id: '-',
-      reg: /[^\-](?:--)*(-)[^-=]/gi,
+      reg: /([^\-](?:--)*)(-)([^-=])/gi,
     },
     {
       id: '*',
-      reg: /(\*)[^=]/gi,
+      reg: /()(\*)([^=])/gi,
     },
     {
       id: '/',
-      reg: /(\/)[^=]/gi,
+      reg: /()(\/)([^=])/gi,
     },
   ],
 
@@ -78,66 +84,77 @@ Expression.prototype = {
   * of the variables
   */
   interpret: function interpret() {
-    var re, res, i, j, l, l2, str_a, str_b
-      code,
-      c,
-      parenthesis_last,
-      parenthesis_level,
-      parenthesis,
-      parenthesis_symbol,
-      parenthesis_table = [],
-      operators = ['=', '+', '-', '*', '/'];
+    var re, res, i,
+      src = this.src, src_map,
+      operators = this.operators, op;
+
+	 console.log('variable expression input: ', this.src )
 
     re = /^\s*\((.*)\)\s*$/gi;
-
-    code = this.src;
-    while( res = re.exec(code) )
-      code = res[1];
+    while( res = re.exec(src) ) {
+		this.inside_parenthesis = true
+		src = res[1];
+    }
 
     //create parenthesis table
+	src_map = Util.SymbolTree(src)
+	src_map.strip('(').strip('[')
+	src = src_map.root()
 
-    for(i=0,l=code.length, parenthesis_level=0; i<l;i++) {
-      c = code[i];
-      if(c == '(') {
-        if(parenthesis_level == 0)
-          parenthesis_last = i;
+    //split by the lower operator precedence, if found, start resolving
+    //recursively
+    for(i = 0, l = operators.length; i < l; i++) {
+      op = operators[i]
+	  res = op.reg.exec(src)
 
-        parenthesis_level++;
-      }
-      if(c == ')') {
-        parenthesis_level--;
-        if(parenthesis_level == 0) {
-          parenthesis = code.substr(parenthesis_last, i+1);
+	  if(res) {
+		  this.operator = op
 
-          parenthesis_table.push(parenthesis);
-          parenthesis_symbol = ' $'+(parenthesis_table.length-1)+" ";
+		  this.a = new Expression({
+			  sentence: this.sentence,
+			  src: src_map.interpolate(
+				  src.substr(0, res.index+res[1].length) )
+		  })
 
-          code = code.replace(parenthesis, parenthesis_symbol);
-          i = parenthesis_last + parenthesis_symbol.length - 1;
-        }
-      }
+		  this.b = new Expression({
+			  sentence: this.sentence,
+			  src: src_map.interpolate(
+				  src.substr(res.index+res[1].length +res[2].length) ),
+		  })
+
+		  i=l
+	  }
     }
 
-    //split by the lower operator precedence
-    for(i = 0, l = code.length; i < l; i++) {
-      c = code[i];
-      for(j=0, l2=operators.length; j<l2; j++)
-        if(c == operators[j]) {
-
-          this.a = code.substr(0, i);
-          this.b = code.substr(i+1, code.length-i);
-
-          this.operator = operators[j];
-          this.a =
-
-          l2 = l = 0;
-        }
-    }
-
-    //when there was no operator found, this is a variable
+    //when there was no operator found, this is a variable or a literal
+    //or a function
     if(!this.a) {
+		res = (/^\s*([_a-z][_a-z0-9]*)\s*(\(([^]*)\))*/gi).exec(src)
+		console.log('variable exp', src, res)
 
+		if(res && res[1] && !src.match('\\[')) {	//isnt a literal
+			this.a = this.scope.getVariable(res[1])
+			console.log('getting variable', res[1], this.a)
+
+			if(res[2]) { //function
+				this.b = src_map.interpolate(res[3])	//get arguments
+				this.op = 'function'
+			}
+		}
+		else
+			this.a = src	//literal
     }
 
   }
 }
+
+return Expression
+})()
+/*
+TODO:
+	- define constructor dynamic_variables
+	- connect dynamic_variables to getVariable
+	- test first variable declaration translations
+	- translate first expressions
+	- start translating full code 
+*/
