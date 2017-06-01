@@ -161,11 +161,11 @@ SymbolTree.prototype = {
 		var syms = this.symbols,
 			res, regexp = RegExp(''+
 				this.symbol_delimiter_pairs[0] +
-				'('+this.prefix+'_.*)'+
+				'('+this.prefix+'_.*?)'+
 				this.symbol_delimiter_pairs[1]
 				, 'gi')
 
-		depth = depth || 1
+		depth = depth || -1
 
 		while( (res = regexp.exec(str)) && ((depth == -1)? 1: depth--) )
 			str = str.replace(res[0], syms[res[1]])
@@ -196,7 +196,7 @@ SymbolTree.prototype = {
 		if(delimiter instanceof Array) {
 			//generates list of match results, then foreach replaces with
 			//placeholder and adds index entry
-			regexp = delimiter[0]+'(.*)'+delimiter[1]
+			regexp = delimiter[0]+'(.*?)'+delimiter[1]
 			regexp = new RegExp(regexp, 'gim')
 
 			while(res = regexp.exec(map))	res_list.push(res)

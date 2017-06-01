@@ -35,26 +35,32 @@ var Variable = (function VariableLoader() {
 	@param {String} opts.name -
 */
 function Variable(opts) {
-  this.sentence = opts.sentence || null
-  this.sentence_place = opts.sentence_place || 0
-  this.scope = opts.scope || (opts.sentence)? opts.sentence.scope : null
+	this.sentence = opts.sentence || null
+	this.sentence_place = opts.sentence_place || 0
+	this.scope = opts.scope || (opts.sentence)? opts.sentence.scope : null
 
-  //typological data
-  this.type = opts.type || null
-  if(opts.translate)	//respect prototype defined
-  	this.translate = opts.translate
-  this.qualifiers = opts.qualifiers || null
-  this.type_data = null
+	//typological data
+	this.type = opts.type || null
+	if(opts.translate)	//respect prototype defined
+		this.translate = opts.translate
+	this.qualifiers = opts.qualifiers || null
+	this.type_data = null
+	this.built_in = opts.built_in || false	//if it is already built_in in glsl
 
-  //variable specific
-  this.value = opts.value || null
-  this.name = opts.name || ''
+	//variable specific
+	this.value = opts.value || null
+	if(this.qualifiers && this.qualifiers.length) {
+		console.log('name from qualifiers')
+		this.name = this.qualifiers[4]
+	}
+	else
+		this.name = opts.name || ''
 
-  if(this.qualifiers && this.type) {
-    this.config()
+	if(this.qualifiers && this.type) {
+		this.config()
 
-    if(this.name)	this.declare()
-  }
+		if(this.name)	this.declare()
+	}
 }
 Variable.prototype = {
 	/**
@@ -72,42 +78,42 @@ Variable.prototype = {
 	@desc For dynamic functions, translates function
 	@param {Expression[]} params - the parametters as expression trees
 	*/
-  /**
-  @memberof NEngine.GLNSLCompiler.Variable
-  @desc Sets it type_data
-  */
-  config: function config() {
-    if(!(this.type == 'primitive')) return
+	/**
+	@memberof NEngine.GLNSLCompiler.Variable
+	@desc Sets it type_data
+	*/
+	config: function config() {
+		if(!(this.type == 'primitive')) return
 
-    var datatype, types = VarTypes.types,
-      type, prim_qualifier = this.qualifiers[3],
-      reg_res
+		var datatype, types = VarTypes.types,
+			type, prim_qualifier = this.qualifiers[3],
+			reg_res
 
-    for(datatype in types) {
-      type = types[datatype]
-      reg_res = RegExp(type.exp).exec(prim_qualifier)
-      if(reg_res)
-        this.type_data = type.constructor( this.qualifiers, this )
+		for(datatype in types) {
+			type = types[datatype]
+			reg_res = RegExp(type.exp).exec(prim_qualifier)
+			if(reg_res)
+				this.type_data = type.constructor( this.qualifiers, this )
 
-      break;
-    }
+			break
+		}
 
-    this.type_data
-  },
-  /**
-  @memberof NEngine.GLNSLCompiler.Variable
-  @desc registers to the variable dictionary in the scope
-  @throws Error if its identifier was already declared
-  */
-  declare: function() {
-    if(!this.scope || !this.name) return
+		this.type_data
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Variable
+	@desc registers to the variable dictionary in the scope
+	@throws Error if its identifier was already declared
+	*/
+	declare: function() {
+		if(!this.scope || !this.name) return
 
-    if(this.scope.variables[this.name])
-      throw "variable "+this.name+" already declared";
+		if(this.scope.variables[this.name])
+			throw 'variable '+this.name+' already declared'
 
 
-    //register to variable scope
-    this.scope.variables[this.name] = this;
+		//register to variable scope
+		this.scope.variables[this.name] = this
 	},
 	translate: function translate() {
 		return this.type_data.translate()

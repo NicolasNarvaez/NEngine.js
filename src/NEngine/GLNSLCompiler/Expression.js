@@ -114,7 +114,7 @@ Expression.prototype = {
 			src = this.src, src_map, arguments_map,
 			operators = this.operators, op
 
-		console.log('variable expression input: ', this.src )
+		console.log('expression: variable expression input: ', this.src )
 
 		//delete containing parenthesis and mark this as being
 		//inside_parenthesis
@@ -123,12 +123,14 @@ Expression.prototype = {
 			this.inside_parenthesis = true
 			src = res[1]
 		}
-		this.str = src
+		this.content = src
 
 		//create parenthesis table
+		// console.log('empezando',src)
 		src_map = Util.SymbolTree(src)
 		src_map.strip('(').strip('[')
 		src = src_map.root()
+		// console.log(src, src_map)
 
 		//split by the lower operator precedence, if found, start resolving
 		//recursively
@@ -159,12 +161,12 @@ Expression.prototype = {
 		//or a function
 		if(!this.a) {
 			res = (/^\s*([_a-z][_a-z0-9]*)\s*(\(([^]*)\))*/gi).exec(src)
-			console.log('variable exp', src, res)
+			console.log('expression: variable exp', src, res)
 
 			if(res && res[1] && !src.match('\\[')) {	//isnt a literal
 				this.a = this.scope.getVariable(res[1])
 				this.op = 'variable'
-				console.log('getting variable', res[1], this.a)
+				console.log('expression: getting variable', res[1], this.a)
 
 				if(res[2]) { //function
 					this.b = src_map.interpolate(res[3])	//get arguments
@@ -207,8 +209,8 @@ return Expression
 TODO:
 Extremly important (next version deps):
 	- define constructor dynamic_variables (ready)
-	- connect dynamic_variables to getVariable (current)
-	- test first variable declaration translations
+	- connect dynamic_variables to getVariable (ready)
+	- test first variable declaration translations (current)
 	- translate first expressions
 	- start translating full code
 

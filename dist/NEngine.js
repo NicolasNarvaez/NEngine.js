@@ -2110,11 +2110,11 @@ SymbolTree.prototype = {
 		var syms = this.symbols,
 			res, regexp = RegExp(''+
 				this.symbol_delimiter_pairs[0] +
-				'('+this.prefix+'_.*)'+
+				'('+this.prefix+'_.*?)'+
 				this.symbol_delimiter_pairs[1]
 				, 'gi')
 
-		depth = depth || 1
+		depth = depth || -1
 
 		while( (res = regexp.exec(str)) && ((depth == -1)? 1: depth--) )
 			str = str.replace(res[0], syms[res[1]])
@@ -2145,7 +2145,7 @@ SymbolTree.prototype = {
 		if(delimiter instanceof Array) {
 			//generates list of match results, then foreach replaces with
 			//placeholder and adds index entry
-			regexp = delimiter[0]+'(.*)'+delimiter[1]
+			regexp = delimiter[0]+'(.*?)'+delimiter[1]
 			regexp = new RegExp(regexp, 'gim')
 
 			while(res = regexp.exec(map))	res_list.push(res)
@@ -2295,7 +2295,7 @@ Expression.prototype = {
 			src = this.src, src_map, arguments_map,
 			operators = this.operators, op
 
-		console.log('variable expression input: ', this.src )
+		console.log('expression: variable expression input: ', this.src )
 
 		//delete containing parenthesis and mark this as being
 		//inside_parenthesis
@@ -2304,12 +2304,14 @@ Expression.prototype = {
 			this.inside_parenthesis = true
 			src = res[1]
 		}
-		this.str = src
+		this.content = src
 
 		//create parenthesis table
+		// console.log('empezando',src)
 		src_map = Util.SymbolTree(src)
 		src_map.strip('(').strip('[')
 		src = src_map.root()
+		// console.log(src, src_map)
 
 		//split by the lower operator precedence, if found, start resolving
 		//recursively
@@ -2340,12 +2342,12 @@ Expression.prototype = {
 		//or a function
 		if(!this.a) {
 			res = (/^\s*([_a-z][_a-z0-9]*)\s*(\(([^]*)\))*/gi).exec(src)
-			console.log('variable exp', src, res)
+			console.log('expression: variable exp', src, res)
 
 			if(res && res[1] && !src.match('\\[')) {	//isnt a literal
 				this.a = this.scope.getVariable(res[1])
 				this.op = 'variable'
-				console.log('getting variable', res[1], this.a)
+				console.log('expression: getting variable', res[1], this.a)
 
 				if(res[2]) { //function
 					this.b = src_map.interpolate(res[3])	//get arguments
@@ -2388,8 +2390,8 @@ return Expression
 TODO:
 Extremly important (next version deps):
 	- define constructor dynamic_variables (ready)
-	- connect dynamic_variables to getVariable (current)
-	- test first variable declaration translations
+	- connect dynamic_variables to getVariable (ready)
+	- test first variable declaration translations (current)
 	- translate first expressions
 	- start translating full code
 
@@ -2470,26 +2472,32 @@ Important (relevant for stability) (cant the remember ths note):
 	@param {String} opts.name -
 */
 function Variable(opts) {
-  this.sentence = opts.sentence || null
-  this.sentence_place = opts.sentence_place || 0
-  this.scope = opts.scope || (opts.sentence)? opts.sentence.scope : null
+	this.sentence = opts.sentence || null
+	this.sentence_place = opts.sentence_place || 0
+	this.scope = opts.scope || (opts.sentence)? opts.sentence.scope : null
 
-  //typological data
-  this.type = opts.type || null
-  if(opts.translate)	//respect prototype defined
-  	this.translate = opts.translate
-  this.qualifiers = opts.qualifiers || null
-  this.type_data = null
+	//typological data
+	this.type = opts.type || null
+	if(opts.translate)	//respect prototype defined
+		this.translate = opts.translate
+	this.qualifiers = opts.qualifiers || null
+	this.type_data = null
+	this.built_in = opts.built_in || false	//if it is already built_in in glsl
 
-  //variable specific
-  this.value = opts.value || null
-  this.name = opts.name || ''
+	//variable specific
+	this.value = opts.value || null
+	if(this.qualifiers && this.qualifiers.length) {
+		console.log('name from qualifiers')
+		this.name = this.qualifiers[4]
+	}
+	else
+		this.name = opts.name || ''
 
-  if(this.qualifiers && this.type) {
-    this.config()
+	if(this.qualifiers && this.type) {
+		this.config()
 
-    if(this.name)	this.declare()
-  }
+		if(this.name)	this.declare()
+	}
 }
 Variable.prototype = {
 	/**
@@ -2507,42 +2515,42 @@ Variable.prototype = {
 	@desc For dynamic functions, translates function
 	@param {Expression[]} params - the parametters as expression trees
 	*/
-  /**
-  @memberof NEngine.GLNSLCompiler.Variable
-  @desc Sets it type_data
-  */
-  config: function config() {
-    if(!(this.type == 'primitive')) return
+	/**
+	@memberof NEngine.GLNSLCompiler.Variable
+	@desc Sets it type_data
+	*/
+	config: function config() {
+		if(!(this.type == 'primitive')) return
 
-    var datatype, types = VarTypes.types,
-      type, prim_qualifier = this.qualifiers[3],
-      reg_res
+		var datatype, types = VarTypes.types,
+			type, prim_qualifier = this.qualifiers[3],
+			reg_res
 
-    for(datatype in types) {
-      type = types[datatype]
-      reg_res = RegExp(type.exp).exec(prim_qualifier)
-      if(reg_res)
-        this.type_data = type.constructor( this.qualifiers, this )
+		for(datatype in types) {
+			type = types[datatype]
+			reg_res = RegExp(type.exp).exec(prim_qualifier)
+			if(reg_res)
+				this.type_data = type.constructor( this.qualifiers, this )
 
-      break;
-    }
+			break
+		}
 
-    this.type_data
-  },
-  /**
-  @memberof NEngine.GLNSLCompiler.Variable
-  @desc registers to the variable dictionary in the scope
-  @throws Error if its identifier was already declared
-  */
-  declare: function() {
-    if(!this.scope || !this.name) return
+		this.type_data
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Variable
+	@desc registers to the variable dictionary in the scope
+	@throws Error if its identifier was already declared
+	*/
+	declare: function() {
+		if(!this.scope || !this.name) return
 
-    if(this.scope.variables[this.name])
-      throw "variable "+this.name+" already declared";
+		if(this.scope.variables[this.name])
+			throw 'variable '+this.name+' already declared'
 
 
-    //register to variable scope
-    this.scope.variables[this.name] = this;
+		//register to variable scope
+		this.scope.variables[this.name] = this
 	},
 	translate: function translate() {
 		return this.type_data.translate()
@@ -2781,7 +2789,8 @@ Sentence.prototype = {
 			this.type = 'declaration'
 
 			//verify sentence
-			// format: invariant, storage, precision, name
+			// format: invariant, storage, precision, datatype,
+			// content (converted to name, before var const)
 			res.shift()
 			res[0] = res[0] || null
 			res[1] = res[1] || 'none'
@@ -2804,12 +2813,13 @@ Sentence.prototype = {
 
 			while(res = re.exec(str)) {
 
-				//construct variable
+				//construct variable (copy-in memory qualifiers)
 				opts.sentence_place = variables.length
-				opts.name = (/\w+/g).exec(res)[0]
+				opts.qualifiers = opts.qualifiers.concat([])
+				opts.qualifiers[4] = (/\w+/g).exec(res[0])[0]
 				variable = new Variable(opts)
 				variables.push(variable)
-				console.log('variable declared:',res, opts, variable)
+				console.log('sentence: variable declared:',res, opts, variable, (/^\s*\w+/g).exec(res[0])[0])
 
 				//construct associated expression
 				expression = null
@@ -2818,7 +2828,7 @@ Sentence.prototype = {
 						sentence: this,
 						src: str_map.interpolate(res[0]),
 					})
-					console.log('variable expression: ',expression)
+					console.log('sentence: expression: ', expression, str_map, res[0], str_map.interpolate(res[0]))
 				}
 				this.components.push(expression)
 			}
@@ -2836,14 +2846,13 @@ Sentence.prototype = {
 	@return {Boolean}
 	*/
 	needsTranslation: function() {
-		var needs = false
 		if(this.type == 'declaration' || this.type == 'expression') {
 			this.variables.forEach(function(e){
-				if(e.translatable) needs = true
+				if(e.translatable) return true
 			})
 		}
 
-		return needs
+		return false
 	},
 	/**
 	@memberof NEngine.GLNSLCompiler.Sentence
@@ -2924,289 +2933,315 @@ function Scope(opts) {
 	}
 }
 Scope.prototype = {
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@desc Correctly sets the parentScope
-*/
-setParent: function(parent) {
-	this.unsetParent()
-	this.parent = parent
-	parent.childs.push(this)
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@desc Correctly sets the parentScope
+	*/
+	setParent: function(parent) {
+		this.unsetParent()
+		this.parent = parent
+		parent.childs.push(this)
 
-	this.rootScope = parent.rootScope || parent
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@desc Correctly unsets the parentScope
-*/
-unsetParent: function() {
-	if(!this.parent) return;
+		this.rootScope = parent.rootScope || parent
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@desc Correctly unsets the parentScope
+	*/
+	unsetParent: function() {
+		if(!this.parent) return
 
-	this.parent.childs.splice(this.parent.childs.indexOf(this),1);
-	this.parent = null;
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@desc Recursively in the scope tree searches the variable, takes built-in
-into account.
-@param {String} varname - Target variable name
-@return {Variable} Return null if it cant be find
-*/
-getVariable: function(varname) {
-	var scope = this, variable;
+		this.parent.childs.splice(this.parent.childs.indexOf(this),1)
+		this.parent = null
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@desc Recursively in the scope tree searches the variable, takes built-in
+	into account.
+	@param {String} varname - Target variable name
+	@return {Variable} Return null if it cant be find
+	*/
+	getVariable: function(varname) {
+		var scope = this, variable
 
-	while(scope) {
-	  if(variable = scope.variables[varname]) break
+		while(scope) {
+			if(variable = scope.variables[varname]) break
 
-	  scope = scope.parent;
-	}
-
-	if(!variable)
-		return this.getVariableBuiltin(varname)
-
-	return variable
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@desc Get the variable from the builtin, or dynamic generated builtin
-@param {String} varname - Target variable name
-@return {Variable} Return null if it cant be find
-*/
-getVariableBuiltin: function(varname) {
-
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@desc Generate a dynamic variable if it matches a dynamic variable type, and
-adds it to the builtin variables, returning it
-@param {String} varname - Target variable name
-@return {Variable} Return null if it cant be find
-*/
-ensureVariableDynamic: function(varname, opts) {
-	opts = opts || {}
-
-	var dyn = this.getVariableDynamic(varname), generated
-
-	if(!dyn)	{
-		console.log('variable missed on ensureVariableDynamic', varname, dyn)
-		return undefined
-	}
-
-	console.log('generating variable', varname, dyn)
-	generated = dyn.generator.gen(dyn.reg_res);
-
-	if(generated.include_code && !opts.ignore_includes)
-		generated.include();
-
-	this.built_in.variables[generated.identifierToken()] = generated
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@desc Gets a dynamic_variable matching a variable name or general qualificated
-name.:
-@param {String} varname - Target variable name
-@return {Variable} Return null if it cant be find
-*/
-getVariableDynamic: function(varname) {
-	//todo: implement different varname formats (qualifiers)
-	var dyns = this.built_in.dynamic_variables, dyn,
-		res;
-
-	for(dyn in dyns) {
-		dyn = dyns[dyn]
-		res = dyn.regexp.exec(varname)
-		if( res )
-			return {generator:dyn, reg_res:res}
-	}
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@desc If this scope is the scopeRoot or not
-@return {Boolean} isScopeRoot
-*/
-isRoot: function() {
-	return !this.rootScope || (this.rootScope == this)
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@desc Ensures that a given type has its cache variables instantiated for
-operations upon it, this is useful only during translation and final
-code writting, indexes them by codename. <br/>
-Adds them to variables array (avoid colisions) and cacheVariables
-(inform cache creation) sentence array. This affects only rootScope
-(only a single copy of each typecache is necessary) <br/> <br/>
-cache variable names: ___GLNSL_cache_(typeCodeName)_(cacheindex)
-@param {Variable} variable - The variable to ensure cache, needs to
-have its qualifiers, and type_data set
-*/
-ensureTypeCache: function ensureTypeCache(variable) {
-	if( !this.isRoot() )
-		return this.rootScope.ensureTypeCache(variable)
-
-	var cache, i, l, type=variable.data_type,
-		codename = type.codename
-
-	if(cache = this.cacheVariables[codename]) return
-
-	cache = this.cacheVariables[codename] = {
-		vars: [],
-		history: []
+			scope = scope.parent
 		}
 
-	//create cache
-	for(i=0,l=3; i<l; i++) {
-		cache.vars.push(
-		  Variable({
-		    scope: this,
-		    type: 'primitive',
-		    qualifiers: [null, 'none',  //those arent relevant to cache scoping
-				variable.qualifiers[2],
-				variable.qualifiers[3]],
-		    name: "___GLNSL_cache_"+ codename +'_'+i
-		  })
-		)
-		cache.history[i] = cache.vars[i]
+		if(!variable)
+			return this.getVariableBuiltin(varname)
+
+		return variable
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@desc Get the variable from the builtin, or dynamic generated builtin
+	@param {String} varname - Target variable name
+	@return {Variable} Return null if it cant be find
+	*/
+	getVariableBuiltin: function(varname) {
+
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@desc Generate a dynamic variable if it matches a dynamic variable type, and
+	adds it to the builtin variables, returning it
+	@param {String} varname - Target variable name
+	@return {Variable} Return null if it cant be find
+	*/
+	ensureVariableDynamic: function(varname, opts) {
+		opts = opts || {}
+
+		var dyn = this.getVariableDynamic(varname), generated
+
+		if(!dyn)	{
+			console.log('variable missed on ensureVariableDynamic', varname, dyn)
+			return undefined
 		}
 
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@desc Iterates over the cached variables to avoid dataloss on
-two-handed cache operations (they require 3 cache vars)
-@param {Variable} variable - Contains datatype description
-(precision+datatype)
-@return {Variable} variable - The cache variable you needed
-*/
-getTypeCache: function getTypeCache(variable) {
-	this.ensureTypeCache(variable)
-	var codename = variable.data_type.codename,
-		cache = this.cacheVariables[codename],
-		res = cache.history.shift()
+		//generate, modify, and return
+		generated = dyn.generator.gen(dyn.reg_res)
 
-	cache.history.push(res)
+		//apply modifications to var according to opts
+		if(generated.include_code && !opts.ignore_includes)
+			generated.include()
 
-	return res
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@method precode
-@desc updates precode_, returns pre-code sentences in translated text
-	format, using sentences_precode
-@return translated pre-code sentences
-*/
-precode: function (cached) {
-	if( !this.isRoot() )
-		this.rootScope.precode(cached)
+		if(opts.ignore_inline)
+			delete generated.function_inline
 
-	if(cached) return this.precode_
-	return this.precode_ = this.sentences_precode.join(' \n')
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@method addPrecode
-@desc adds a sentence to the rootScope.sentences_precode array
-*/
-addPrecode: function(code) {
-	if( !this.isRoot() )
-		this.rootScope.addPrecode.apply(this, arguments)
+		if(opts.built_in)
+			generated.built_in = true
 
-	if(!(code instanceof String || typeof code == 'string'))
-		throw 'no-string type in addPrecode'
+		this.built_in.variables[generated.identifierToken()] = generated
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@desc Gets a dynamic_variable matching a variable name or general qualificated
+	name.:
+	@param {String} varname - Target variable name
+	@return {Variable} Return null if it cant be find
+	*/
+	getVariableDynamic: function(varname) {
+		//todo: implement different varname formats (qualifiers)
+		var dyns = this.built_in.dynamic_variables, dyn,
+			res
 
-	this.sentences_precode.push(code)
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@method addSentence
-@desc adds a sentence to the current scope.sentences array
-*/
-addSentence: function(sentence) {
-	sentence.number = this.sentences.push[sentence];
-},
-/**
-@memberof NEngine.GLNSLCompiler.Scope
-@method addBuiltinGLSL
-@desc generates the built-in variables of the scope. Those objects arent
- 	a singleton in case of multiple codes on different versions of GLSL, like
-	keep generating those maps dynamically.
-*/
-addBuiltinGLSL: function() {
-	var variables = {
+		for(dyn in dyns) {
+			dyn = dyns[dyn]
+			dyn.regexp.lastIndex = 0
+			res = dyn.regexp.exec(varname)
+
+			if( res )
+				return {generator:dyn, reg_res:res}
+		}
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@desc If this scope is the scopeRoot or not
+	@return {Boolean} isScopeRoot
+	*/
+	isRoot: function() {
+		return !this.rootScope || (this.rootScope == this)
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@desc Ensures that a given type has its cache variables instantiated for
+	operations upon it, this is useful only during translation and final
+	code writting, indexes them by codename. <br/>
+	Adds them to variables array (avoid colisions) and cacheVariables
+	(inform cache creation) sentence array. This affects only rootScope
+	(only a single copy of each typecache is necessary) <br/> <br/>
+	cache variable names: ___GLNSL_cache_(typeCodeName)_(cacheindex)
+	@param {Variable} variable - The variable to ensure cache, needs to
+	have its qualifiers, and type_data set
+	*/
+	ensureTypeCache: function ensureTypeCache(variable) {
+		if( !this.isRoot() )
+			return this.rootScope.ensureTypeCache(variable)
+
+		var cache, i, l, type=variable.data_type,
+			codename = type.codename
+
+		if(cache = this.cacheVariables[codename]) return
+
+		cache = this.cacheVariables[codename] = {
+			vars: [],
+			history: []
+		}
+
+		//create cache
+		for(i=0,l=3; i<l; i++) {
+			cache.vars.push(
+				Variable({
+					scope: this,
+					type: 'primitive',
+					qualifiers: [null, 'none',  //those arent relevant to cache scoping
+						variable.qualifiers[2],
+						variable.qualifiers[3]],
+					name: '___GLNSL_cache_'+ codename +'_'+i
+				})
+			)
+			cache.history[i] = cache.vars[i]
+		}
+
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@desc Iterates over the cached variables to avoid dataloss on
+	two-handed cache operations (they require 3 cache vars)
+	@param {Variable} variable - Contains datatype description
+	(precision+datatype)
+	@return {Variable} variable - The cache variable you needed
+	*/
+	getTypeCache: function getTypeCache(variable) {
+		this.ensureTypeCache(variable)
+		var codename = variable.data_type.codename,
+			cache = this.cacheVariables[codename],
+			res = cache.history.shift()
+
+		cache.history.push(res)
+
+		return res
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@method precode
+	@desc updates precode_, returns pre-code sentences in translated text
+		format, using sentences_precode
+	@return translated pre-code sentences
+	*/
+	precode: function (cached) {
+		if( !this.isRoot() )
+			this.rootScope.precode(cached)
+
+		if(cached) return this.precode_
+		return this.precode_ = this.sentences_precode.join(' \n')
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@method addPrecode
+	@desc adds a sentence to the rootScope.sentences_precode array
+	*/
+	addPrecode: function(code) {
+		if( !this.isRoot() )
+			this.rootScope.addPrecode.apply(this, arguments)
+
+		if(!(code instanceof String || typeof code == 'string'))
+			throw 'no-string type in addPrecode'
+
+		this.sentences_precode.push(code)
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@method addSentence
+	@desc adds a sentence to the current scope.sentences array
+	*/
+	addSentence: function(sentence) {
+		sentence.number = this.sentences.push[sentence]
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Scope
+	@method addBuiltinGLSL
+	@desc generates the built-in variables of the scope. Those objects arent
+	 	a singleton in case of multiple codes on different versions of GLSL, like
+		keep generating those maps dynamically.
+	*/
+	addBuiltinGLSL: function() {
+		var variables = {
+				/**
+					THose variables get translated directly
+				*/
+				'gl_Position': new Variable({
+					type: 'primitive',
+					qualifiers: []
+				}),
+				//TODO: change this into a function initiating first non-dynamic
+				//built in functiomns from dyn-built-in defined ones
+				// 'length' new Variable({
+				// 	type: 'function'
+				// })
+			},
 			/**
-				THose variables get translated directly
-			*/
-			'gl_Position': new Variable({
-				type: 'primitive',
-				qualifiers: []
-			}),
-			//TODO: change this into a function initiating first non-dynamic
-			//built in functiomns from dyn-built-in defined ones
-			// 'length' new Variable({
-			// 	type: 'function'
-			// })
-		},
-		/**
-	  	  dictioary of built-in variables that are generated on request
+		  	  dictioary of built-in variables that are generated on request
 
-	  	  each one has:
-	  	  	matching regexp
-	  		generator functiom
-	  			generator functions have to be called from a scope
-	  	  */
-		dyn_variables = {
-			/**
-			N-Vector constructor function
-			translates into a n-dim vector constructor function
-			*/
-			'vecn': {
-				regexp: /vec(\d+)/gi,
-				//generator function: scopevarinit is the tag
-				//to recognize those generator functions
-				gen: function vecn_constructor_scopevarinit(reg_res, opts) {
-					var r =  new Variable({
-						type: 'function',
-						name: reg_res[0]
+		  	  each one has:
+		  	  	matching regexp
+		  		generator functiom
+		  			generator functions have to be called from a scope
+		  	  */
+			dyn_variables = {
+				/**
+				N-Vector constructor function
+				translates into a n-dim vector constructor function
+				*/
+				'vecn': {
+					regexp: /^([bi]*vec)(\d+)$/gi,
+					//generator function: scopevarinit is the tag
+					//to recognize those generator functions
+					gen: function vecn_constructor_scopevarinit(reg_res, opts) {
+						var r =  new Variable({
+							type: 'function',
+							name: reg_res[0]
 						})
 
-					r.function_inline = {
-						type: 'fallback_parametrization',
-						fallback: 'vec'
+						r.function_inline = {
+							type: 'fallback_parametrization',
+							fallback_max_dim: 4,
+							fallback: reg_res[1]
+						}
+
+						return r
 					}
-					console.log('builded built-in vector constructor', reg_res,
-						r)
-					return r
+				},
+				'matn': {
+					regexp: /mat(\d+)/gi,
+					gen: function vecn_constructor_scopevarinit(reg_res) {
+						var r =  new Variable({
+							type: 'function',
+							name: reg_res[0]
+						})
+
+						r.function_inline = {
+							type: 'fallback_parametrization',
+							fallback_max_dim: 4,
+							fallback: 'mat'
+						}
+
+						return r
+					}
 				}
 			},
-		},
-		//dynamically defined already built-in variables
-		already_built_in = [],
-		variable, dyn_variable,
-		this_variables = this.built_in.variables,
-		this_dyn_variables = this.built_in.dynamic_variables,
-		self = this;
+			//dynamically defined already built-in variables
+			already_built_in = [],
+			variable, dyn_variable,
+			this_variables = this.built_in.variables,
+			this_dyn_variables = this.built_in.dynamic_variables,
+			self = this
 
-	//ad basic variables
-	for(variable in variables)
-		this_variables[variable] = variables[variable]
+		//ad basic variables
+		for(variable in variables)
+			this_variables[variable] = variables[variable]
 
-	for(dyn_variable in dyn_variables)
-		this_dyn_variables[dyn_variable] = dyn_variables[dyn_variable];
+		for(dyn_variable in dyn_variables)
+			this_dyn_variables[dyn_variable] = dyn_variables[dyn_variable];
 
-	//add already built-in dynamically defined variables
-	(['mat', 'vec', 'ivec', 'bvec']).forEach(function(prefix){
-		already_built_in = already_built_in.concat([2,3,4].
-			map(function(e){return prefix+e}))
-	})
+		//add already built-in dynamically defined variables
+		(['mat', 'vec', 'ivec', 'bvec']).forEach(function(prefix){
+			already_built_in = already_built_in.concat([2,3,4].
+				map(function(e){return prefix+e}))
+		})
 
-	console.log('right here', already_built_in)
+		console.log('right here', already_built_in)
 
-	//for each identifier of the already built in variables defined in dyn-vars
-	already_built_in.forEach(function( built_in ) {
-		self.ensureVariableDynamic( built_in,
-			{ ignore_includes: true })
-	})
+		//for each identifier of the already built in variables defined in dyn-vars
+		already_built_in.forEach(function( built_in ) {
+			self.ensureVariableDynamic( built_in,
+				{ ignore_includes: true, built_in: true })
+		})
 
-	console.log('added built-in', this.built_in)
+		console.log('added built-in', this.built_in)
 	},
 }
 

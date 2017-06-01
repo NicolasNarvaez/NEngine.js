@@ -100,7 +100,8 @@ Sentence.prototype = {
 			this.type = 'declaration'
 
 			//verify sentence
-			// format: invariant, storage, precision, name
+			// format: invariant, storage, precision, datatype,
+			// content (converted to name, before var const)
 			res.shift()
 			res[0] = res[0] || null
 			res[1] = res[1] || 'none'
@@ -123,12 +124,13 @@ Sentence.prototype = {
 
 			while(res = re.exec(str)) {
 
-				//construct variable
+				//construct variable (copy-in memory qualifiers)
 				opts.sentence_place = variables.length
-				opts.name = (/\w+/g).exec(res)[0]
+				opts.qualifiers = opts.qualifiers.concat([])
+				opts.qualifiers[4] = (/\w+/g).exec(res[0])[0]
 				variable = new Variable(opts)
 				variables.push(variable)
-				console.log('variable declared:',res, opts, variable)
+				console.log('sentence: variable declared:',res, opts, variable, (/^\s*\w+/g).exec(res[0])[0])
 
 				//construct associated expression
 				expression = null
@@ -137,7 +139,7 @@ Sentence.prototype = {
 						sentence: this,
 						src: str_map.interpolate(res[0]),
 					})
-					console.log('variable expression: ',expression)
+					console.log('sentence: expression: ', expression, str_map, res[0], str_map.interpolate(res[0]))
 				}
 				this.components.push(expression)
 			}
@@ -155,14 +157,13 @@ Sentence.prototype = {
 	@return {Boolean}
 	*/
 	needsTranslation: function() {
-		var needs = false
 		if(this.type == 'declaration' || this.type == 'expression') {
 			this.variables.forEach(function(e){
-				if(e.translatable) needs = true
+				if(e.translatable) return true
 			})
 		}
 
-		return needs
+		return false
 	},
 	/**
 	@memberof NEngine.GLNSLCompiler.Sentence
