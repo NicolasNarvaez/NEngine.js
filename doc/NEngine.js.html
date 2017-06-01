@@ -2,22 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: NEngine.js</title>
+    <title>NEngine.js - Documentation</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: NEngine.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NEngine.Camera.html">Camera</a></li><li><a href="NEngine.Entity.html">Entity</a><ul class='methods'><li data-type='method'><a href="NEngine.Entity.html#set">set</a></li></ul></li><li><a href="NEngine.geometry.Geom.html">Geom</a><ul class='methods'><li data-type='method'><a href="NEngine.geometry.Geom.html#concat">concat</a></li><li data-type='method'><a href="NEngine.geometry.Geom.html#twglize">twglize</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.CodeTree.html">CodeTree</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.CodeTree.html#interpret">interpret</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.CodeTree.html#translate">translate</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.CodeTree.html#write">write</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Expression.html">Expression</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Expression.html#interpret">interpret</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Expression.html#replicates">replicates</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Expression.html#translate">translate</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Expression.html#vartype">vartype</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Scope.html">Scope</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.addBuiltinGLSL">addBuiltinGLSL</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.addPrecode">addPrecode</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.addSentence">addSentence</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.ensureTypeCache">ensureTypeCache</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.ensureVariableDynamic">ensureVariableDynamic</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.getTypeCache">getTypeCache</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.getVariable">getVariable</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.getVariableBuiltin">getVariableBuiltin</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.getVariableDynamic">getVariableDynamic</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.isRoot">isRoot</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.precode">precode</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.setParent">setParent</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#.unsetParent">unsetParent</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Sentence.html">Sentence</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Sentence.html#.interpret">interpret</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Sentence.html#.needsTranslation">needsTranslation</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Sentence.html#.translate">translate</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Shader.html">Shader</a></li><li><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html">SymbolTree</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#interpolate">interpolate</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#root">root</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#strip">strip</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#symbols">symbols</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Variable.html">Variable</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Variable.html#.config">config</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Variable.html#.declare">declare</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Variable.html#.identifierToken">identifierToken</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Variable.html#.translate">translate</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Vartypes.VarType.html">VarType</a></li><li><a href="NEngine.Obj.html">Obj</a></li><li><a href="NEngine.SubSpace.html">SubSpace</a></li></ul><h3>Namespaces</h3><ul><li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">geometry</a><ul class='methods'><li data-type='method'><a href="NEngine.geometry.html#.axis%257Bn%257D">axis{n}</a></li><li data-type='method'><a href="NEngine.geometry.html#.boundingBox">boundingBox</a></li><li data-type='method'><a href="NEngine.geometry.html#.boundingSphere">boundingSphere</a></li><li data-type='method'><a href="NEngine.geometry.html#.clone">clone</a></li><li data-type='method'><a href="NEngine.geometry.html#.concat">concat</a></li><li data-type='method'><a href="NEngine.geometry.html#.forEach">forEach</a></li><li data-type='method'><a href="NEngine.geometry.html#.grid%257Bn%257D">grid{n}</a></li><li data-type='method'><a href="NEngine.geometry.html#.octahedron%257Bn%257D">octahedron{n}</a></li><li data-type='method'><a href="NEngine.geometry.html#.simplex%257Bn%257D">simplex{n}</a></li><li data-type='method'><a href="NEngine.geometry.html#.twglize">twglize</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.html">GLNSLCompiler</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.html#.compile">compile</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Util.html">Util</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.html#.is_scaped">is_scaped</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.html#.serialize">serialize</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Util.Grammar.html">Grammar</a></li><li><a href="NEngine.GLNSLCompiler.Vartypes.html">Vartypes</a></li><li><a href="NEngine.Physic.html">Physic</a></li></ul><h3>Global</h3><ul><li><a href="global.html#translate">translate</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">NEngine.js</h1>
+    
 
     
 
@@ -29,7 +41,7 @@
             <pre class="prettyprint source linenums"><code>try {
   if(twgl)  //requires
     try {
-      (function() {
+      (function NEngineBootStrap () {
 
         var global_root = this;
 
@@ -39,7 +51,7 @@
   A n-dimensional, full featured graphical-physical engine for the web.
 &lt;br/>&lt;br/>
 
-  ## Characteristics:
+  ## Features:
 &lt;br/>&lt;br/>
 
   ### N-dimensional geometry library and N-dimensional physical library:
@@ -64,7 +76,7 @@
 
   ### Really fast:
   &lt;br/>
-  For all of its capabilities it has a good performance, that can work very good also in a smartphone, thanks to NMath optimization system on which it compiles extremely optimized hardcoded math operations in the given dimension in real time. Anyway, i need support improving the data structures in physic system and overall engine design because i´m not an expert.
+  For all of its capabilities it has a good performance, that can work very good also in a smartphone, thanks to NMath optimization system on which it compiles extremely optimized hardcoded math operations in the given dimension in real time. Anyway, i need support improving the data structures in physics system and overall engine design because i´m not an expert.
 &lt;br/>&lt;br/>
 
   ## How it works:
@@ -100,13 +112,13 @@ function projection(out,va,vb) {
   vec4.scale(out, vb, vec4.dot(va,vb)/vec4.length(va));
 }
 
-global_root.NEngine = (function() {
+global_root.NEngine = (function NEngineInit () {
 
   var math, Obj, renderer, geometry,
     util,
     Engine,
     Frame,
-    Physic,
+    Physics,
     Camera,
     Renderer,
     //TODO Shader logic, optimization, generation, syntax, definition
@@ -459,8 +471,6 @@ geometry = (function() {
   @property {Float} boundingBoxMin - normally, shortest vertex component
   @property {Float} boundingBoxMax - normally largest vertex component
   @property {Float} boundingSphereRadius - bigger distance to a vertex
-
-  @property {Object} Prototype
   */
   function Geom() {
     this.boundingBoxMin = 0;
@@ -1191,7 +1201,7 @@ Camera = (function() {
 geometry, material, collision config.
 &lt;br/>&lt;br/>
 Its extremely useful to represent a dynamic object that can interact physically
-with its environment, can be pluged into physic spaces and have meta-data.
+with its environment, can be pluged into physics spaces and have meta-data.
 
 @prop {Integer} dim - Dimensionality of Ent.
 @prop {Geom} geometry - The visual geometry for the entity
@@ -1241,7 +1251,7 @@ Entity = (function() {
     module.
     @desc Requires that the entity is previously registered on a space node.
     &lt;br/>&lt;br/>
-    Sets a physic type on the entity, using a module object, module name, or
+    Sets a physics type on the entity, using a module object, module name, or
     module enum. Checks whether the objects array in the entity container (a
     SpaceNode) has the needed object type array instantiated, and conects this
     entity to it so it will be processed by the processors of the given type.
@@ -1255,9 +1265,9 @@ Entity = (function() {
 
       //sanitizes type parameter
       if(type instanceof String || typeof type == 'string')
-        type = NEngine.Physic.PhysicModules[type];
+        type = NEngine.Physics.PhysicModules[type];
       else  if(type instanceof 'Number' || typeof type == 'number')
-        type = NEngine.Physic.PhysicModulesEnum[type];
+        type = NEngine.Physics.PhysicModulesEnum[type];
 
       //sanitize objects array in ent.container
       objects = container.objects[type.i];
@@ -1848,7 +1858,7 @@ renderer = (function() {
 
           twgl.setUniforms(shader_info, uniforms);
           if(config.stereo_dim) {
-            if(i === 0)
+            if( (i === 0 &amp;&amp; config.stereo_crossed) || (i !== 0 &amp;&amp; !config.stereo_crossed) )
               context.viewport(0, 0, canvas.width/2, canvas.height);
             else
               context.viewport(canvas.width/2, 0, canvas.width/2, canvas.height);
@@ -1881,6 +1891,8 @@ renderer = (function() {
     render: render,
     canvas: canvas,
     obj_list: obj_list,
+    PMatrix: PMatrix,
+    PMatrix3: PMatrix3,
     camera: camera,
     camera3: camera3,
     math: math,
@@ -1961,545 +1973,1612 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-GLNSLCompiler = (function() {
-  var GrammarUtil,
-    Vartypes;
+/**
+@namespace GLNSLCompiler
+@memberof NEngine
+@desc Contains all related to GLNSLCompiler (:3) classes, functions and
+  utilities \n \n
+  Using the compiler: \n
+  Just call "compile(code, config)", extra information is
+  on the function docs
+  TODO: scope resolution, currently only non-creating scope sentences are
+  translated, like non [ifs, fors, functions, etc]
+*/
+GLNSLCompiler = (function GLNSLCompilerLoader() {
+	var module = {}
 
+	/**
+@namespace Util
+@memberof NEngine.GLNSLCompiler
+@desc General utilities, that could be rehusable outside this application,
+	like glsl grammar dictionaries, or more atomic and agnostic
+	transcompiling utils.
+*/
+var Util = (function UtilLoader() {
+/**
+@namespace Grammar
+@memberof NEngine.GLNSLCompiler.Util
+@desc Contains glsl grammar definition, useful grammar lists. TODO: make it
+	to at least reflect real GLSL
+*/
+var Grammar = (function(){
+	var grammar_lists, grammar_
+
+	grammar_ = {
+		identifier: '[_a-zA-Z][_\\w]*'
+	}
+
+	grammar_lists = {
+		datatypes: [
+			'void',
+			'bool',
+			'int',
+			'float',
+			'sampler2D',
+			'samplerCube',
+			'vec.*\\s',
+			'bvec.*\\s',
+			'ivec.*\\s',
+			'mat.*\\s',
+			'mat.*\\s',//n*m matrix
+			'[\\w\\s]+["\']', //dynamic type
+		],
+		storage_qualifiers: [
+			'const',
+			'attribute',
+			'uniform',
+			'varying',
+		],
+		precision_qualifiers: [
+			'highp',
+			'mediump',
+			'lowp',
+		]
+	}
+
+	return {
+		grammar_lists: grammar_lists,
+		grammar_: grammar_,
+	}
+})()
+
+/**
+@memberof NEngine.GLNSLCompiler.Util
+@desc removes extra spaces and line feeds
+*/
+function serialize(str) {
+	var i, l, post = ''
+
+	str = str.replace(/\n/ig, ' ')
+
+	for(i = 0, l = str.length; i &lt; l; i++) {
+		if(!(str[i] == ' ' &amp;&amp; post[post.length-1] == ' '))
+			post += str[i]
+	}
+
+	return post
+}
+/**
+@memberof NEngine.GLNSLCompiler.Util
+@desc returns if given char is scaped or not
+*/
+function is_scaped(src, i) {
+	var scape = 0
+	while(src[i-scape-1] == '\\') scape++
+	return scape%2 != 0
+}
+
+/**
+@memberof NEngine.GLNSLCompiler.Util
+@class SymbolTree
+@desc This was created in a moment of despair. Now i cant find a use to it...
+	mmmm, maybe just a middle-level tool
+	&lt;br/>
+	Helps handling source mapping, stripping, scaping, etc. Provides
+	functions to translate on its context (subsections of it, etc) like
+	interpolate. &lt;/br> &lt;/br>
+	the level of source mapping it makes is low, doesnt create recursive
+	SymbolTree trees, but does create symbols trees (an internal shepherd would
+	allow it, by indexing-trees, avoiding collisions on different
+	symbol-tree tags)
+
+@prop {String} prefix - The prefix of the tree symbols in the parsed text
+@prop {String} src - Initial src of the tree
+@prop {Object&lt;Symbol_key, str>} symbols - Maps mapped source symbols into
+  the src, each symbol contains the mapping into src from mapped
+@prop {Integer} symbols_count - The number of symbols in the dictionary
+
+@param {String} src -
+@param {String} prefix -
+*/
+function SymbolTree(src) {
+	if(!(this instanceof SymbolTree)) return new SymbolTree(src)
+
+	this.prefix = '' + this.shepherd_length++
+
+	this.src = src
+	this.symbols = {root: src}
+	this.symbols_count = 0
+}
+SymbolTree.prototype = {
+	shepherd_length: 0,
+	symbol_delimiter_pairs : ['"','"'],
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc A dict of &lt;left-delimiter, [left-delimiter, right-delimiter]> ,
+		for example: delimiter_pairs['{'] -> ['{', '}']
+	*/
+	delimiter_pairs: {
+		'(': ['\\(','\\)'],
+		'{': ['\\{','\\}'],
+		'[': ['\\[','\\]'],
+	},
+
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc root tree symbol
+	*/
+	root: function root() {
+		return this.symbols['root']
+	},
+
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc returns symbols found in str as an array of the regexp exec results
+	@return {Array&lt;RegExp_result>
+	*/
+	symbols: function symbols(str) {
+		var syms = [], sym,
+			reg = RegExp(/\"(.*?)\"/gi),
+			res
+
+		while(res = reg.exec(str))
+			if(sym = this.symbols[res[1]]) syms.push(sym)
+
+		return syms
+	},
+
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc interpolates all the symbols in the str
+	@param {String} str - string to inteprolate
+	@param {Integer} depth - Number of times to interpolate string,
+		values none == -1 : interpolates until no more variables are found
+	@return {String}
+	*/
+	interpolate: function interpolate(str, depth) {
+		var syms = this.symbols,
+			res, regexp = RegExp(''+
+				this.symbol_delimiter_pairs[0] +
+				'('+this.prefix+'_.*)'+
+				this.symbol_delimiter_pairs[1]
+				, 'gi')
+
+		depth = depth || 1
+
+		while( (res = regexp.exec(str)) &amp;&amp; ((depth == -1)? 1: depth--) )
+			str = str.replace(res[0], syms[res[1]])
+
+		return str
+	},
+
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc Takes the strings delimited by the delimiter off, into a mapping
+	avoids scaped delimiters and transparently resolves nested expressions
+	including them in each strip ( 'aaa(asd(ss)asd)l' => 'aaa"symbolkey"l' ),
+	stripts every encounter
+	@param {String|Array}
+		delimiter - if string, checks that delimiter on delimiter_pairs
+	@param {Boolean} exclude - exclude parenthesys into symbol value or
+		exclude
+	*/
+	strip: function strip(delimiter, exclude) {
+		var regexp, res, res_list=[],
+			map = this.root(),
+			symkey, symval, sym, self = this
+
+		if(delimiter instanceof String || typeof delimiter == 'string')
+			delimiter = this.delimiter_pairs[delimiter] || delimiter
+
+
+		if(delimiter instanceof Array) {
+			//generates list of match results, then foreach replaces with
+			//placeholder and adds index entry
+			regexp = delimiter[0]+'(.*)'+delimiter[1]
+			regexp = new RegExp(regexp, 'gim')
+
+			while(res = regexp.exec(map))	res_list.push(res)
+
+			res_list.forEach(function(e) {
+				symkey = self.prefix+'_'+self.symbols_count
+				sym = self.symbol_delimiter_pairs[0] +
+					symkey +
+					self.symbol_delimiter_pairs[1]
+
+				symval = (exclude)? e[1]: e[0]
+
+				map = map.replace( symval, sym)
+				self.symbols[symkey] = symval
+
+				self.symbols_count++
+			})
+
+		}
+		this.symbols['root'] = map
+		return this
+	},
+}
+
+return {
+	serialize : serialize,
+	is_scaped : is_scaped,
+	SymbolTree : SymbolTree,
+	Grammar : Grammar,
+}
+})()
+
+	module.Util = Util
+	 var Expression = (function ExpressionLoader() {
+/**
+@memberof NEngine.GLNSLCompiler
+@class Expression
+@desc Used to create recursive translable expressión trees
+	a and b point to expresions (variable expression) and in
+	operator == null this.a contains a variable ("literal expression")
+	if operator == 'function' then a points to function and b to parametters
+	expressions. If src is given, executes interpret on exit
+
+
+@prop {String} src - source code
+@prop {String} content - str content of the expression
+@prop {Boolean} inside_parenthesis=false - Tells if expression is inside
+	parenthesis. this.content contains the unparenthesized version
+
+@prop {Sentence} sentence - The sentence that contains the expression
+@prop {Scope} scope - expression scope
+
+@prop {(Variable|Expression)} a - variable, function or expression
+@prop {(Variable|Expression)} b - variable, expression or parameters
+	expression array
+@prop {String} operator - the operator if any, or 'function'
+
+@param {Object} opts - options object
+@param {String} opts.src=null
+@param {Sentence} opts.sentence=null
+@param {Scope} opts.scope=sentence.scope
+
+@param {Mixed} opts.a=null
+@param {Mixed} opts.b=null
+@param {String} opts.op=null - operator
+*/
+function Expression(opts) {
+	this.src = opts.src || null
+	this.content = null
+	this.inside_parenthesis = false
+
+	this.sentence = opts.sentence || null
+	this.scope = opts.scope || opts.sentence.scope || null
+
+	this.a = opts.a || null
+	this.b = opts.b || null
+	this.operator = opts.op || null
+
+	if(this.src)
+		this.interpret()
+}
+
+Expression.prototype = {
+	/**
+	@memberof NEngine.GLNSLCompiler.Expression.prototype
+	@desc each element its a regexp + operator identifier
+	for each expression, there are 3 parenthesis operator a, operator b, and
+	operation
+	*/
+	operators: [
+		{
+			id: '=',
+			//EQUALITY REQUIRES THAT LEFT SIDE OPERAND ITS THE VARIABLE
+			//CONTAINER AND NOT ITS VALUE, FOR ELEMENT SELECTION, THIS CHANGES
+			//NORMAL TRANSLATION.
+			reg: /([^\+\-\^\|&amp;!=&lt;>%\*/](?:\+\+)*(?:--)*)(=)([^=])/gi,
+		},
+		{
+			id: '+',
+			reg: /([^\+](?:\+\+)*)(\+)([^\+=])/gi,
+		},
+		{
+			id: '-',
+			reg: /([^\-](?:--)*)(-)([^-=])/gi,
+		},
+		{
+			id: '*',
+			reg: /()(\*)([^=])/gi,
+		},
+		{
+			id: '/',
+			reg: /()(\/)([^=])/gi,
+		},
+	],
+
+	/**
+	* @memberof NEngine.GLNSLCompiler.Expression.prototype
+	* @desc the variable type of the object returned by the expressión
+	*/
+	vartype: function vartype() {
+
+		return {
+			replicates: false
+		}
+	},
+	/**
+	* @memberof NEngine.GLNSLCompiler.Expression.prototype
+	* @desc indicates wheter the operands-operand combination implicates a
+	* right-operator replication,this is for optimization purposes
+	* avoiding expresion operations multiplication on after-compilation
+	* sentences
+	*/
+	replicates: function replicates() {
+
+	},
+	/**
+	* @memberof NEngine.GLNSLCompiler.Expression.prototype
+	* @desc first, if this is a parenthesis, cuts the borders so it can process
+	* the content. Then, converts all parenthesis into special variables
+	* so they dont interfere with operators on this precedence layer
+	* then splits the text by the lower precedence operator, and starts
+	* the new expressions sending them the code with the parenthesis instead
+	* of the variables
+	*/
+	interpret: function interpret() {
+		var re, res, i, l, self = this,
+			src = this.src, src_map, arguments_map,
+			operators = this.operators, op
+
+		console.log('variable expression input: ', this.src )
+
+		//delete containing parenthesis and mark this as being
+		//inside_parenthesis
+		re = /^\s*\((.*)\)\s*$/gi
+		while( res = re.exec(src) ) {
+			this.inside_parenthesis = true
+			src = res[1]
+		}
+		this.str = src
+
+		//create parenthesis table
+		src_map = Util.SymbolTree(src)
+		src_map.strip('(').strip('[')
+		src = src_map.root()
+
+		//split by the lower operator precedence, if found, start resolving
+		//recursively
+		for(i = 0, l = operators.length; i &lt; l; i++) {
+			op = operators[i]
+			res = op.reg.exec(src)
+
+			if(res) {
+				this.operator = op
+
+				this.a = new Expression({
+					sentence: this.sentence,
+					src: src_map.interpolate(
+					src.substr(0, res.index+res[1].length) )
+				})
+
+				this.b = new Expression({
+					sentence: this.sentence,
+					src: src_map.interpolate(
+					src.substr(res.index+res[1].length +res[2].length) ),
+				})
+
+				i=l
+			}
+		}
+
+		//when there was no operator found, this is a variable or a literal
+		//or a function
+		if(!this.a) {
+			res = (/^\s*([_a-z][_a-z0-9]*)\s*(\(([^]*)\))*/gi).exec(src)
+			console.log('variable exp', src, res)
+
+			if(res &amp;&amp; res[1] &amp;&amp; !src.match('\\[')) {	//isnt a literal
+				this.a = this.scope.getVariable(res[1])
+				this.op = 'variable'
+				console.log('getting variable', res[1], this.a)
+
+				if(res[2]) { //function
+					this.b = src_map.interpolate(res[3])	//get arguments
+					//scape expressions
+					arguments_map = new SymbolTree(this.b).strip('(').strip('[')
+					//map expressions from splited arguments
+					this.b = arguments_map.root().split(',').map(function(e) {
+						return new Expression({
+							sentence: self.sentence,
+							src: arguments_map.interpolate()
+						})
+					})
+
+					this.op = 'function'
+				}
+			}
+			else {
+				this.a = src	//literal
+				this.op = 'literal'
+			}
+		}
+
+	},
+	/**
+	* @memberof NEngine.GLNSLCompiler.Expression.prototype
+	* @desc returns an expression translation object
+	* it contains:
+	*	already translated sentences, that go before
+	*	current translating sentence (can be an array)
+	*	current vartype of the expression
+	*/
+	translate: function() {
+
+	},
+}
+
+return Expression
+})()
+/*
+TODO:
+Extremly important (next version deps):
+	- define constructor dynamic_variables (ready)
+	- connect dynamic_variables to getVariable (current)
+	- test first variable declaration translations
+	- translate first expressions
+	- start translating full code
+
+	Added variables.identifierTOken:
+		suṕports multiple function on same variable definition
+		empty qualifiers encode free-vaue generalizattion on generators
+		and scope
+
+	For funcion translation:
+		treat return value as parametter if bigger (maybe
+			already defined caches)
+		add function_inline object to inline-translating functions:
+			function_inline: {
+				[translate: ] //custom translator
+				type: 'fallback_parametrization' //vec5() to
+												//	vec4, type 1: 1 sentences
+				fallback: 'vec'	//each vecn parametter
+			}
+			used in translate
+		add general function call expression translation:
+			parametrer expansion
+		add function identifier token to identifiers dict:
+			calculated from qualifiers (general identifier function from
+			variable, takes qualifiers, name params), add function to generate
+			regexp to those tokens (for dyn-built-in regexp prop) from general
+			qualifiers
+			new token proposal: function:qualifier1,qualifier2,..
+			use old syntax on no candidate as fallback
+				new politik be lik:
+					full function qualified identifier: get da
+					just name -> match any qualifications :3
+		add dynamic built-in function include() function, called in built-in
+			function creation, adds function code to scope.precode
+		add firts built-in from dyn-built-in functions (standard defined)
+
+
+Important (relevant for stability) (cant the remember ths note):
+	- check scope of builtin variables and getVariable interaction
+		with getVariableBuiltin
+
+*/
+
+	module.Expression = Expression
+	var Variable = (function VariableLoader() {
+
+
+/**
+@memberof NEngine.GLNSLCompiler
+@class Variable
+@desc Represents a variable in a scope
+
+@prop {Sentence} sentence - The sentence containing var declaration
+@prop {Integer} sentence_place - Place in the declaration sentence
+@prop {Scope} scope - Container Scope
+
+@prop {String} type - "primitive" or "function"
+@prop {Object} type_data: object with more specific datatype data
+  for primitives is on the format provided by Vartypes.types
+@prop {Array} qualifiers - array with datatype dependant data &lt;br/>
+  primitives: variable declaration qualifiers &lt;br/>
+      format: [invariant, storage, precision, typeCodeName] &lt;br/>
+  function: return and parameters variables qualifiers &lt;br/>
+      format: [return_qlfs, params__qlfs [..]]
+@prop {String} value - Given value, if this is a literal
+  variable (value variable)
+@prop {String} name - Variable name
+
+	@param {Object} opts - The options object
+	@param {Sentence} opts.sentence - The sentence containing var declaration
+	@param {Integer} opts.sentence_place -
+	@param {Scope} opts.scope -
+
+	@param {String} opts.type - "primitive" or "function"
+	@param {Array} opts.qualifiers - same as same name property
+	@param {Function} opts.translate - for dynamic functions
+
+	@param {String} opts.value -
+	@param {String} opts.name -
+*/
+function Variable(opts) {
+  this.sentence = opts.sentence || null
+  this.sentence_place = opts.sentence_place || 0
+  this.scope = opts.scope || (opts.sentence)? opts.sentence.scope : null
+
+  //typological data
+  this.type = opts.type || null
+  if(opts.translate)	//respect prototype defined
+  	this.translate = opts.translate
+  this.qualifiers = opts.qualifiers || null
+  this.type_data = null
+
+  //variable specific
+  this.value = opts.value || null
+  this.name = opts.name || ''
+
+  if(this.qualifiers &amp;&amp; this.type) {
+    this.config()
+
+    if(this.name)	this.declare()
+  }
+}
+Variable.prototype = {
+	/**
+	@memberof NEngine.GLNSLCompiler.Variable
+	@desc returns the identifiers token associated to this var
+	TODO: add function token id (handles operator overloading)
+	*/
+	identifierToken: function identifierToken(qualifiers) {
+		qualifiers = qualifiers || this.qualifiers
+		return this.name
+	},
+	/**
+	@method translate
+	@memberof NEngine.GLNSLCompiler.Variable
+	@desc For dynamic functions, translates function
+	@param {Expression[]} params - the parametters as expression trees
+	*/
   /**
-  * Used to create recursive expressión trees
-  *
-  * a and b point to expresions (variable expression) and in
-  * operantor == null this.a contains a variable (literal expression)
+  @memberof NEngine.GLNSLCompiler.Variable
+  @desc Sets it type_data
   */
-  function Expression(opts) {
-    this.src = opts.src || null;
-    this.scope = opts.scope || null;
+  config: function config() {
+    if(!(this.type == 'primitive')) return
 
-    this.a = opts.a || null;
-    this.b = opts.b || null;
-    this.operator = opts.op || null;
-    //if operator == "function"
-    this.function = opts.function || null;
+    var datatype, types = VarTypes.types,
+      type, prim_qualifier = this.qualifiers[3],
+      reg_res
 
-    if(this.src)
-      this.interpret();
-  }
+    for(datatype in types) {
+      type = types[datatype]
+      reg_res = RegExp(type.exp).exec(prim_qualifier)
+      if(reg_res)
+        this.type_data = type.constructor( this.qualifiers, this )
 
-  Expression.prototype = {
-    /**
-    * each element its a regexp + operator identifier
-    * for each expression, there are 3 parenthesis operator a, operator b, and
-    * operation
-    */
-    operators: [
-      {
-        id: '=',
-        //EQUALITY REQUIRES THAT LEFT SIDE OPERAND ITS THE VARIABLE
-        //CONTAINER AND NOT ITS VALUE, FOR ELEMENT SELECTION, THIS CHANGES
-        //NORMAL TRANSLATION.
-        reg: /[^\+\-\^\|&amp;!=&lt;>%\*/](?:\+\+)*(?:--)*(=)[^=]/gi,
-      },
-      {
-        id: '+',
-        reg: /[^\+](?:\+\+)*(\+)[^\+=]/gi,
-      },
-      {
-        id: '-',
-        reg: /[^\-](?:--)*(-)[^-=]/gi,
-      },
-      {
-        id: '*',
-        reg: /(\*)[^=]/gi,
-      },
-      {
-        id: '/',
-        reg: /(\/)[^=]/gi,
-      },
-    ],
-
-    /**
-    * returns te end variable type after aplication of the operation
-    */
-    vartype: function vartype() {
-
-    },
-    /**
-    * indicates wheter the operands-operand combination implicates a
-    * right-operator replication,this is for optimization purposes
-    * avoiding expresion operations multiplication on after-compilation
-    * sentences
-    */
-    replicates: function replicates() {
-
-    },
-    /**
-    * first, if this is a parenthesis, cuts the borders so it can process
-    * the content. Then, converts all parenthesis into special variables
-    * so they dont interfere with operators on this precedence layer
-    * then, start from lowest precedence operators (the last executing)
-    * and splits the expression on the lower it finds into the next
-    * two expressions, then, starts the new expressions sending them
-    * the code with the parenthesis instead of the variables
-    */
-    interpret: function interpret() {
-      var re, res, i, j, l, l2, str_a, str_b
-        code,
-        c,
-        parenthesis_last,
-        parenthesis_level,
-        parenthesis,
-        parenthesis_symbol,
-        parenthesis_table = [],
-        operators = ['=', '+', '-', '*', '/'];
-
-      re = /^\s*\((.*)\)\s*$/gi;
-
-      code = this.src;
-      while( res = re.exec(code) )
-        code = res[1];
-
-      //create parenthesis table
-
-      for(i=0,l=code.length, parenthesis_level=0; i&lt;l;i++) {
-        c = code[i];
-        if(c == '(') {
-          if(parenthesis_level == 0)
-            parenthesis_last = i;
-
-          parenthesis_level++;
-        }
-        if(c == ')') {
-          parenthesis_level--;
-          if(parenthesis_level == 0) {
-            parenthesis = code.substr(parenthesis_last, i+1);
-
-            parenthesis_table.push(parenthesis);
-            parenthesis_symbol = ' $'+(parenthesis_table.length-1)+" ";
-
-            code = code.replace(parenthesis, parenthesis_symbol);
-            i = parenthesis_last + parenthesis_symbol.length - 1;
-          }
-        }
-      }
-
-      //start spliting the operators from lower precedence into higher
-
-      for(i = 0, l = code.length; i &lt; l; i++) {
-        c = code[i];
-        for(j=0, l2=operators.length; j&lt;l2; j++)
-          if(c == operators[j]) {
-
-            this.a = code.substr(0, i);
-            this.b = code.substr(i+1, code.length-i);
-
-            this.operator = operators[j];
-            this.a =
-
-            l2 = l = 0;
-          }
-      }
-
-      //when there was no operator found, this is a variable
-      if(!this.a) {
-
-      }
-    }
-  }
-
-  Vartypes = (function() {
-    var types ={
-      /**
-      *
-      */
-      vecn: {
-        exp: 'vec\d+',
-        /**
-        * creates type info from variable declaration information
-        */
-        constructor : function (data) {
-          this.size = data.datatype.match(/\d/gi);
-        },
-        /**
-        * expresion operator is an expression!!, not a variable!!
-        * expresions only contain datatype info and expresion identifier
-        * wich can be a variable identifier or a transparent temporary
-        * identifier for temporal operantions cache
-        *
-        * into_variable can be a variable name or false,indicating to
-        * return an array of the sentences without asignment instead
-        */
-        operations: {
-          '[+-]': function addminus(operation, expresion_operator, into_variable) {
-
-          }
-        }
-      },
-      matn_m: {
-        exp: 'mat\d(_\d+)',
-        constructor: function(data) {
-
-        },
-        operations: {
-          '\*': function multiply(operation, expresion_operator, into_variable) {
-
-          }
-        },
-        valueAt: function nmat_at(i,j,n) {
-          var p = j*n+i,
-            mat = Math.floor( p/16 ); //matrix holding position
-          p = mat*16 - p;
-          j = Math.floor( p/4 );
-          i = p - j*4;
-          return ''+mat+'['+i+']['+j+']';
-        }
-      }
+      break;
     }
 
-
-
-    return {
-      types: types,
-    }
-  })();
-
-  GrammarUtil = (function(){
-    var grammar_lists;
-
-    grammar_lists = {
-      datatypes: [
-        'void',
-        'bool',
-        'int',
-        'float',
-        'sampler2D',
-        'samplerCube',
-        'vec\d+',
-        'bvec\d+',
-        'ivec\d+',
-        'mat\d+',
-        'mat\d+_\d+', //n*m matrix
-      ],
-      storage_qualifiers: [
-        'const',
-        'attribute',
-        'uniform',
-        'varying',
-      ],
-      precision_qualifiers: [
-        'highp',
-        'mediump',
-        'lowp',
-      ]
-    };
-
-    return {
-      grammar_lists: grammar_lists,
-    }
-  })()
-
+    this.type_data
+  },
   /**
-  * removes extra spaces and line feeds
+  @memberof NEngine.GLNSLCompiler.Variable
+  @desc registers to the variable dictionary in the scope
+  @throws Error if its identifier was already declared
   */
-  function serialize(str) {
-    var i, l, post = '';
+  declare: function() {
+    if(!this.scope || !this.name) return
 
-    str = str.replace(/\n/ig, ' ');
-
-    for(i = 0, l = str.length; i &lt; l; i++) {
-      if(!(str[i] == ' ' &amp;&amp; post[post.length-1] == ' '))
-        post += str[i];
-    }
-
-    return post;
-  }
-
-  /**
-  * represents a variable in a scope
-  */
-  function Variable(opts) {
-    this.sentence = opts.sentence || null;
-    this.sentence_place = opts.sentence_place || -1; //wtf why?
-    this.scope = opts.scope || null;
-
-    //primitive or function
-    this.type = opts.type || null;
-    //array with datatype dependant data
-    //primitives: variable declaration qualifiers
-    //function: return and parameters variables
-    this.qualifiers = opts.qualifiers || null;
-    //object with more specific datatype data for primitives
-    //like length
-    this.type_data = null;
-    //if this is a literal variable, this will contain the value string
-    this.value = opts.value || null;
-
-    this.name = opts.name || '';
-    if(qualifiers)
-      this.declare();
-  }
-  Variable.prototype = {
-    operation: function operation() {
-
-    },
-    declare: function() {
-      if(this.scope.variables[this.name])
-        throw "variable "+this.name+" already declared";
-
-      if(this.type == 'primitive') {
-        if(this.qualifiers[3].match('vec')) {
-          this.type_data = {
-              length: Number( (/\d+$/).exec(this.qualifiers[3]) )
-          }
-          this.qualifiers[3] = 'vec';
-        }
-        if(this.qualifiers[3].match('mat')) {
-          this.type_data = {
-            x: Number( (/\d+/).exec(this.qualifiers[3]) ),
-            y: Number( (/\d+$/).exec(this.qualifiers[3]) )
-          }
-          this.qualifiers[3] = 'mat';
-        }
-      }
-
-      this.scope.variables[this.name] = this;
-    }
-  }
-
-  /**
-  * represents a single glsl sentence
-  * has inf. about variables, post-translation, and source location
-  *
-  * this.number -> the number of sentences before this plus 1;
-  * this.thisScope -> filled only on sentence-block containing sentences
-  */
-  function Sentence(opts) {
-    this.src = opts.src;
-    this.scope = opts.scope || null;
-    this.range = opts.range || null;
-    this.number = opts.number || -1;
-
-    this.type = opts.type || null;
-
-    //variables or expressions in declaration sentences
-    this.components = opts.components || [];
-    //only scope containing sentences (ifs, fors, etc)
-    this.thisScope = null;
-    //only in declaration sentences
-    this.variables = null;
+    if(this.scope.variables[this.name])
+      throw "variable "+this.name+" already declared";
 
 
-    this.out = null;
+    //register to variable scope
+    this.scope.variables[this.name] = this;
+	},
+	translate: function translate() {
+		return this.type_data.translate()
+	}
+}
+
+return Variable
+
+})()
+
+	module.Variable = Variable
+	/**
+@namespace Vartypes
+@memberof NEngine.GLNSLCompiler
+@desc Contains all operation-resolving code, dependand on the specific
+  variable type
+*/
+var VarTypes = (function() {
+/**
+@memberof NEngine.GLNSLCompiler.Vartypes
+@class VarType
+@desc Its prototype depends on the specific vartype
+@prop {Object} operations - Operation handler functions
+@prop {String} codename - A unique identifier for the vartype, calculated has
+precision + prim_type
+@prop {RegExp} type - The regexp that matches the type.
+
+*/
+var type, types ={
+	/**
+	They fill the type_data of variables, help sharing
+	code among different configurations of primitives for the same
+	primitive datatypes &lt;br/>
+
+	*/
+	vecn: {
+	  exp: /vec(\d+)/gi,
+	  /**
+	  * creates type info from variable declaration information
+	  */
+	  constructor : function (qualifiers, reg_res) {
+
+	  },
+	  /**
+	  translate this variable
+	  */
+	  translate: function translate() {
+
+	  },
+	  /**
+	  returns array containing each variable component
+	  */
+	  variable_variables: function variable_variables() {
+
+	  },
+	  operations: [
+			{
+				ops: ['[+-]'],
+				replicates: function() {
+
+				},
+				/**
+				* expresion operator is an expression!!, not a variable!!
+				* expresions only contain datatype info and expresion identifier
+				* wich can be a variable identifier or a transparent temporary
+				* identifier for temporal operantions cache
+				*
+				* into_variable can be a variable name or false,indicating to
+				* return an array of the sentences without asignment instead
+				*/
+				translate: function (operation, operator_b_translation, operator_a) {
+
+				}
+			}
+		]
+	},
+	matn_m: {
+		exp: /mat(\d+)(_(\d+))*/gi,
+		/**
+		Sets codename from variable
+		*/
+		constructor: function(qualifiers, reg_res) {
+			//if(reg_res[])
+		},
+		operations: {
+			'\*': function multiply(operation, expresion_operator, into_variable) {
+			}
+		},
+		valueAt: function nmat_at(i,j,n) {
+			var p = j*n+i,
+				mat = Math.floor( p/16 ); //matrix holding position
+
+			p = mat*16 - p;
+			j = Math.floor( p/4 );
+			i = p - j*4;
+
+			return ''+mat+'['+i+']['+j+']';
+		}
+	},
+	scalar: {
+		exp: /(bool|int|float)/gi,
+		constructor: function(qualifiers) {
+
+		}
+	},
+}
+
+/**
+Append to each type construcotr, the type name to the resulting type object
+*/
+for(type in types)
+	types[type].constructor = (function() {
+		var type_name = type,
+			type_obj = types[type],
+			type_constructor = type_obj.constructor;
+
+		function VarType(qualifiers, variable) {
+			if( !(this instanceof VarType) )	return new VarType(qualifiers, variable)
+
+			type_constructor.call(this, qualifiers)
+			this.type = type_name
+			this.variable = variable
+			this.codename = qualifiers[2] || '' + qualifiers[3]
+		}
+		VarType.prototype = type_obj
+
+		return VarType
+	})()
 
 
-    if(this.src &amp;&amp; this.scope &amp;&amp; this.number)
-      this.interpret();
-  }
-  Sentence.prototype = {
-    /**
-    * fills the sentence information interpreting the sentence str
-    * components list, its type and type related cfg,
-    *
-    * recognizes the sentence type and configures it accordingly
-    * types:  declaration, function call, expression,
-    *         null, etc
-    *     currently only types declaration, expression and null
-    *     are implemented, expression sentences include assignation
-    *       null represents an instruction that doesnt needs translation
-    *       or that does nothing at all
-    */
-    interpret: function interpret() {
-      var src = this.src, re, str, res, i, opts,
-        lists = GrammarUtil.grammar_lists;
+return {
+	types: types,
+}
+})();
 
-        //declaration
-      if( res = RegExp(
-        "\s*(invariant)+\s*("+lists.storage_qualifiers.join('|')+")*\s*"+
-        "("+lists.precision_qualifiers.join('|')+")\s*"+
-        "("+lists.datatypes.join('|')+")\s*(.*)", 'gi'
-        ).exec(src) ) {
-
-        //verify sentence
-        res.shift();
-        res[0] = res[0] || null;
-        res[1] = res[1] || 'none';
-        if(!res[2]) throw "no precision qualifier in variable declaration";
-        if(!res[3]) throw "no datatype on variable declaration";
+	module.VarTypes = VarTypes
+	var Sentence = (function SentenceLoader() {
 
 
-        //variable constructor dara
-        opts = {
-          sentence: this,
-          scope: this.scope,
-          type: 'primitive',
-          qualifiers: [res[0], res[1], res[2], res[3]],
+/**
+@memberof NEngine.GLNSLCompiler
+@class Sentence
+@desc represents a single glsl sentence has inf. about variables,
+  post-translation, and source location every range is in global (rootScope)
+  coordinates, also represents a scope in the scope chain, so it handles
+  its translation
 
-          }
+@prop {String} src - Sentence code excluding semicolon
+@prop {Scope} scope - containing scope
+@prop {Integer[]} range - the indexes that limit this.src inside source code
+@prop {Integer} number - the index of this sentence in the scope sentence list;
 
-        str = res[4];
-        re = /([^,]+)/g;
+@prop {String} type - declaration, expression (this has subtypes: f.call,
+  operation, etc), null, etc &lt;br/>
+    null represents an instruction that doesnt needs translation or that does
+    nothing at all
+@prop {Scope} thisScope - filled only on sentence-block containing sentences
+@prop {Expression|Expression[]} components - expressions in variables
+	declaration, sentences in flow modifiers
+@prop {Variable[]} variables - The variables declarated
 
-        i = 0;
-        while(res = re.exec(str)) {
-          opts.sentence_number = i++;
-          opts.name = (/\w+/g).exec(res);
-          if(res.match('=')) {
+	@param {Object} opts - The options object
+	@param {String} opts.src
+	@param {Scope} opts.scope - only scope containing sentences (ifs, fors, etc)
+	@param {Integer[]} opts.range
+	@param {Integer} opts.number
+	@param {String} opts.type
+	@param {Scope} opts.thisScope
+	@param {Expression|Expression[]} opts.components
+*/
+function Sentence(opts) {
+	this.src = opts.src
+	this.scope = opts.scope || null
+	this.range = opts.range || null
+	this.number = opts.number || -1
 
-          }
-        }
-      }
-      else if( src.match(/^\s*\w+\s*/gi) ) { //expression
+	this.type = opts.type || null
+	this.thisScope = opts.thisScope || null
 
-      }
+	this.components = opts.components || []
+	this.variables = []
+	this.strings = opts.strings || []
 
-      //this.type obnviously is null => this will not be processed in any way
-    },
-    /**
-    * generates a valid GLSL sentence (or group of sentences) that mimics the
-    * functionality on this sentence and stores it in this.out as a str
-    * it works differently on each sentence type
-    */
-    translate: function() {
-
-    }
-  }
-
-  /**
-  * represents a single scope
-  */
-  function Scope() {
-    this.rootScope = null;
-    this.parent = null;
-    this.childs = [];
-
-    this.range = null;
-    this.variables = {};
-    this.sentences = [];
-
-    this.cacheVariables = [];
-  }
-  Scope.prototype = {
-    setParent: function(parent) {
-      this.unsetParent();
-      this.parent = parent;
-      parent.childs.push(this);
-
-      this.rootScope = parent.rootScope || parent;
-    },
-    unsetParent: function() {
-      if(!this.parent) return;
-
-      this.parent.childs.splice(this.parent.childs.indexOf(this),1);
-      this.parent = null;
-    },
-    getVariable: function(varname) {
-      var link, scope = this, variable;
-
-      while(!(variable = scope.variables[varname]) &amp;&amp; scope.parent)
-        scope = scope.parent;
-
-      return variable;
-    },
-    /**
-    * ensures that a given type has its cache variables instantiated for
-    * operations upon it
-    * this is useful only during translation and final code writting
-    *
-    * adds them to variables array and cacheVariables sentence array for
-    * post-writting usage
-    */
-    ensureTypeCache: function ensureTypeCache(type) {
-      if(this != this.rootScope )
-        this.rootScope.ensureTypeCache(type)
-    }
-  }
-
-  /**
-  * represents the code structure as a scope recursive tree that contains
-  * variables and sentences
-  */
-  function CodeTree(src) {
-    this.src = src;
-    this.rootScope = null;
-    this.out = null;
-
-    if(src)
-      this.interpret(src);
-  }
-  CodeTree.prototype = {
-    /**
-    * create scope tree and fills data
-    */
-    interpret: function(src) {
-      var i, l, c,
-        sentence, sentence_number, index_a,
-        scope_parent,
-        scope_current = new Scope();
-
-      for(i = 0, l = src.length, sentence_number = 0, index_a = 0;
-          i&lt;l ; i++) {
-
-        c = src[i];
-
-        if(c == '{') {
-          scope_parent = scope;
-          scope = new Scope();
-          scope.setParent(scope_parent);
-          index_a = i+1;
-          scope.range = [i];
-        }
-        if(c == '}') {
-          scope.range.push(i);
-          scope = scope_parent;
-          index_a = i+1;
-        }
-
-        //to recognize also scope-creating sentences
-        if(c == ';' || c == '{') {
-          sentence = new Sentence({
-            src: src.substr(index_a, i-1),
-            range: [index_a, i-1],
-            number: sentence_number++,
-            scope: scope,
-            });
-
-            index_a = i+1;
-        }
-
-      }
-
-      this.rootScope = scope;
-    },
-    /**
-    * detects sentences that use glnsl syntax or datatypes and ask them to
-    * translate
-    */
-    translate: function() {
-      if(!this.rootScope) return null;
-
-    },
-    /**
-    * it uses the translated sentences versions to generate an
-    * updated src string
-    */
-    write: function() {
-
-    }
-  }
+	//result sentence
+	this.out = null
 
 
+	if(this.src &amp;&amp; this.scope &amp;&amp; this.number) {
+		this.scope.addSentence(this)
+		this.interpret()
+	}
+}
+Sentence.prototype = {
+	/**
+	@memberof NEngine.GLNSLCompiler.Sentence
+	@desc fills the sentence information interpreting the sentence str components
+	list, its type and type related cfg, recognizes the sentence type and
+	configures it accordingly currently only types declaration, expression and
+	null are implemented, expression sentences include assignation
+	*/
+	interpret: function interpret() {
+		var src = this.src, re, str, str_map, res, i, opts, srcmap,
+			lists = Util.Grammar.grammar_lists,
+			variable, variables = this.variables, expression;
 
-  function compile(src, cfg) {
-    var code_tree = CodeTree(src);
+		if ( src.match(/^\s*for/gi) ){ //for
+			this.type = 'for'
+		}
+		else if ( src.match(/^\s*while/gi) ){ //while
+			this.type = 'while'
+		}
+		else if ( src.match(/^\s*if/gi) ){ //if
+			this.type = 'if'
+		}
+		else if ( src.match(/^\s*else/gi) ){ //else
+			this.type = 'else'
+		}
+		else if ( src.match(/^\s*switch/gi) ){ //switch
+			this.type = 'switch'
+		}
+		else if (this.thisScope) {
+			//structs also are here
+			this.type = 'function'
+		}
+		/*
+		detects declaration
+		initiates scope variables
+		*/
+		else if( res = RegExp(
+				'\\s*(invariant)*\\s*('+lists.storage_qualifiers.join('|')+')*\\s*'+
+				'('+lists.precision_qualifiers.join('|')+')*\\s*'+
+				'('+lists.datatypes.join('|')+')*\\s*([^]*)', 'gi'
+			).exec(src) ) {
+			console.log(res)
 
-    code_tree.translate();
+			this.type = 'declaration'
 
-    return code_tree.write();
-  }
+			//verify sentence
+			// format: invariant, storage, precision, name
+			res.shift()
+			res[0] = res[0] || null
+			res[1] = res[1] || 'none'
+			if(!res[3]) throw 'no datatype on variable declaration'
 
-  console.log(document.getElementById("testshader").innerHTML)
-  return {
-    compile: compile
-  }
+			//variable constructor data
+			opts = {
+				sentence: this,
+				type: 'primitive',
+				qualifiers: res,
+			}
+
+			//scape parenthesis, dynamic data
+			str_map = new Util.SymbolTree(res[4])
+			str_map.strip('(')
+
+			//split each variable (by ,) and work-out expressions for them.
+			str = str_map.root()
+			re = /([^,]+)/g
+
+			while(res = re.exec(str)) {
+
+				//construct variable
+				opts.sentence_place = variables.length
+				opts.name = (/\w+/g).exec(res)[0]
+				variable = new Variable(opts)
+				variables.push(variable)
+				console.log('variable declared:',res, opts, variable)
+
+				//construct associated expression
+				expression = null
+				if( res[0].match('=') ) {
+					expression = new Expression({
+						sentence: this,
+						src: str_map.interpolate(res[0]),
+					})
+					console.log('variable expression: ',expression)
+				}
+				this.components.push(expression)
+			}
+		}
+		else if( src.match(/^\s*\w+\s*/gi) ) { //expression
+			this.type = 'expression'
+
+		}
+		else
+			this.type = null
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Sentence
+	@desc Tells you if this needs translation
+	@return {Boolean}
+	*/
+	needsTranslation: function() {
+		var needs = false
+		if(this.type == 'declaration' || this.type == 'expression') {
+			this.variables.forEach(function(e){
+				if(e.translatable) needs = true
+			})
+		}
+
+		return needs
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Sentence
+	@desc generates a valid GLSL sentence (or group of sentences) that mimics the
+	functionality on this sentence and stores it in this.out as a str. It works
+	differently on each sentence type
+	@return {String} translated
+	*/
+	translate: function() {
+
+	}
+}
+return Sentence
+})()
+
+	module.Sentence = Sentence
+	var Scope = (function ScopeLoader() {
+
+/**
+@memberof NEngine.GLNSLCompiler
+@class Scope
+@desc Represents a recursive Scope tree. &lt;br/> &lt;br/>
+The rootScope contains the cache of the temp variables
+used in intermediate operations (on translated code). This cache
+gets added to the begining during translation. It also holds functions
+and code automatically generated at the beginning (precode).
+
+@prop {CodeTree} code_tree - On rootScope, points to container CodeTree
+@prop {Scope} rootScope - Root Scope of the tree
+@prop {String} src - Contained code, currently only root-scope has
+
+@prop {Scope} parent - Parent Scope
+@prop {Scope[]} childs - Child Scopes
+
+@prop {Integer[]} range - Start and end index of code in rootScope.src
+@prop {Object.&lt;String, Variable>} variables - Dictionary object for scope variables
+@prop {Object.&lt;String, Variable>} variables - scope variables generated on ask
+	constructor functions, dim-dependant functions, etc
+@prop {Sentence[]} sentences - Holds scope sentences
+@prop {String[]} sentences_precode - The precode strings (TODO: change to
+	'Sentences') precode is code that exists previously to the content and,
+	doesnt get affected by reordering of its sentences.
+
+@prop {Object.&lt;TypeCodeName, CacheData>} cacheVariables -  contains
+current new temp_variables for extended datatypes
+@prop {Object} cacheVariables.typeCodeName - A specific datatype cache
+@prop {Variable[]} cacheVariables.typeCodeName.vars - The cache variables
+@prop {Variable[]} cacheVariables.typeCodeName.history - The cachevariables
+arranged by last used
+*/
+function Scope(opts) {
+	this.code_tree = null
+
+	this.rootScope = null
+	this.src = null
+
+	this.parent = null
+	this.childs = []
+
+	this.range = null
+	this.variables = {}
+	this.dynamic_variables = {}
+	this.sentences = []
+	this.sentences_precode = []
+
+	this.cacheVariables = {}
+
+	/**
+	built-in variables-functions (given by standard)
+
+	buit-in functions translate function:
+		translates into expression translation object
+	recieves expressions list
+	*/
+	this.built_in = {
+		variables: {},
+		dynamic_variables: {},
+	}
+}
+Scope.prototype = {
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@desc Correctly sets the parentScope
+*/
+setParent: function(parent) {
+	this.unsetParent()
+	this.parent = parent
+	parent.childs.push(this)
+
+	this.rootScope = parent.rootScope || parent
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@desc Correctly unsets the parentScope
+*/
+unsetParent: function() {
+	if(!this.parent) return;
+
+	this.parent.childs.splice(this.parent.childs.indexOf(this),1);
+	this.parent = null;
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@desc Recursively in the scope tree searches the variable, takes built-in
+into account.
+@param {String} varname - Target variable name
+@return {Variable} Return null if it cant be find
+*/
+getVariable: function(varname) {
+	var scope = this, variable;
+
+	while(scope) {
+	  if(variable = scope.variables[varname]) break
+
+	  scope = scope.parent;
+	}
+
+	if(!variable)
+		return this.getVariableBuiltin(varname)
+
+	return variable
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@desc Get the variable from the builtin, or dynamic generated builtin
+@param {String} varname - Target variable name
+@return {Variable} Return null if it cant be find
+*/
+getVariableBuiltin: function(varname) {
+
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@desc Generate a dynamic variable if it matches a dynamic variable type, and
+adds it to the builtin variables, returning it
+@param {String} varname - Target variable name
+@return {Variable} Return null if it cant be find
+*/
+ensureVariableDynamic: function(varname, opts) {
+	opts = opts || {}
+
+	var dyn = this.getVariableDynamic(varname), generated
+
+	if(!dyn)	{
+		console.log('variable missed on ensureVariableDynamic', varname, dyn)
+		return undefined
+	}
+
+	console.log('generating variable', varname, dyn)
+	generated = dyn.generator.gen(dyn.reg_res);
+
+	if(generated.include_code &amp;&amp; !opts.ignore_includes)
+		generated.include();
+
+	this.built_in.variables[generated.identifierToken()] = generated
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@desc Gets a dynamic_variable matching a variable name or general qualificated
+name.:
+@param {String} varname - Target variable name
+@return {Variable} Return null if it cant be find
+*/
+getVariableDynamic: function(varname) {
+	//todo: implement different varname formats (qualifiers)
+	var dyns = this.built_in.dynamic_variables, dyn,
+		res;
+
+	for(dyn in dyns) {
+		dyn = dyns[dyn]
+		res = dyn.regexp.exec(varname)
+		if( res )
+			return {generator:dyn, reg_res:res}
+	}
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@desc If this scope is the scopeRoot or not
+@return {Boolean} isScopeRoot
+*/
+isRoot: function() {
+	return !this.rootScope || (this.rootScope == this)
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@desc Ensures that a given type has its cache variables instantiated for
+operations upon it, this is useful only during translation and final
+code writting, indexes them by codename. &lt;br/>
+Adds them to variables array (avoid colisions) and cacheVariables
+(inform cache creation) sentence array. This affects only rootScope
+(only a single copy of each typecache is necessary) &lt;br/> &lt;br/>
+cache variable names: ___GLNSL_cache_(typeCodeName)_(cacheindex)
+@param {Variable} variable - The variable to ensure cache, needs to
+have its qualifiers, and type_data set
+*/
+ensureTypeCache: function ensureTypeCache(variable) {
+	if( !this.isRoot() )
+		return this.rootScope.ensureTypeCache(variable)
+
+	var cache, i, l, type=variable.data_type,
+		codename = type.codename
+
+	if(cache = this.cacheVariables[codename]) return
+
+	cache = this.cacheVariables[codename] = {
+		vars: [],
+		history: []
+		}
+
+	//create cache
+	for(i=0,l=3; i&lt;l; i++) {
+		cache.vars.push(
+		  Variable({
+		    scope: this,
+		    type: 'primitive',
+		    qualifiers: [null, 'none',  //those arent relevant to cache scoping
+				variable.qualifiers[2],
+				variable.qualifiers[3]],
+		    name: "___GLNSL_cache_"+ codename +'_'+i
+		  })
+		)
+		cache.history[i] = cache.vars[i]
+		}
+
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@desc Iterates over the cached variables to avoid dataloss on
+two-handed cache operations (they require 3 cache vars)
+@param {Variable} variable - Contains datatype description
+(precision+datatype)
+@return {Variable} variable - The cache variable you needed
+*/
+getTypeCache: function getTypeCache(variable) {
+	this.ensureTypeCache(variable)
+	var codename = variable.data_type.codename,
+		cache = this.cacheVariables[codename],
+		res = cache.history.shift()
+
+	cache.history.push(res)
+
+	return res
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@method precode
+@desc updates precode_, returns pre-code sentences in translated text
+	format, using sentences_precode
+@return translated pre-code sentences
+*/
+precode: function (cached) {
+	if( !this.isRoot() )
+		this.rootScope.precode(cached)
+
+	if(cached) return this.precode_
+	return this.precode_ = this.sentences_precode.join(' \n')
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@method addPrecode
+@desc adds a sentence to the rootScope.sentences_precode array
+*/
+addPrecode: function(code) {
+	if( !this.isRoot() )
+		this.rootScope.addPrecode.apply(this, arguments)
+
+	if(!(code instanceof String || typeof code == 'string'))
+		throw 'no-string type in addPrecode'
+
+	this.sentences_precode.push(code)
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@method addSentence
+@desc adds a sentence to the current scope.sentences array
+*/
+addSentence: function(sentence) {
+	sentence.number = this.sentences.push[sentence];
+},
+/**
+@memberof NEngine.GLNSLCompiler.Scope
+@method addBuiltinGLSL
+@desc generates the built-in variables of the scope. Those objects arent
+ 	a singleton in case of multiple codes on different versions of GLSL, like
+	keep generating those maps dynamically.
+*/
+addBuiltinGLSL: function() {
+	var variables = {
+			/**
+				THose variables get translated directly
+			*/
+			'gl_Position': new Variable({
+				type: 'primitive',
+				qualifiers: []
+			}),
+			//TODO: change this into a function initiating first non-dynamic
+			//built in functiomns from dyn-built-in defined ones
+			// 'length' new Variable({
+			// 	type: 'function'
+			// })
+		},
+		/**
+	  	  dictioary of built-in variables that are generated on request
+
+	  	  each one has:
+	  	  	matching regexp
+	  		generator functiom
+	  			generator functions have to be called from a scope
+	  	  */
+		dyn_variables = {
+			/**
+			N-Vector constructor function
+			translates into a n-dim vector constructor function
+			*/
+			'vecn': {
+				regexp: /vec(\d+)/gi,
+				//generator function: scopevarinit is the tag
+				//to recognize those generator functions
+				gen: function vecn_constructor_scopevarinit(reg_res, opts) {
+					var r =  new Variable({
+						type: 'function',
+						name: reg_res[0]
+						})
+
+					r.function_inline = {
+						type: 'fallback_parametrization',
+						fallback: 'vec'
+					}
+					console.log('builded built-in vector constructor', reg_res,
+						r)
+					return r
+				}
+			},
+		},
+		//dynamically defined already built-in variables
+		already_built_in = [],
+		variable, dyn_variable,
+		this_variables = this.built_in.variables,
+		this_dyn_variables = this.built_in.dynamic_variables,
+		self = this;
+
+	//ad basic variables
+	for(variable in variables)
+		this_variables[variable] = variables[variable]
+
+	for(dyn_variable in dyn_variables)
+		this_dyn_variables[dyn_variable] = dyn_variables[dyn_variable];
+
+	//add already built-in dynamically defined variables
+	(['mat', 'vec', 'ivec', 'bvec']).forEach(function(prefix){
+		already_built_in = already_built_in.concat([2,3,4].
+			map(function(e){return prefix+e}))
+	})
+
+	console.log('right here', already_built_in)
+
+	//for each identifier of the already built in variables defined in dyn-vars
+	already_built_in.forEach(function( built_in ) {
+		self.ensureVariableDynamic( built_in,
+			{ ignore_includes: true })
+	})
+
+	console.log('added built-in', this.built_in)
+	},
+}
+
+return Scope
+})()
+
+	module.Scope = Scope
+	var CodeTree = (function CodeTreeLoader() {
+
+/**
+@memberof NEngine.GLNSLCompiler
+@class CodeTree
+@desc Represents the code structure as a scope recursive tree that contains
+variables and sentences, it holds general tree data and objects, the
+recursive scope chain is implemented by the scope objects starting
+by the root "this.rootScope", it also gives you interfaces to manipulate it,
+generate an interpretation (interpret()) of the source, translate it
+(translate()) semantically-structurally, and then write it down (write()).
+:TODO:
+  implement SrcMap usage, to standarize code manipulation across different
+	semantic-level objects
+
+@prop {String} src - the source code for this tree
+@prop {String} out - The translated output from the last usage
+@prop {Scope} rootScope - The root of the scope tree, scope objects contain
+  most of the relevant data: variables, sentences, etc.
+@prop {Sentence[]} sentences - The sentences in the whole codetree, they also
+  are indexed in their respective scopes, thought sentence.scope.sentences
+*/
+function CodeTree(src, js_variables) {
+	if(!(this instanceof CodeTree))
+		return new CodeTree(src, js_variables)
+
+	this.js_variables = js_variables || {}
+	this.src = {
+		original: src,
+		mapped: null,
+		symbols: {
+			strings: [],
+		}
+	}
+	this.out = null
+
+	this.rootScope = null
+	this.sentences = []
+
+	if(src)
+		this.interpret()
+}
+CodeTree.prototype = {
+	/**
+	@memberof NEngine.GLNSLCompiler.CodeTree.prototype
+	@method interpret
+	@desc create scope tree and fills with sentences, also maps each string to
+		a symbols in the src mapping, referenced has "string_number"
+
+		TODO: pass all transofgmrations to srcmap actions
+
+	@param {String} src - The source code to interpret, this.src is default
+	*/
+	interpret: function interpret(src) {
+		var r, reg, str,
+			i, i_o, l, c,  //index, index_original, length, character
+			in_string = false,
+			in_string_scape,
+			strings = [],
+			strings_map,
+			string,
+			sentence, //holds last created sentence object
+			index_a,  //start of current sentence ( for´s, if´s, etc, also count )
+			scope_parent,
+			scope_current
+
+		if(!src) src = this.src.original
+		else this.src.original = src
+
+		// remove comments
+		this.src.original = src = src.
+			replace(/\/\*.*?\*\//gi, '').
+			replace(/\/\/.*?\n/gi, '')
+
+		//execute js
+		reg = /'(.*?)'/gi
+		while(r=reg.exec(src))
+			//replace each captured js str with its execution
+			this.src.original = src = src.
+
+		replace(r[0], this.shader.js_execute(r[1]).res )
+
+		strings_map = this.src.symbols.strings
+		this.src.mapped = src
+
+		this.rootScope = scope_current = new Scope()
+		console.log('compiling')
+		scope_current.addBuiltinGLSL()
+		scope_current.src = this.src
+		scope_current.range = [0]
+		scope_current.code_tree = this
+
+		for(i=0, i_o=0, l = src.length, sentence_number = 0, index_a = 0;
+		i&lt;l ; i++, i_o++) {
+
+			c = src[i]
+
+			//end string
+			if(in_string) {
+				if(c == in_string) {
+
+					//handle scaped string delimitter
+					in_string_scape = 0 //will contain number of scapes
+					while(src[i-in_string_scape-1] == '\\')
+						in_string_scape++
+
+					if(in_string_scape%2) { //wasnt scaped
+
+						string.range.push(i_o)
+						string.value = src.substr(string.range_mapped[0],
+						string.range_mapped[1] - string.range_mapped[0] + 1)
+						//strip the string
+						src = this.src.mapped = src
+							.substr(0, string.range_mapped[0]+1) +
+							(strings_map.length-1) +
+							src.substr( string.range_mapped[1])
+
+						//restore index, state
+						i = string.range_mapped
+						in_string = false
+						continue
+					}
+				}
+			}
+			//start string
+			else if(c == '"' || c == '\'') {
+				in_string = c
+
+				string = {
+					value: null,
+					range: [i_o], //the range on src.original
+					range_mapped: [i] //the range on the src.mapped
+				}
+				strings.push(string)
+				strings_map.push(string)
+				string.range_mapped.push(
+					i+ (''+(strings_map.length-1)).length + 1
+				)
+				continue
+			}
+
+			if(!in_string) {
+
+				if(c == '{') {
+					scope_parent = scope_current
+					scope_current = new Scope()  //TODO:get scope from last sentence
+					scope_current.setParent(scope_parent)
+					scope_current.range = [i]
+				}
+				//{: to recognize also scope-creating sentences
+				if(c == ';' || c == '{' || c == '}') {
+					sentence = new Sentence({
+						src: src.substr(index_a, i),
+						range: [index_a, i-1],
+						scope: (c=='{')? scope_parent: scope_current,
+						thisScope: (c=='{')? scope_current: null,
+						strings: strings,
+					})
+					this.sentences.push(sentence)
+					index_a = i+1  //inmediatly after [{,}] symbol
+					strings = []
+				}
+				if(c == '}') {
+					scope_current.range.push(i)
+					scope_current = scope_parent
+				}
+
+			}
+
+		}
+		scope_current.range.push(src.length - 1)
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.CodeTree.prototype
+	@desc detects sentences that use glnsl syntax or datatypes and ask them to
+		translate
+	*/
+	translate: function translate() {
+		if(!this.rootScope) return null
+
+		var i, l, sentences = this.sentences, sentence,
+			src = this.src,
+			out = '',
+			a = 0, b,
+			precode = this.precode()
+
+		//for each sentence that needs translation
+		for(i=0, l = this.sentences.length; i&lt;l; i++) {
+			sentence = sentences[i]
+			if(sentence.needsTranslation()) {
+
+				//add translated sentence to previous non-translated content into out
+				b = sentence.range[0]
+				out += src.substr(a, b) + sentence.translate()
+				a = sentence.range[1]+1
+			}
+		}
+
+		//add remaining piece.
+		b = src.length
+		out += src.substr(a,b)
+		//add precode
+		out = this.rootScope.precode() + out
+
+		return this.out = out
+	},
+	/**
+	* @memberof NEngine.GLNSLCompiler.CodeTree.prototype
+	* @desc
+	* it uses the translated sentences versions to generate an
+	* updated src string
+	* TODO separate code sintesis from code translation
+	* code translation should be able to detect specific regions that have
+	* changed, and write also should be
+	*/
+	write: function write() {
+
+	},
+}
+
+return CodeTree
+})()
+
+	module.CodeTree = CodeTree
+	var Shader = (function ShaderLoader() {
+
+/**
+@class Shader
+@memberof NEngine.GLNSLCompiler
+
+@prop {Object&lt;varname, value>} js_variables - A dictionary indicating the
+    js variable values in glnsl js interpolation, they represent a state
+    machine for computing the final shader projection
+*/
+function Shader(opts) {
+	if(!(this instanceof Shader)) return new Shader(opts)
+
+	this.src = opts.src || ''
+	this.code_tree = null
+	this.out = null
+
+	this.js_variables = opts.js_variables || {}
+	this.uniforms = opts.uniforms || {}
+	this.attributes = opts.attributes || {}
+
+	//OpenGL Shader Program
+	this.program = null
+}
+
+Shader.prototype = {
+	/**
+	executes the src str adding code_tree.shader.js_variables to its context
+	TODO currently only one line expression evaluation functions allowed
+	TODO develop arbitrarily complex js (possible using function expression)
+	*/
+	js_execute: function js_execute(src, opts) {
+		var f, args, keys , body, res, vars
+
+		res = {}
+
+		vars = this.js_variables
+		keys = Object.keys(vars)
+
+		//TODO(maybeready) sending js_variables by parameters allows updating
+		//results withouth recompiling function
+		args = keys.join(",")
+		body = "var "+
+			keys.map(function(e){
+				e+"="+e+'||'+vars[e]
+			}).join(',') + ";"+
+			"return "+src
+
+		try {
+			res.f = f = Function(args, body)
+			try {
+				res.res = f()
+			}
+			catch(e) {
+				res.err = "Exception executing js function: \n\n"+src+
+					"\n\nException: "+e
+			}
+		}
+		catch(e) {
+			res.err = 'Exception compiling shader function: \n\n'+src+
+				"\n\nException: "+e
+		}
+		return res
+	},
+	/**
+	Shortcut
+	*/
+	compile: function Shader_compile() {
+		this.code_tree = new CodeTree(this.src, this.js_variables)
+		return code_tree.translate()
+	}
+}
+return Shader
+})()
+
+	module.Shader = Shader
+
+	/**
+	@memberof NEngine.GLNSLCompiler
+	@function compile
+	@desc Compiles src using cfg
+	@param {String} src - Contains the raw GLSL code
+	@param {Object} cfg - Config container
+	@return {String} translated
+	*/
+	function compile(src, js_variables) {
+		try {
+			return CodeTree(src, js_variables).translate()
+		}
+		catch(e) {
+			console.log('Error compiling', e)
+		}
+	}
+	module.compile = compile
+
+	var test_code = document.getElementById("testshader").innerHTML;
+
+	console.log('precompiled: ', test_code)
+	console.log('compiled', compile(test_code) )
+
+	return module
 })();
 
 
@@ -2551,15 +3630,6 @@ Physic = (function() {
     Transform,
     PhysicModules;
 
-  /**
-  @memberof NEngine.Physic
-  @class SpaceGraph
-  @desc This is top secret work in progress! xD, SaceGraph represents using
-  a graph, the subspaces (nodes) and the transformations in between them
-  (links), this is used to generate the shaders and physic processing, but
-  it is partially incomplete, for now just use the renderer on Entity objects
-  and a common physic processor on a normal Space, directly
-  */
   SpaceGraph = (function() {
 
     function SpaceGraph() {
@@ -2574,55 +3644,24 @@ Physic = (function() {
     return SpaceGraph;
   })()
 
+  /**
+  * Space
+  *
+  * type - kind of space network that holds // add opts new types or separate them??
+
+  * dim - dims of SpaceNode network
+  * size - number of subnodes along an axis
+  * length - length of the subnode on depth 0, to generate space coordinates
+
+  * root - the root node of the SpaceNodes network, root.parent equals null
+  * level - the number of levels deper the network is
+
+  * lib_vec - corresponding vectorial lib
+  * lib_mat - corresponding matrix lib
+  */
+
   Space = (function() {
 
-    /**
-    @memberof NEngine.Physic
-    @class Space
-
-    @desc This holds a space tree, all the nodes on the tree reffer to this
-    object for their common properties, and it also holds a reference to the
-    main root. All the behaviour, meaning of properties, depends on the
-    "type" property. &lt;br/>
-    A space tree its a data structure that represents space like a fractal of
-    voxels, imagine a very big cube, and then this one gets splited into
-    smaller cubes, and those, into smaller ones, each one of this cubes is
-    referenced from the containing cube, so the biggest cube, that contains
-    all of the small ones, it is not referenced inside another. The siblings
-    of a cube, are the ones next to it, so that when an object moves from a
-    given cube into its border, when crossing this border, its reference is
-    moved from the old into the new one, see SpaceNode docs for more details.
-    All of this is to optimize resource usage during collision detection.
-    &lt;br/>&lt;br/>
-    Those are the current supported Space types:
-    &lt;br/>&lt;br/>
-    Euclid: &lt;br/>
-    It represents a n-dimensional euclid space, that means that for each
-    dimension there is another axis, and that each SpaceNode has 2*dim
-    different sibblings, one for each direction of each dimension, check the
-    SpaceNode doc for info on details.
-
-    @prop {String} type - kind of network that holds // add new types
-    or separate them??
-    @prop {Integer} dim
-    @prop {Integer} size - number of subnodes along an axis
-    @prop {Float} length - length on subnode of depth 0, to generate space
-    coordinates
-
-    @prop {SpaceNode} root - The root node of the SpaceNodes network, root.parent
-    equals null
-    @prop {Integer} level - the number of levels deeper the network is, this
-    value changes when the network grows
-    @prop {Object} lib_vec - The vectorial library to use (for caching pointer)
-    @prop {Object} lib_mat - The matrix library to use (pointer chaching purposes)
-
-    @param {Object} opts - The cfg options
-    @param {Integer} opts.dim
-    @param {Integer} opts.size
-    @param {Float} opts.length
-    @param {Integer} opts.level - Initial height of space tree
-    @param {Boolean} [opts.fill=false] - I fill all levels of tree on creation
-    */
     /**
     * Space Constructor
     *
@@ -2669,7 +3708,7 @@ Physic = (function() {
 
     Space.prototype = {
       /**
-      * add upper levels to the space system
+      * add hupper levels to the space system
       */
       enlarge: function(repeat) {
         //create new root node
@@ -3589,7 +4628,7 @@ Frame = (function(){
     Camera: Camera,
     Renderer: Renderer,
     Entity: Entity,
-    Physic: Physic,
+    Physics: Physics,
     GLNSLCompiler: GLNSLCompiler,
   };
 })();
@@ -3613,17 +4652,13 @@ Frame = (function(){
 
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NEngine.Camera.html">Camera</a></li><li><a href="NEngine.Entity.html">Entity</a></li><li><a href="NEngine.geometry.Geom.html">Geom</a></li><li><a href="NEngine.Obj.html">Obj</a></li><li><a href="NEngine.Physic.Space.html">Space</a></li><li><a href="NEngine.Physic.SpaceGraph.html">SpaceGraph</a></li><li><a href="NEngine.SubSpace.html">SubSpace</a></li></ul><h3>Namespaces</h3><ul><li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">geometry</a></li><li><a href="NEngine.Physic.html">Physic</a></li></ul>
-</nav>
-
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed May 11 2016 22:19:09 GMT-0400 (CLT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Jun 01 2017 03:30:15 GMT-0400 (CLT) using the Minami theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
 </body>
 </html>

@@ -17,14 +17,22 @@
   },
   "homepage": "https://github.com/NicolasNarvaez/NEngine.js#readme",
   "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
     "grunt": "^0.4.5",
+    "grunt-concurrent": "^2.3.1",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-import": "^0.1.7"
+    "grunt-focus": "^1.0.0",
+    "grunt-import": "^0.1.7",
+    "grunt-nodemon": "^0.4.2",
+    "nodemon": "^1.11.0"
   },
   "devDependencies": {
+    "grunt-concurrent": "^2.3.1",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-jsdoc": "^2.0.0",
     "ink-docstrap": "^1.1.4",
-    "jsdoc": "^3.4.0"
+    "jsdoc": "^3.4.0",
+    "minami": "^1.1.1"
   }
 }

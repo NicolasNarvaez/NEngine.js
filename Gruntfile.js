@@ -1,63 +1,66 @@
 module.exports = function(grunt) {
-  var npm_tasks
+	var npm_tasks
 
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
+	grunt.initConfig({
+		pkg: grunt.file.readJSON('package.json'),
 
-    watch: {
-      main: {
-        files: ['src/NEngine/**', 'src/browser.js'],
-        tasks: ['import:main', 'jsdoc']
-      },
-      dist: {
-        files: ['dist/**'],
-        tasks: ['copy:dist']
-      },
-      doc: {
-        files: ['doc/**'],
-        tasks: ['copy:doc']
-      }
-    },
+		watch: {
+			main: {
+				files: ['src/NEngine/**', 'src/browser.js'],
+				tasks: ['compile']
+			},
+		},
 
-    copy: {
-      doc: {
-        src: 'doc/**',
-        dest: '/var/www/NEngine/'
-      },
-      dist: {
-        src: 'dist/**',
-        dest: '/var/www/NEngine/'
-      },
-    },
+		nodemon: {
+			dev: {
+				script: 'example/dev.js'
+			}
+		},
 
-    import: {
-      main: {
-        src: 'src/browser.js',
-        dest: 'dist/NEngine.js'
-      }
-    },
+		import: {
+			main: {
+				src: 'src/browser.js',
+				dest: 'dist/NEngine.js'
+			}
+		},
 
-    jsdoc : {
-    	dist : {
-    		src:['./dist/*.js'],
-    		jsdoc: './node_modules/.bin/jsdoc',
-    		options: {
-    			destination: 'doc',
-    	                configure: './jsdoc.json',
-            	        template: './node_modules/ink-docstrap/template'
-            	}
-    	}
-    }
-  })
+		jsdoc : {
+			dist : {
+				src:['./dist/*.js'],
+				jsdoc: './node_modules/.bin/jsdoc',
+				options: {
+					destination: 'doc',
+					configure: './jsdoc.json',
+					template: './node_modules/minami'
+				}
+			}
+		},
 
-  npm_tasks = ['grunt-import', 'grunt-contrib-watch',
-    'grunt-jsdoc', 'grunt-contrib-copy']
+		focus: {
+			dev: {
+				include: ['main']
+			}
+		},
 
-  npm_tasks.forEach(function(e){grunt.loadNpmTasks(e)})
+		concurrent: {
+			dev: {
+				tasks: ['focus:dev', 'nodemon:dev' ],
+				options: {
+					logConcurrentOutput: true
+				}
+			}
+		}
+	})
 
-  grunt.registerTask('default', ['import:main', 'watch:main'])
-  grunt.registerTask('wdoc', ['copy:doc', 'watch:doc'])
-  grunt.registerTask('wdist', ['copy:dist', 'watch:dist'])
-  grunt.registerTask('doc', 'jsdoc')
+	npm_tasks = ['grunt-import', 'grunt-contrib-watch',
+		'grunt-jsdoc', 'grunt-contrib-copy', 'grunt-focus',
+		'grunt-nodemon', 'grunt-concurrent']
+
+	npm_tasks.forEach(function(e){grunt.loadNpmTasks(e)})
+
+	grunt.registerTask('compile', ['import:main', 'jsdoc'])
+
+	grunt.registerTask('dev', ['compile:dev','concurrent:dev'])
+	grunt.registerTask('default', 'dev')
 
 }

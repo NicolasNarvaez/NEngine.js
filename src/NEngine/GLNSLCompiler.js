@@ -25,7 +25,7 @@ SOFTWARE.
 /**
 @namespace GLNSLCompiler
 @memberof NEngine
-@desc Contains all related to GLNSLCompiler classes, functions and
+@desc Contains all related to GLNSLCompiler (:3) classes, functions and
   utilities \n \n
   Using the compiler: \n
   Just call "compile(code, config)", extra information is
@@ -62,7 +62,12 @@ GLNSLCompiler = (function GLNSLCompilerLoader() {
 	@return {String} translated
 	*/
 	function compile(src, js_variables) {
-		return CodeTree(src, js_variables).translate()
+		try {
+			return CodeTree(src, js_variables).translate()
+		}
+		catch(e) {
+			console.log('Error compiling', e)
+		}
 	}
 	module.compile = compile
 
