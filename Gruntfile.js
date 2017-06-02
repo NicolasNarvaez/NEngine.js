@@ -42,9 +42,21 @@ module.exports = function(grunt) {
 			}
 		},
 
+		karma: {
+			dev: {
+				configFile: 'karma.conf.js'
+			}
+		},
+
 		concurrent: {
 			dev: {
 				tasks: ['focus:dev', 'nodemon:dev' ],
+				options: {
+					logConcurrentOutput: true
+				}
+			},
+			devall: {
+				tasks: ['focus:dev', 'nodemon:dev' , 'karma:dev'],
 				options: {
 					logConcurrentOutput: true
 				}
@@ -54,13 +66,14 @@ module.exports = function(grunt) {
 
 	npm_tasks = ['grunt-import', 'grunt-contrib-watch',
 		'grunt-jsdoc', 'grunt-contrib-copy', 'grunt-focus',
-		'grunt-nodemon', 'grunt-concurrent']
+		'grunt-nodemon', 'grunt-concurrent', 'grunt-karma']
 
 	npm_tasks.forEach(function(e){grunt.loadNpmTasks(e)})
 
 	grunt.registerTask('compile', ['import:main', 'jsdoc'])
 
 	grunt.registerTask('dev', ['compile:dev','concurrent:dev'])
+	grunt.registerTask('devall', ['compile:dev','concurrent:devall'])
 	grunt.registerTask('default', 'dev')
 
 }
