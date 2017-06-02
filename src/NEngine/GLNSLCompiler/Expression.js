@@ -112,7 +112,8 @@ Expression.prototype = {
 	interpret: function interpret() {
 		var re, res, i, l, self = this,
 			src = this.src, src_map, arguments_map,
-			operators = this.operators, op
+			operators = this.operators, op,
+			SymbolTree = Util.SymbolTree
 
 		console.log('expression: variable expression input: ', this.src )
 
@@ -127,7 +128,7 @@ Expression.prototype = {
 
 		//create parenthesis table
 		// console.log('empezando',src)
-		src_map = Util.SymbolTree(src)
+		src_map = new SymbolTree(src)
 		src_map.strip('(').strip('[')
 		src = src_map.root()
 		// console.log(src, src_map)
@@ -211,6 +212,7 @@ Extremly important (next version deps):
 	- define constructor dynamic_variables (ready)
 	- connect dynamic_variables to getVariable (ready)
 	- test first variable declaration translations (current)
+		- making expression and expression translation work (current)
 	- translate first expressions
 	- start translating full code
 

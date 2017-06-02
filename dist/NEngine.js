@@ -2030,9 +2030,68 @@ function is_scaped(src, i) {
 
 /**
 @memberof NEngine.GLNSLCompiler.Util
+@desc strips the content of the delimited areas, balancing delimiters
+@param {String} str - the tring to strip
+@param {Object} opts - the option object
+@param {String|String[]} [opts.delimiter='('] - the delimiter to
+	search, if its an array, be it like [delimiter_left, delimiter_right]
+@param {Boolean} [opts.exclude=false] - if to exclude the delimiters in the strip
+*/
+function strip_balanced(str,opts) {	opts = opts || {}
+	var regexp, res,
+		res_list = [],
+		delimiter = opts.delimiter,
+		exclude = opts.exclude,
+		map = str,
+		nest_depth,
+		nest_a, nest_b, i, l, char
+
+	delimiter = delimiter || SymbolTree.prototype.delimiter_default
+
+	if(delimiter instanceof String || typeof delimiter == 'string')
+		delimiter = SymbolTree.prototype.delimiter_pairs_unscaped[delimiter] || delimiter
+
+	//if the right delimiter is the same as the left, do a non-greedy match
+	if(delimiter[1] == delimiter[0]) {
+		delimiter = SymbolTree.prototype.delimiter_pairs[delimiter[0]]
+		//generates list of match results, then foreach replaces with
+		//placeholder and adds index entry
+		regexp = delimiter[0]+'(.*?)'+delimiter[1]
+		regexp = new RegExp(regexp, 'gim')
+
+		while(res = regexp.exec(map))	{
+			res.symval = (exclude)? res[1]: res[0]
+			res_list.push(res)
+		}
+
+	} else	//do a balanced match
+		for(nest_depth = 0, i=0, l=map.length; i<l; i++) {
+			char = map[i]
+
+			if(char == delimiter[0]) {
+				nest_a = i
+				nest_depth++
+			}
+			if(char == delimiter[1])	{
+				nest_b = i
+				nest_depth--
+				if(!nest_depth && (nest_a || nest_a === 0) )
+					res_list.push({
+						symval: (exclude)?
+							map.substr(nest_a +1, nest_b -nest_a ) :
+							map.substr(nest_a, nest_b -nest_a +1)
+					})
+			}
+		}
+	// console.log('balanced strip', opts, res_list, delimiter)
+	return res_list
+}
+
+/**
+@memberof NEngine.GLNSLCompiler.Util
 @class SymbolTree
-@desc This was created in a moment of despair. Now i cant find a use to it...
-	mmmm, maybe just a middle-level tool
+@desc This was created in a moment of despair ... mmmm, maybe is just a
+	middle-level tool
 	<br/>
 	Helps handling source mapping, stripping, scaping, etc. Provides
 	functions to translate on its context (subsections of it, etc) like
@@ -2042,14 +2101,14 @@ function is_scaped(src, i) {
 	allow it, by indexing-trees, avoiding collisions on different
 	symbol-tree tags)
 
-@prop {String} prefix - The prefix of the tree symbols in the parsed text
 @prop {String} src - Initial src of the tree
+@prop {String} prefix - The prefix of the tree symbols in the parsed text,
+	defaults to ''+this.shepherd_length when created
 @prop {Object<Symbol_key, str>} symbols - Maps mapped source symbols into
   the src, each symbol contains the mapping into src from mapped
 @prop {Integer} symbols_count - The number of symbols in the dictionary
 
 @param {String} src -
-@param {String} prefix -
 */
 function SymbolTree(src) {
 	if(!(this instanceof SymbolTree)) return new SymbolTree(src)
@@ -2057,35 +2116,111 @@ function SymbolTree(src) {
 	this.prefix = '' + this.shepherd_length++
 
 	this.src = src
-	this.symbols = {root: src}
-	this.symbols_count = 0
+	this.symbol_table = {root: src}
+	this.symbol_table_count = 0
 }
 SymbolTree.prototype = {
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc The symbol of the root node, defaults to 'root'
+	@member {String}
+	*/
+	root_symbol: 'root',
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc The number of symbol trees currently existing
+	@member {Integer}
+	*/
 	shepherd_length: 0,
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc The pair of delimiters to use for symbols, defaults to
+		['"', '"']
+	@member {String[]}
+	*/
 	symbol_delimiter_pairs : ['"','"'],
 	/**
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
 	@desc A dict of <left-delimiter, [left-delimiter, right-delimiter]> ,
 		for example: delimiter_pairs['{'] -> ['{', '}']
+	@member {Object<String,String[]>}
 	*/
 	delimiter_pairs: {
 		'(': ['\\(','\\)'],
 		'{': ['\\{','\\}'],
 		'[': ['\\[','\\]'],
 	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc the unscaped version of delimiter_pairs
+	@member {Object<String,String[]>}
+	*/
+	delimiter_pairs_unscaped: {
+		'(': ['(',')'],
+		'{': ['{','}'],
+		'[': ['[',']'],
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc default delimiter to use when none is given, commonly '('
+	@member {String}
+	*/
+	delimiter_default : '(',
 
 	/**
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
-	@desc root tree symbol
+	@desc root string, from root tree symbol
+	@return {String} root - the root string
 	*/
-	root: function root() {
-		return this.symbols['root']
+	root: function root(value) {
+		if(value != undefined)
+			return this.symbol_table[this.root_symbol] = value
+
+		return this.symbol_table[this.root_symbol]
 	},
 
 	/**
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
-	@desc returns symbols found in str as an array of the regexp exec results
-	@return {Array<RegExp_result>
+	@desc Adds a symbol to the map, in the node "symbol_to", scaping the
+		content defined by "target", wich can be an index pair [a,b] or
+		the content itslef. Returns the symbol key of the generated symbol.
+	@return {String} symbol - the key of the generated symbol
+	*/
+	addSymbol: function addSymbol(symbol_to, target) {
+		var str = this.symbol_table[symbol_to],
+			mapped, symbol_value,
+			symbol_key = this.prefix+'_'+this.symbol_table_count,
+			symbol_delimiter = this.symbol_delimiter,
+			symbol_key_placeholder = symbol_delimiter[0]+
+				symbol_key+
+				symbol_delimiter[1]
+
+		if(target && str) {
+
+			if(target instanceof String || typeof target == 'string' &&
+				str.match(target)) {
+
+				mapped = str.replace(target, symbol_key_placeholder)
+
+				symbol_value = target
+			}
+
+			if(mapped) {
+				this.symbol_table[symbol_to] = mapped
+				this.symbol_table[symbol_key] = symbol_value
+			}
+
+		}
+
+	},
+
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc returns symbols found in str as an array of the regexp exec results,
+		witch each result now having properties symbol = symbol name and
+		symbol_value = symbol value.
+	@param {String} str - the string to search for symbols
+	@return {Array<RegExp_result>}
 	*/
 	symbols: function symbols(str) {
 		var syms = [], sym,
@@ -2093,7 +2228,12 @@ SymbolTree.prototype = {
 			res
 
 		while(res = reg.exec(str))
-			if(sym = this.symbols[res[1]]) syms.push(sym)
+			if(sym = this.symbol_table[res[1]]) {
+				res.symbol = res[1]
+				res.symbol_value = sym
+
+				syms.push(res)
+			}
 
 		return syms
 	},
@@ -2102,12 +2242,12 @@ SymbolTree.prototype = {
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
 	@desc interpolates all the symbols in the str
 	@param {String} str - string to inteprolate
-	@param {Integer} depth - Number of times to interpolate string,
+	@param {Integer} [depth=-1] - Number of times to interpolate string,
 		values none == -1 : interpolates until no more variables are found
 	@return {String}
 	*/
 	interpolate: function interpolate(str, depth) {
-		var syms = this.symbols,
+		var syms = this.symbol_table,
 			res, regexp = RegExp(''+
 				this.symbol_delimiter_pairs[0] +
 				'('+this.prefix+'_.*?)'+
@@ -2128,47 +2268,65 @@ SymbolTree.prototype = {
 	avoids scaped delimiters and transparently resolves nested expressions
 	including them in each strip ( 'aaa(asd(ss)asd)l' => 'aaa"symbolkey"l' ),
 	stripts every encounter
-	@param {String|Array}
-		delimiter - if string, checks that delimiter on delimiter_pairs
-	@param {Boolean} exclude - exclude parenthesys into symbol value or
-		exclude
+	@param {String} str - the tring to strip
+	@param {Object} opts - the option object
+	@param {String|String[]} [opts.delimiter='('] - the delimiter to
+		search, if its an array, be it like [delimiter_left, delimiter_right]
+	@param {Boolean} [opts.exclude=false] - if to exclude the delimiters in the strip
+
+	@return {SymbolTree} this
 	*/
-	strip: function strip(delimiter, exclude) {
-		var regexp, res, res_list=[],
+	strip: function strip(opts) { opts = opts || {}
+		var res_list=[],
 			map = this.root(),
 			symkey, symval, sym, self = this
 
-		if(delimiter instanceof String || typeof delimiter == 'string')
-			delimiter = this.delimiter_pairs[delimiter] || delimiter
+		res_list = strip_balanced(map, opts)
 
-
-		if(delimiter instanceof Array) {
-			//generates list of match results, then foreach replaces with
-			//placeholder and adds index entry
-			regexp = delimiter[0]+'(.*?)'+delimiter[1]
-			regexp = new RegExp(regexp, 'gim')
-
-			while(res = regexp.exec(map))	res_list.push(res)
-
+		if(res_list && res_list.length) {
 			res_list.forEach(function(e) {
 				symkey = self.prefix+'_'+self.symbols_count
 				sym = self.symbol_delimiter_pairs[0] +
 					symkey +
 					self.symbol_delimiter_pairs[1]
 
-				symval = (exclude)? e[1]: e[0]
+				symval = e.symval
 
 				map = map.replace( symval, sym)
-				self.symbols[symkey] = symval
+				self.symbol_table[symkey] = symval
 
-				self.symbols_count++
+				self.symbol_table_count++
 			})
 
+			this.symbol_table['root'] = map
 		}
-		this.symbols['root'] = map
+
 		return this
 	},
+	/**
+	@callback SourceTreeMapFunc
+	@param {String} acumulator - the string being mapped
+	@param {String}
+	@return {String} acumulator - you have to return it
+	*/
+	/**
+	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@param {Function} func -
+	@return {String|undefined} Mapped src, undefined if no function or str
+	*/
+	map: function map(func, str) {
+		str = str||this.root()
+		if(!str || !f) return undefined
+
+		this.symbol_table(str).map(function(e){
+			return e.symval
+		}).reduce(function() {
+
+		})
+	}
 }
+
+
 
 return {
 	serialize : serialize,
@@ -2293,7 +2451,8 @@ Expression.prototype = {
 	interpret: function interpret() {
 		var re, res, i, l, self = this,
 			src = this.src, src_map, arguments_map,
-			operators = this.operators, op
+			operators = this.operators, op,
+			SymbolTree = Util.SymbolTree
 
 		console.log('expression: variable expression input: ', this.src )
 
@@ -2308,7 +2467,7 @@ Expression.prototype = {
 
 		//create parenthesis table
 		// console.log('empezando',src)
-		src_map = Util.SymbolTree(src)
+		src_map = new SymbolTree(src)
 		src_map.strip('(').strip('[')
 		src = src_map.root()
 		// console.log(src, src_map)
@@ -2392,6 +2551,7 @@ Extremly important (next version deps):
 	- define constructor dynamic_variables (ready)
 	- connect dynamic_variables to getVariable (ready)
 	- test first variable declaration translations (current)
+		- making expression and expression translation work (current)
 	- translate first expressions
 	- start translating full code
 
@@ -3514,12 +3674,12 @@ Shader.prototype = {
 
 		//TODO(maybeready) sending js_variables by parameters allows updating
 		//results withouth recompiling function
-		args = keys.join(",")
-		body = "var "+
+		args = keys.join(',')
+		body = 'var '+
 			keys.map(function(e){
-				e+"="+e+'||'+vars[e]
-			}).join(',') + ";"+
-			"return "+src
+				e+'='+e+'||'+vars[e]
+			}).join(',') + ';'+
+			'return '+src
 
 		try {
 			res.f = f = Function(args, body)
@@ -3527,13 +3687,13 @@ Shader.prototype = {
 				res.res = f()
 			}
 			catch(e) {
-				res.err = "Exception executing js function: \n\n"+src+
-					"\n\nException: "+e
+				res.err = 'Exception executing js function: \n\n'+src+
+					'\n\nException: '+e
 			}
 		}
 		catch(e) {
 			res.err = 'Exception compiling shader function: \n\n'+src+
-				"\n\nException: "+e
+				'\n\nException: '+e
 		}
 		return res
 	},

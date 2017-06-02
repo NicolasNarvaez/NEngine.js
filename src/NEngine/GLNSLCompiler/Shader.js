@@ -39,12 +39,12 @@ Shader.prototype = {
 
 		//TODO(maybeready) sending js_variables by parameters allows updating
 		//results withouth recompiling function
-		args = keys.join(",")
-		body = "var "+
+		args = keys.join(',')
+		body = 'var '+
 			keys.map(function(e){
-				e+"="+e+'||'+vars[e]
-			}).join(',') + ";"+
-			"return "+src
+				e+'='+e+'||'+vars[e]
+			}).join(',') + ';'+
+			'return '+src
 
 		try {
 			res.f = f = Function(args, body)
@@ -52,13 +52,13 @@ Shader.prototype = {
 				res.res = f()
 			}
 			catch(e) {
-				res.err = "Exception executing js function: \n\n"+src+
-					"\n\nException: "+e
+				res.err = 'Exception executing js function: \n\n'+src+
+					'\n\nException: '+e
 			}
 		}
 		catch(e) {
 			res.err = 'Exception compiling shader function: \n\n'+src+
-				"\n\nException: "+e
+				'\n\nException: '+e
 		}
 		return res
 	},
