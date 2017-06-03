@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 
 		watch: {
 			main: {
-				files: ['src/NEngine/**', 'src/browser.js'],
+				files: ['src/NEngine/**/*.js', 'src/browser.js'],
 				tasks: ['compile']
 			},
 		},

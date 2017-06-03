@@ -72,9 +72,9 @@ GLNSLCompiler = (function GLNSLCompilerLoader() {
 	module.compile = compile
 
 	var test_code =
-			'highp float vec_map  = vec9( 0.0, 0.0, 0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.0) + vec9(3.0)/10.0 ,'+
-			'terrain = vec5(0.0, 0.0, 0.0,   0.0, 0.0);'+
-			'highp uniform mat4_n uPMVMatrix;';
+			'highp float vec_map  = vec9( 0.0, 0.0, 0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.0) + vec9(3.0)/10.0 ,\
+			terrain = vec5(0.0, 0.0, 0.0,   0.0, 0.0);\
+			highp uniform mat4_n uPMVMatrix;';
 
 	console.log('precompiled: ', test_code)
 	console.log('compiled', compile(test_code) )
