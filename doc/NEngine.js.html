@@ -2071,11 +2071,17 @@ function is_scaped(src, i) {
 /**
 @memberof NEngine.GLNSLCompiler.Util
 @desc strips the content of the delimited areas, balancing delimiters
-@param {String} str - the tring to strip
-@param {Object} opts - the option object
-@param {String|String[]} [opts.delimiter='('] - the delimiter to
+	returns an array of results in the format of regexp.exec on multilple
+	results, adding value, and range (in slice format) fields to each one
+	according to 'exclude'
+@param {String} str - the string to strip
+@param {Object} opts - the options object
+@param {String|String[]} [opts.delimiter=SymbolTree.prototype.delimiter_default] - the delimiter to
 	search, if its an array, be it like [delimiter_left, delimiter_right]
-@param {Boolean} [opts.exclude=false] - if to exclude the delimiters in the strip
+@param {Boolean} [opts.exclude=false] - if to exclude the delimiters in the
+	strip value
+@return {Object[]} reg_exp_result - adds value and range (slice format) to
+	result fields
 */
 function strip_balanced(str,opts) {	opts = opts || {}
 	var regexp, res,
@@ -2089,7 +2095,8 @@ function strip_balanced(str,opts) {	opts = opts || {}
 	delimiter = delimiter || SymbolTree.prototype.delimiter_default
 
 	if(delimiter instanceof String || typeof delimiter == 'string')
-		delimiter = SymbolTree.prototype.delimiter_pairs_unscaped[delimiter] || delimiter
+		delimiter = SymbolTree.prototype.delimiter_pairs_unscaped[delimiter] ||
+			delimiter
 
 	//if the right delimiter is the same as the left, do a non-greedy match
 	if(delimiter[1] == delimiter[0]) {
@@ -2099,30 +2106,38 @@ function strip_balanced(str,opts) {	opts = opts || {}
 		regexp = delimiter[0]+'(.*?)'+delimiter[1]
 		regexp = new RegExp(regexp, 'gim')
 
-		while(res = regexp.exec(map))	{
-			res.symval = (exclude)? res[1]: res[0]
+		while(res = regexp.exec(map))
 			res_list.push(res)
-		}
 
 	} else	//do a balanced match
-		for(nest_depth = 0, i=0, l=map.length; i&lt;l; i++) {
+			//if delimiter[1] reached, and nest_depth = 0, and
+			//delimiter[0] found, add match
+		for(nest_depth=0, i=0, l=map.length; i&lt;l; i++) {
 			char = map[i]
 
 			if(char == delimiter[0]) {
-				nest_a = i
+				if(!nest_depth)	nest_a = i
 				nest_depth++
 			}
 			if(char == delimiter[1])	{
-				nest_b = i
+				nest_b = i+1 //slice format
 				nest_depth--
+
 				if(!nest_depth &amp;&amp; (nest_a || nest_a === 0) )
 					res_list.push({
-						symval: (exclude)?
-							map.substr(nest_a +1, nest_b -nest_a ) :
-							map.substr(nest_a, nest_b -nest_a +1)
+						'0': map.slice(nest_a, nest_b),
+						'1': map.slice(nest_a+1, nest_b-1),
+						index: nest_a,
 					})
 			}
 		}
+
+	res_list.forEach(function(res) {
+		res.value = (exclude)? res[1]: res[0]
+		res.range = [res.index + ((exclude)? 1:0) ]
+		res.range.push( res.range[0] + res.value.length )
+	})
+
 	// console.log('balanced strip', opts, res_list, delimiter)
 	return res_list
 }
@@ -2209,7 +2224,8 @@ SymbolTree.prototype = {
 
 	/**
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
-	@desc root string, from root tree symbol
+	@desc root string, from root tree symbol, changes it to value if given
+	@param {String} value - new value
 	@return {String} root - the root string
 	*/
 	root: function root(value) {
@@ -2221,16 +2237,22 @@ SymbolTree.prototype = {
 
 	/**
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
-	@desc Adds a symbol to the map, in the node "symbol_to", scaping the
+	@desc Adds a symbol to the map, reading the node "symbol_from", scaping the
 		content defined by "target", wich can be an index pair [a,b] or
-		the content itslef. Returns the symbol key of the generated symbol.
-	@return {String} symbol - the key of the generated symbol
+		the content itself.
+	@param {String} symbol_from - The symbol to modify
+	@param {String|Integer[]} target - The phrase to scape by symbol, if index
+		pair, the pair is in the format of slice. 'a' included, 'b'-1
+		included.
+	@return {String|null} symbol_to - created symbol or null
 	*/
-	addSymbol: function addSymbol(symbol_to, target) {
-		var str = this.symbol_table[symbol_to],
+	addSymbol: function addSymbol(symbol_from, target) {
+		var str = this.symbol_table[symbol_from],
 			mapped, symbol_value,
+
 			symbol_key = this.prefix+'_'+this.symbol_table_count,
-			symbol_delimiter = this.symbol_delimiter,
+
+			symbol_delimiter = this.symbol_delimiter_pairs,
 			symbol_key_placeholder = symbol_delimiter[0]+
 				symbol_key+
 				symbol_delimiter[1]
@@ -2245,13 +2267,22 @@ SymbolTree.prototype = {
 				symbol_value = target
 			}
 
+			if(Array.isArray(target)) {
+				mapped = str.slice(0, target[0]) + symbol_key_placeholder +
+					str.slice(target[1])
+
+				symbol_value = str.slice(target[0], target[1])
+			}
+
 			if(mapped) {
-				this.symbol_table[symbol_to] = mapped
+				this.symbol_table[symbol_from] = mapped
 				this.symbol_table[symbol_key] = symbol_value
+				this.symbol_table_count++
+				return symbol_key
 			}
 
 		}
-
+		return null
 	},
 
 	/**
@@ -2264,7 +2295,11 @@ SymbolTree.prototype = {
 	*/
 	symbols: function symbols(str) {
 		var syms = [], sym,
-			reg = RegExp(/\"(.*?)\"/gi),
+			reg =RegExp(''+
+				this.symbol_delimiter_pairs[0] +
+				'('+this.prefix+'_.*?)'+
+				this.symbol_delimiter_pairs[1]
+				, 'gi'),
 			res
 
 		while(res = reg.exec(str))
@@ -2287,17 +2322,18 @@ SymbolTree.prototype = {
 	@return {String}
 	*/
 	interpolate: function interpolate(str, depth) {
-		var syms = this.symbol_table,
-			res, regexp = RegExp(''+
-				this.symbol_delimiter_pairs[0] +
-				'('+this.prefix+'_.*?)'+
-				this.symbol_delimiter_pairs[1]
-				, 'gi')
+		var syms,
+			i, l
 
 		depth = depth || -1
 
-		while( (res = regexp.exec(str)) &amp;&amp; ((depth == -1)? 1: depth--) )
-			str = str.replace(res[0], syms[res[1]])
+		//while deep enough, extract symbols
+		while( ((depth == -1)? 1: depth--) &amp;&amp; (!syms || syms.length) ) {
+			syms = this.symbols(str)
+
+			for(i=0, l=syms.length; i&lt;l; i++)	//for each symbol, replace
+				str = str.replace( syms[i][0], syms[i].symbol_value)
+		}
 
 		return str
 	},
@@ -2306,43 +2342,28 @@ SymbolTree.prototype = {
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
 	@desc Takes the strings delimited by the delimiter off, into a mapping
 	avoids scaped delimiters and transparently resolves nested expressions
-	including them in each strip ( 'aaa(asd(ss)asd)l' => 'aaa"symbolkey"l' ),
+	including them in each strip
+	( 'aaa(asd(ss)asd)ld(sf)sd' => 'aaa"symbolkey"ld"symbolkey2"sd' ),
 	stripts every encounter
 	@param {String} str - the tring to strip
 	@param {Object} opts - the option object
-	@param {String|String[]} [opts.delimiter='('] - the delimiter to
+	@param {String|String[]} [opts.delimiter=SymbolTree.prototype.delimiter_default] - the delimiter to
 		search, if its an array, be it like [delimiter_left, delimiter_right]
 	@param {Boolean} [opts.exclude=false] - if to exclude the delimiters in the strip
 
 	@return {SymbolTree} this
 	*/
 	strip: function strip(opts) { opts = opts || {}
-		var res_list=[],
-			map = this.root(),
-			symkey, symval, sym, self = this
+		var strips = strip_balanced(this.root(), opts),
+			self = this
 
-		res_list = strip_balanced(map, opts)
-
-		if(res_list &amp;&amp; res_list.length) {
-			res_list.forEach(function(e) {
-				symkey = self.prefix+'_'+self.symbols_count
-				sym = self.symbol_delimiter_pairs[0] +
-					symkey +
-					self.symbol_delimiter_pairs[1]
-
-				symval = e.symval
-
-				map = map.replace( symval, sym)
-				self.symbol_table[symkey] = symval
-
-				self.symbol_table_count++
-			})
-
-			this.symbol_table['root'] = map
-		}
+		strips.forEach( function(strip) {
+			self.addSymbol(this.root_symbol, strip.range)
+		})
 
 		return this
 	},
+
 	/**
 	@callback SourceTreeMapFunc
 	@param {String} acumulator - the string being mapped
@@ -2351,12 +2372,13 @@ SymbolTree.prototype = {
 	*/
 	/**
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
+	@desc cant remember why this, delete?
 	@param {Function} func -
 	@return {String|undefined} Mapped src, undefined if no function or str
 	*/
 	map: function map(func, str) {
 		str = str||this.root()
-		if(!str || !f) return undefined
+		if(!str || !func) return undefined
 
 		this.symbol_table(str).map(function(e){
 			return e.symval
@@ -2365,12 +2387,15 @@ SymbolTree.prototype = {
 		})
 	}
 }
-
+/**
+	TODO: real sourcetree, for generalc compiler structure
+*/
 
 
 return {
 	serialize : serialize,
 	is_scaped : is_scaped,
+	strip_balanced: strip_balanced,
 	SymbolTree : SymbolTree,
 	Grammar : Grammar,
 }
@@ -3768,13 +3793,8 @@ return Shader
 	}
 	module.compile = compile
 
-	var test_code =
-			'highp float vec_map  = vec9( 0.0, 0.0, 0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.0) + vec9(3.0)/10.0 ,\
-			terrain = vec5(0.0, 0.0, 0.0,   0.0, 0.0);\
-			highp uniform mat4_n uPMVMatrix;';
-
-	console.log('precompiled: ', test_code)
-	console.log('compiled', compile(test_code) )
+	// console.log('precompiled: ', test_code)
+	// console.log('compiled', compile(test_code) )
 
 	return module
 })();
@@ -4853,7 +4873,7 @@ Frame = (function(){
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Jun 02 2017 21:25:37 GMT-0400 (CLT) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jun 13 2017 17:24:11 GMT-0400 (CLT) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

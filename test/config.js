@@ -3,9 +3,9 @@ var expect = chai.expect,
 		basic_small: `terrain = vec5(0.0, 0.0, 0.0,
 					0.0, 0.0);`,
 		basic: `highp float vec_map  = vec9( 0.0, 0.0, 0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.0) + vec9(3.0)/10.0 ,
-			terrain = vec5(0.0, 0.0, 0.0,
+		terrain = vec5(0.0, 0.0, 0.0,
 					0.0, 0.0);
-			highp uniform mat4_n uPMVMatrix;`,
+	highp uniform mat4_n uPMVMatrix;`,
 	}
 
 describe('meta', () => {

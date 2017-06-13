@@ -288,7 +288,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2090">line 2090</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2105">line 2105</a>
     </li></ul></dd>
     
 
@@ -386,7 +386,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2168">line 2168</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2183">line 2183</a>
     </li></ul></dd>
     
 
@@ -459,7 +459,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2148">line 2148</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2163">line 2163</a>
     </li></ul></dd>
     
 
@@ -531,7 +531,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2158">line 2158</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2173">line 2173</a>
     </li></ul></dd>
     
 
@@ -603,7 +603,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2128">line 2128</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2143">line 2143</a>
     </li></ul></dd>
     
 
@@ -675,7 +675,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2134">line 2134</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2149">line 2149</a>
     </li></ul></dd>
     
 
@@ -748,7 +748,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2141">line 2141</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2156">line 2156</a>
     </li></ul></dd>
     
 
@@ -775,16 +775,16 @@
 
     
 
-    <h4 class="name" id="addSymbol"><span class="type-signature"></span>addSymbol<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="addSymbol"><span class="type-signature"></span>addSymbol<span class="signature">(symbol_from, target)</span><span class="type-signature"> &rarr; {String|null}</span></h4>
 
     
 
 
 
 <div class="description">
-    Adds a symbol to the map, in the node "symbol_to", scaping the
+    Adds a symbol to the map, reading the node "symbol_from", scaping the
 		content defined by "target", wich can be an index pair [a,b] or
-		the content itslef. Returns the symbol key of the generated symbol.
+		the content itself.
 </div>
 
 
@@ -793,6 +793,83 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>symbol_from</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The symbol to modify</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array.&lt;Integer></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The phrase to scape by symbol, if index
+		pair, the pair is in the format of slice. 'a' included, 'b'-1
+		included.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -828,7 +905,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2189">line 2189</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2209">line 2209</a>
     </li></ul></dd>
     
 
@@ -855,7 +932,7 @@
 
         
 <div class="param-desc">
-    symbol - the key of the generated symbol
+    symbol_to - created symbol or null
 </div>
 
 
@@ -867,6 +944,9 @@
     <dd>
         
 <span class="param-type">String</span>
+|
+
+<span class="param-type">null</span>
 
 
     </dd>
@@ -1037,7 +1117,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2249">line 2249</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2284">line 2284</a>
     </li></ul></dd>
     
 
@@ -1091,6 +1171,10 @@
     
 
 
+
+<div class="description">
+    cant remember why this, delete?
+</div>
 
 
 
@@ -1182,7 +1266,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2317">line 2317</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2339">line 2339</a>
     </li></ul></dd>
     
 
@@ -1238,14 +1322,14 @@
 
     
 
-    <h4 class="name" id="root"><span class="type-signature"></span>root<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="root"><span class="type-signature"></span>root<span class="signature">(value)</span><span class="type-signature"> &rarr; {String}</span></h4>
 
     
 
 
 
 <div class="description">
-    root string, from root tree symbol
+    root string, from root tree symbol, changes it to value if given
 </div>
 
 
@@ -1254,6 +1338,55 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">new value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1289,7 +1422,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2175">line 2175</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2191">line 2191</a>
     </li></ul></dd>
     
 
@@ -1351,7 +1484,8 @@
 <div class="description">
     Takes the strings delimited by the delimiter off, into a mapping
 	avoids scaped delimiters and transparently resolves nested expressions
-	including them in each strip ( 'aaa(asd(ss)asd)l' => 'aaa"symbolkey"l' ),
+	including them in each strip
+	( 'aaa(asd(ss)asd)ld(sf)sd' => 'aaa"symbolkey"ld"symbolkey2"sd' ),
 	stripts every encounter
 </div>
 
@@ -1487,7 +1621,7 @@
             
                 <td class="default">
                 
-                    '('
+                    SymbolTree.prototype.delimiter_default
                 
                 </td>
             
@@ -1580,7 +1714,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2279">line 2279</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2316">line 2316</a>
     </li></ul></dd>
     
 
@@ -1735,7 +1869,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2225">line 2225</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line2256">line 2256</a>
     </li></ul></dd>
     
 
@@ -1797,7 +1931,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Jun 02 2017 21:25:37 GMT-0400 (CLT) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jun 13 2017 17:24:11 GMT-0400 (CLT) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

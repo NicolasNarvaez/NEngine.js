@@ -1,7 +1,7 @@
 var cfg = require('./cfg.js'),
-  express = require('express'),
-  bodyParser = require('body-parser'),
-  app = express();
+	express = require('express'),
+	bodyParser = require('body-parser'),
+	app = express()
 
 
 app.use(bodyParser.json())
@@ -10,11 +10,12 @@ app.use(function(req, res, next) {
 	console.log('processing a request')
 	//console.dir(req, {depth:1})
 	next()
-})
+});
 
-// app.use('/lib', express.static(__dirname+"/../lib"))
-app.use('/doc', express.static(__dirname+"/../doc"))
-// app.use('/',  express.static(__dirname+"/full"))
+['doc', 'lib', 'dist'].forEach((e) => {
+	app.use('/'+e, express.static(__dirname+'/../'+e))
+})
+app.use('/example/', express.static(__dirname+'/ngrid/'))
 
 
 var server = app.listen(cfg.port)

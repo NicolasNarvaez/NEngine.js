@@ -6,7 +6,8 @@ module.exports = function(grunt) {
 
 		watch: {
 			main: {
-				files: ['src/NEngine/**/*.js', 'src/browser.js'],
+				files: ['src/NEngine/**/*.js', '!src/NEngine/**/*.test.js',
+					'src/browser.js'],
 				tasks: ['compile']
 			},
 		},
@@ -44,7 +45,10 @@ module.exports = function(grunt) {
 
 		karma: {
 			dev: {
-				configFile: 'karma.conf.js'
+				configFile: 'karma.conf.js',
+				client: {
+					captureConsole: false,
+				}
 			}
 		},
 
