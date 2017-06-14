@@ -179,7 +179,9 @@ function strip_balanced(str,opts) {	opts = opts || {}
 function SymbolTree(src) {
 	if(!(this instanceof SymbolTree)) return new SymbolTree(src)
 
-	this.prefix = '' + this.shepherd_length++
+	this.prefix = '' + this.shepherd_length
+	SymbolTree.prototype.shepherd_length += 1
+
 
 	this.src = src
 	this.symbol_table = {root: src}
@@ -369,7 +371,7 @@ SymbolTree.prototype = {
 			self = this
 
 		strips.forEach( function(strip) {
-			self.addSymbol(this.root_symbol, strip.range)
+			self.addSymbol(self.root_symbol, strip.range)
 		})
 
 		return this

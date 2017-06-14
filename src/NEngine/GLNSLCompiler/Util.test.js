@@ -57,18 +57,43 @@ describe('Util module', () => {
 	describe('SymbolTree', () => {
 		var SymbolTree = Util.SymbolTree
 
-		it('root()', (done) => {
+		it('shepherd works', (d) => {
+			var t1 = new SymbolTree(),
+				shepherd = t1.shepherd_length,
+				t2
+
+			expect(t1.prefix).to.equal( ''+(shepherd-1) )
+
+			t2 = new SymbolTree()
+			expect(t2.prefix).to.equal( ''+shepherd )
+
+			d()
+		})
+
+		it('root()', (d) => {
 			var tree = new SymbolTree( 'asd he' )
 			expect(tree.root()).to.equal('asd he')
 
-			done()
+			d()
+		})
+
+		it('addSymbol(root, range[])', (d) => {
+			var tree = new SymbolTree( 'as(d h)ehj' ),
+				sym = tree.prefix+'_0'
+
+			expect(tree.addSymbol(tree.root_symbol, [2, 7]))
+				.to.equal(sym)
+
+			expect(tree.root()).to.equal(`as"${sym}"ehj`)
+
+			d()
 		})
 
 		it('strip()', (done) => {
 			var tree = new SymbolTree( compiler_examples.basic_small )
 			tree.strip()
 
-			expect(tree.root()).to.equal('terrain = vec5"0_0";')
+			expect(tree.root()).to.equal(`terrain = vec5"${tree.prefix}_0";`)
 
 			done()
 		})
