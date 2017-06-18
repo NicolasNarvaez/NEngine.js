@@ -53,6 +53,7 @@ Expression.prototype = {
 	@desc each element its a regexp + operator identifier
 	for each expression, there are 3 parenthesis operator a, operator b, and
 	operation
+	TODO: lol
 	*/
 	operators: [
 		{
@@ -206,9 +207,8 @@ Expression.prototype = {
 
 return Expression
 })()
-/*
-TODO:
-Extremly important (next version deps):
+/**
+	TODO Extremly important (next version deps):
 	- define constructor dynamic_variables (ready)
 	- connect dynamic_variables to getVariable (ready)
 	- test first variable declaration translations (current)

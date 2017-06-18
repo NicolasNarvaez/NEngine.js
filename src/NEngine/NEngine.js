@@ -80,8 +80,7 @@ global_root.NEngine = (function NEngineInit () {
     //generates materials data canvases
     Shader,
     Entity,
-    //TODO:
-    //optimized physical sysstem, collisions, force fields, n-dimensional boxing system
+    //TODO:optimized physical sysstem, collisions, force fields, n-dimensional boxing system
     //Huge-Nano space handling
     //fixed world object handler: environment variables, force-fields
     //object factories, for fast replication, on preconfigured engines

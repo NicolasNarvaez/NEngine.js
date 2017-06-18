@@ -371,8 +371,7 @@ renderer = (function() {
           mat5.identity(tmp_matrix5_1);
           mat4.identity(tmp_matrix4);
           /*
-          :TODO:
-          el visor entereoscopico n-d esta con errores en las regiones de
+          :TODO: el visor entereoscopico n-d esta con errores en las regiones de
           alternación vectorial por ojo y propiedades matriciales de rotación en
           bases vectoriales elegidas
           */

@@ -21,8 +21,8 @@ and code automatically generated at the beginning (precode).
 @prop {Object.<String, Variable>} variables - scope variables generated on ask
 	constructor functions, dim-dependant functions, etc
 @prop {Sentence[]} sentences - Holds scope sentences
-@prop {String[]} sentences_precode - The precode strings (TODO: change to
-	'Sentences') precode is code that exists previously to the content and,
+@prop {String[]} sentences_precode - The precode strings
+	(TODO: change to 'Sentences') precode is code that exists previously to the content and,
 	doesnt get affected by reordering of its sentences.
 
 @prop {Object.<TypeCodeName, CacheData>} cacheVariables -  contains

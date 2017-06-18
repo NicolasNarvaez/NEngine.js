@@ -9,8 +9,7 @@ recursive scope chain is implemented by the scope objects starting
 by the root "this.rootScope", it also gives you interfaces to manipulate it,
 generate an interpretation (interpret()) of the source, translate it
 (translate()) semantically-structurally, and then write it down (write()).
-:TODO:
-  implement SrcMap usage, to standarize code manipulation across different
+:TODO:implement SrcMap usage, to standarize code manipulation across different
 	semantic-level objects
 
 @prop {String} src - the source code for this tree
@@ -47,7 +46,7 @@ CodeTree.prototype = {
 	@desc create scope tree and fills with sentences, also maps each string to
 		a symbols in the src mapping, referenced has "string_number"
 
-		TODO: pass all transofgmrations to srcmap actions
+		TODO pass all transofgmrations to srcmap actions
 
 	@param {String} src - The source code to interpret, this.src is default
 	*/

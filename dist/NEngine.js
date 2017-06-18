@@ -87,8 +87,7 @@ global_root.NEngine = (function NEngineInit () {
     //generates materials data canvases
     Shader,
     Entity,
-    //TODO:
-    //optimized physical sysstem, collisions, force fields, n-dimensional boxing system
+    //TODO:optimized physical sysstem, collisions, force fields, n-dimensional boxing system
     //Huge-Nano space handling
     //fixed world object handler: environment variables, force-fields
     //object factories, for fast replication, on preconfigured engines
@@ -1739,8 +1738,7 @@ renderer = (function() {
           mat5.identity(tmp_matrix5_1);
           mat4.identity(tmp_matrix4);
           /*
-          :TODO:
-          el visor entereoscopico n-d esta con errores en las regiones de
+          :TODO: el visor entereoscopico n-d esta con errores en las regiones de
           alternación vectorial por ojo y propiedades matriciales de rotación en
           bases vectoriales elegidas
           */
@@ -1958,8 +1956,8 @@ var Util = (function UtilLoader() {
 /**
 @namespace Grammar
 @memberof NEngine.GLNSLCompiler.Util
-@desc Contains glsl grammar definition, useful grammar lists. TODO: make it
-	to at least reflect real GLSL
+@desc Contains glsl grammar definition, useful grammar lists.
+	TODO: make it to at least reflect real GLSL
 */
 var Grammar = (function(){
 	var grammar_lists, grammar_
@@ -2319,7 +2317,8 @@ SymbolTree.prototype = {
 		var strips = strip_balanced(this.root(), opts),
 			self = this
 
-		strips.forEach( function(strip) {
+
+		strips.reverse().forEach( function(strip) {
 			self.addSymbol(self.root_symbol, strip.range)
 		})
 
@@ -2419,6 +2418,7 @@ Expression.prototype = {
 	@desc each element its a regexp + operator identifier
 	for each expression, there are 3 parenthesis operator a, operator b, and
 	operation
+	TODO: lol
 	*/
 	operators: [
 		{
@@ -2572,9 +2572,8 @@ Expression.prototype = {
 
 return Expression
 })()
-/*
-TODO:
-Extremly important (next version deps):
+/**
+	TODO Extremly important (next version deps):
 	- define constructor dynamic_variables (ready)
 	- connect dynamic_variables to getVariable (ready)
 	- test first variable declaration translations (current)
@@ -3079,8 +3078,8 @@ and code automatically generated at the beginning (precode).
 @prop {Object.<String, Variable>} variables - scope variables generated on ask
 	constructor functions, dim-dependant functions, etc
 @prop {Sentence[]} sentences - Holds scope sentences
-@prop {String[]} sentences_precode - The precode strings (TODO: change to
-	'Sentences') precode is code that exists previously to the content and,
+@prop {String[]} sentences_precode - The precode strings
+	(TODO: change to 'Sentences') precode is code that exists previously to the content and,
 	doesnt get affected by reordering of its sentences.
 
 @prop {Object.<TypeCodeName, CacheData>} cacheVariables -  contains
@@ -3447,8 +3446,7 @@ recursive scope chain is implemented by the scope objects starting
 by the root "this.rootScope", it also gives you interfaces to manipulate it,
 generate an interpretation (interpret()) of the source, translate it
 (translate()) semantically-structurally, and then write it down (write()).
-:TODO:
-  implement SrcMap usage, to standarize code manipulation across different
+:TODO:implement SrcMap usage, to standarize code manipulation across different
 	semantic-level objects
 
 @prop {String} src - the source code for this tree
@@ -3485,7 +3483,7 @@ CodeTree.prototype = {
 	@desc create scope tree and fills with sentences, also maps each string to
 		a symbols in the src mapping, referenced has "string_number"
 
-		TODO: pass all transofgmrations to srcmap actions
+		TODO pass all transofgmrations to srcmap actions
 
 	@param {String} src - The source code to interpret, this.src is default
 	*/

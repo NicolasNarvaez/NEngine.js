@@ -95,6 +95,11 @@ describe('Util module', () => {
 
 			expect(tree.root()).to.equal(`terrain = vec5"${tree.prefix}_0";`)
 
+			tree.root('prim()er segundo(s)')
+			tree.strip()
+
+			expect(tree.root()).to.equal(`prim"${tree.prefix}_2"er segundo"${tree.prefix}_1"`)
+
 			done()
 		})
 

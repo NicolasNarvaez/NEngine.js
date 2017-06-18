@@ -9,8 +9,8 @@ var Util = (function UtilLoader() {
 /**
 @namespace Grammar
 @memberof NEngine.GLNSLCompiler.Util
-@desc Contains glsl grammar definition, useful grammar lists. TODO: make it
-	to at least reflect real GLSL
+@desc Contains glsl grammar definition, useful grammar lists.
+	TODO: make it to at least reflect real GLSL
 */
 var Grammar = (function(){
 	var grammar_lists, grammar_
@@ -370,7 +370,8 @@ SymbolTree.prototype = {
 		var strips = strip_balanced(this.root(), opts),
 			self = this
 
-		strips.forEach( function(strip) {
+
+		strips.reverse().forEach( function(strip) {
 			self.addSymbol(self.root_symbol, strip.range)
 		})
 
