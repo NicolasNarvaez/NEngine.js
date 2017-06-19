@@ -15,7 +15,7 @@ function Shader(opts) {
 	this.code_tree = null
 	this.out = null
 
-	this.js_variables = opts.js_variables || {}
+	this.js_variables = opts.js_variables || {n:3}
 	this.uniforms = opts.uniforms || {}
 	this.attributes = opts.attributes || {}
 

@@ -53,7 +53,6 @@ Expression.prototype = {
 	@desc each element its a regexp + operator identifier
 	for each expression, there are 3 parenthesis operator a, operator b, and
 	operation
-	TODO: lol
 	*/
 	operators: [
 		{

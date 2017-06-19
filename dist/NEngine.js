@@ -1974,12 +1974,10 @@ var Grammar = (function(){
 			'float',
 			'sampler2D',
 			'samplerCube',
-			'vec.*\\s',
-			'bvec.*\\s',
-			'ivec.*\\s',
-			'mat.*\\s',
-			'mat.*\\s',//n*m matrix
-			'[\\w\\s]+["\']', //dynamic type
+			'[bi]{0,1}vec\\d+?',
+			'mat\\d+?_\\d+?',
+			'mat\d+?',//n*m matrix
+			'\\w*["\'].*?["\']\\w*', //dynamic type
 		],
 		storage_qualifiers: [
 			'const',
@@ -2418,7 +2416,6 @@ Expression.prototype = {
 	@desc each element its a regexp + operator identifier
 	for each expression, there are 3 parenthesis operator a, operator b, and
 	operation
-	TODO: lol
 	*/
 	operators: [
 		{
@@ -2651,7 +2648,7 @@ Important (relevant for stability) (cant the remember ths note):
 	@param {Scope} opts.scope -
 
 	@param {String} opts.type - "primitive" or "function"
-	@param {Array} opts.qualifiers - same as same name property
+	@param {String[]} opts.qualifiers - ['invariant', 'storage', 'precision', 'datatype']
 	@param {Function} opts.translate - for dynamic functions
 
 	@param {String} opts.value -
@@ -2687,7 +2684,7 @@ function Variable(opts) {
 }
 Variable.prototype = {
 	/**
-	@memberof NEngine.GLNSLCompiler.Variable
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
 	@desc returns the identifiers token associated to this var
 	TODO: add function token id (handles operator overloading)
 	*/
@@ -2696,35 +2693,16 @@ Variable.prototype = {
 		return this.name
 	},
 	/**
-	@method translate
-	@memberof NEngine.GLNSLCompiler.Variable
-	@desc For dynamic functions, translates function
-	@param {Expression[]} params - the parametters as expression trees
-	*/
-	/**
-	@memberof NEngine.GLNSLCompiler.Variable
-	@desc Sets it type_data
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
+	@desc Sets it type_data getting a VarType
 	*/
 	config: function config() {
-		if(!(this.type == 'primitive')) return
+		if( !(this.type == 'primitive') ) return
 
-		var datatype, types = VarTypes.types,
-			type, prim_qualifier = this.qualifiers[3],
-			reg_res
-
-		for(datatype in types) {
-			type = types[datatype]
-			reg_res = RegExp(type.exp).exec(prim_qualifier)
-			if(reg_res)
-				this.type_data = type.constructor( this.qualifiers, this )
-
-			break
-		}
-
-		this.type_data
+		this.type_data = VarTypes.type(this.qualifiers)
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Variable
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
 	@desc registers to the variable dictionary in the scope
 	@throws Error if its identifier was already declared
 	*/
@@ -2738,8 +2716,22 @@ Variable.prototype = {
 		//register to variable scope
 		this.scope.variables[this.name] = this
 	},
+	/**
+	@method translate
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
+	@desc For dynamic functions, translates function
+	@param {Expression[]} params - the parametters as expression trees
+	*/
 	translate: function translate() {
 		return this.type_data.translate()
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
+	@return {Boolean} translatable - if it needs/is translatable
+	*/
+	translatable: function tanslatable() {
+		//TODO qualifiers -> then translatable
+		// return this.type_data.translatable()
 	}
 }
 
@@ -2765,84 +2757,118 @@ precision + prim_type
 @prop {RegExp} type - The regexp that matches the type.
 
 */
-var type, types ={
-	/**
-	They fill the type_data of variables, help sharing
-	code among different configurations of primitives for the same
-	primitive datatypes <br/>
-
-	*/
-	vecn: {
-	  exp: /vec(\d+)/gi,
-	  /**
-	  * creates type info from variable declaration information
-	  */
-	  constructor : function (qualifiers, reg_res) {
-
-	  },
-	  /**
-	  translate this variable
-	  */
-	  translate: function translate() {
-
-	  },
-	  /**
-	  returns array containing each variable component
-	  */
-	  variable_variables: function variable_variables() {
-
-	  },
-	  operations: [
-			{
-				ops: ['[+-]'],
-				replicates: function() {
-
-				},
-				/**
-				* expresion operator is an expression!!, not a variable!!
-				* expresions only contain datatype info and expresion identifier
-				* wich can be a variable identifier or a transparent temporary
-				* identifier for temporal operantions cache
-				*
-				* into_variable can be a variable name or false,indicating to
-				* return an array of the sentences without asignment instead
-				*/
-				translate: function (operation, operator_b_translation, operator_a) {
-
-				}
-			}
-		]
-	},
-	matn_m: {
-		exp: /mat(\d+)(_(\d+))*/gi,
+var type, types = {
 		/**
-		Sets codename from variable
+		They fill the type_data of variables, help sharing
+		code among different configurations of primitives for the same
+		primitive datatypes <br/>
+
 		*/
-		constructor: function(qualifiers, reg_res) {
-			//if(reg_res[])
+		vecn: {
+		  exp: /vec(\d+)/gi,
+		  /**
+		  * creates type info from variable declaration information
+		  */
+		  constructor : function (qualifiers) {
+
+		  },
+		  /**
+		  translate this variable
+		  */
+		  translate: function translate() {
+
+		  },
+		  /**
+		  returns array containing each variable component
+		  */
+		  variable_variables: function variable_variables() {
+
+		  },
+		  operations: [
+				{
+					ops: ['[+-]'],
+					replicates: function() {
+
+					},
+					/**
+					* expresion operator is an expression!!, not a variable!!
+					* expresions only contain datatype info and expresion identifier
+					* wich can be a variable identifier or a transparent temporary
+					* identifier for temporal operantions cache
+					*
+					* into_variable can be a variable name or false,indicating to
+					* return an array of the sentences without asignment instead
+					*/
+					translate: function (operation, operator_b_translation, operator_a) {
+
+					}
+				}
+			]
 		},
-		operations: {
-			'\*': function multiply(operation, expresion_operator, into_variable) {
+		matn_m: {
+			exp: /mat(\d+)(_(\d+))*/gi,
+			/**
+			Sets codename from variable
+			*/
+			constructor: function(qualifiers) {
+				//if(reg_res[])
+			},
+			operations: {
+				'\*': function multiply(operation, expresion_operator, into_variable) {
+				}
+			},
+			valueAt: function nmat_at(i,j,n) {
+				var p = j*n+i,
+					mat = Math.floor( p/16 ); //matrix holding position
+
+				p = mat*16 - p;
+				j = Math.floor( p/4 );
+				i = p - j*4;
+
+				return ''+mat+'['+i+']['+j+']';
 			}
 		},
-		valueAt: function nmat_at(i,j,n) {
-			var p = j*n+i,
-				mat = Math.floor( p/16 ); //matrix holding position
+		scalar: {
+			exp: /(bool|int|float)/gi,
+			constructor: function(qualifiers) {
 
-			p = mat*16 - p;
-			j = Math.floor( p/4 );
-			i = p - j*4;
-
-			return ''+mat+'['+i+']['+j+']';
-		}
+			}
+		},
 	},
-	scalar: {
-		exp: /(bool|int|float)/gi,
-		constructor: function(qualifiers) {
+	prototype = {
+		/**
+		@memberof NEngine.GLNSLCompiler.Vartypes.VarType.prototype
+		@desc Returns the codename asociated to the qualifiers or the
+			vartype
+		@param {String[]} qualifiers - ['invariant', 'storage', 'precision', 'datatype']
+		@return {String} codename
+		*/
+		codename: function codename(qualifiers) {
+			if(!qualifiers) 	qualifiers = this.qualifiers
 
+			return (qualifiers[2] || '')+'_'+ qualifiers[3]
+		},
+		/**
+		@memberof NEngine.GLNSLCompiler.Vartypes.VarType.prototype
+		@desc Translates the datatype of the vartype if needed. If datatype is
+			given, translates it and returns it, here you check the datatypes are
+			setup correctly.
+		@param {String} [datatype]
+		@return {Vartype|String} This, or the translated datatype
+		*/
+		translateType: function translateType(datatype) {
+			var type = datatype
+			if(!type)
+				type = this.qualifiers[3]
+
+			//TODO translateType
+
+			if(datatype) return type
+
+			this.qualifiers[3] = type
+			return this
 		}
-	},
-}
+	}
 
 /**
 Append to each type construcotr, the type name to the resulting type object
@@ -2851,26 +2877,65 @@ for(type in types)
 	types[type].constructor = (function() {
 		var type_name = type,
 			type_obj = types[type],
-			type_constructor = type_obj.constructor;
+			type_constructor = type_obj.constructor,
+			//same as type_obj but with prototype = prototype
+			final_type_obj = Object.create(prototype)
 
-		function VarType(qualifiers, variable) {
-			if( !(this instanceof VarType) )	return new VarType(qualifiers, variable)
+		Object.keys(type_obj).forEach(function(k) {
+			final_type_obj[k] = type_obj[k]
+		})
+
+		function VarType(qualifiers, scope) {
+			if( !(this instanceof VarType) )	return new VarType(qualifiers)
 
 			type_constructor.call(this, qualifiers)
+
+			this.qualifiers = qualifiers.slice()
 			this.type = type_name
-			this.variable = variable
-			this.codename = qualifiers[2] || '' + qualifiers[3]
+			this.translateType()
+
+			this.scope = scope
 		}
-		VarType.prototype = type_obj
+		VarType.prototype = final_type_obj
 
 		return VarType
 	})()
 
+/**
+@memberof NEngine.GLNSLCompiler.Vartypes
+@desc Gets type associated to qualifiers
+@param {String[]} [qualifiers] - ['invariant', 'storage', 'precision', 'datatype']
+@return {VarType|undefined} type
+*/
+function get_type(qualifiers) {
+	if(!qualifiers) return undefined
+
+	var datatype,
+		type, prim_qualifier = qualifiers[3],
+		reg_res
+
+	console.log('get type: ', prim_qualifier)
+
+	for(datatype in types) {
+		type = types[datatype]
+
+		type.exp.lastIndex = 0
+		reg_res = type.exp.exec(prim_qualifier)
+		console.log(reg_res, type.exp, prim_qualifier)
+
+		if(reg_res)
+			return type.constructor( qualifiers )
+	}
+}
 
 return {
 	types: types,
+	type: get_type,
+	translateType: prototype.translateType,
+	codename: prototype.codename,
+	prototype: prototype
 }
-})();
+})()
 
 	module.VarTypes = VarTypes
 	var Sentence = (function SentenceLoader() {
@@ -2931,7 +2996,7 @@ function Sentence(opts) {
 }
 Sentence.prototype = {
 	/**
-	@memberof NEngine.GLNSLCompiler.Sentence
+	@memberof NEngine.GLNSLCompiler.Sentence.prototype
 	@desc fills the sentence information interpreting the sentence str components
 	list, its type and type related cfg, recognizes the sentence type and
 	configures it accordingly currently only types declaration, expression and
@@ -2980,7 +3045,7 @@ Sentence.prototype = {
 			res.shift()
 			res[0] = res[0] || null
 			res[1] = res[1] || 'none'
-			if(!res[3]) throw 'no datatype on variable declaration'
+			if(!res[3]) throw new Error('no datatype on variable declaration')
 
 			//variable constructor data
 			opts = {
@@ -3001,10 +3066,12 @@ Sentence.prototype = {
 
 				//construct variable (copy-in memory qualifiers)
 				opts.sentence_place = variables.length
-				opts.qualifiers = opts.qualifiers.concat([])
+				opts.qualifiers = opts.qualifiers.slice()
 				opts.qualifiers[4] = (/\w+/g).exec(res[0])[0]
+
 				variable = new Variable(opts)
 				variables.push(variable)
+
 				console.log('sentence: variable declared:',res, opts, variable, (/^\s*\w+/g).exec(res[0])[0])
 
 				//construct associated expression
@@ -3027,21 +3094,21 @@ Sentence.prototype = {
 			this.type = null
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Sentence
+	@memberof NEngine.GLNSLCompiler.Sentence.prototype
 	@desc Tells you if this needs translation
 	@return {Boolean}
 	*/
 	needsTranslation: function() {
 		if(this.type == 'declaration' || this.type == 'expression') {
 			this.variables.forEach(function(e){
-				if(e.translatable) return true
+				if(e.translatable()) return true
 			})
 		}
 
 		return false
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Sentence
+	@memberof NEngine.GLNSLCompiler.Sentence.prototype
 	@desc generates a valid GLSL sentence (or group of sentences) that mimics the
 	functionality on this sentence and stores it in this.out as a str. It works
 	differently on each sentence type
@@ -3120,8 +3187,10 @@ function Scope(opts) {
 }
 Scope.prototype = {
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Correctly sets the parentScope
+	@param {Scope} parent - new parent
+	@return this
 	*/
 	setParent: function(parent) {
 		this.unsetParent()
@@ -3129,19 +3198,24 @@ Scope.prototype = {
 		parent.childs.push(this)
 
 		this.rootScope = parent.rootScope || parent
+
+		return this
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
-	@desc Correctly unsets the parentScope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
+	@desc Correctly unsets the parentScope: removes itself from childs array.
+	@return this
 	*/
 	unsetParent: function() {
 		if(!this.parent) return
 
 		this.parent.childs.splice(this.parent.childs.indexOf(this),1)
 		this.parent = null
+
+		return this
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Recursively in the scope tree searches the variable, takes built-in
 	into account.
 	@param {String} varname - Target variable name
@@ -3162,7 +3236,7 @@ Scope.prototype = {
 		return variable
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Get the variable from the builtin, or dynamic generated builtin
 	@param {String} varname - Target variable name
 	@return {Variable} Return null if it cant be find
@@ -3171,7 +3245,7 @@ Scope.prototype = {
 
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Generate a dynamic variable if it matches a dynamic variable type, and
 	adds it to the builtin variables, returning it
 	@param {String} varname - Target variable name
@@ -3203,7 +3277,7 @@ Scope.prototype = {
 		this.built_in.variables[generated.identifierToken()] = generated
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Gets a dynamic_variable matching a variable name or general qualificated
 	name.:
 	@param {String} varname - Target variable name
@@ -3224,7 +3298,7 @@ Scope.prototype = {
 		}
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc If this scope is the scopeRoot or not
 	@return {Boolean} isScopeRoot
 	*/
@@ -3232,7 +3306,7 @@ Scope.prototype = {
 		return !this.rootScope || (this.rootScope == this)
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Ensures that a given type has its cache variables instantiated for
 	operations upon it, this is useful only during translation and final
 	code writting, indexes them by codename. <br/>
@@ -3274,7 +3348,7 @@ Scope.prototype = {
 
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Iterates over the cached variables to avoid dataloss on
 	two-handed cache operations (they require 3 cache vars)
 	@param {Variable} variable - Contains datatype description
@@ -3292,7 +3366,7 @@ Scope.prototype = {
 		return res
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method precode
 	@desc updates precode_, returns pre-code sentences in translated text
 		format, using sentences_precode
@@ -3300,13 +3374,13 @@ Scope.prototype = {
 	*/
 	precode: function (cached) {
 		if( !this.isRoot() )
-			this.rootScope.precode(cached)
+			return this.rootScope.precode(cached)
 
 		if(cached) return this.precode_
 		return this.precode_ = this.sentences_precode.join(' \n')
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method addPrecode
 	@desc adds a sentence to the rootScope.sentences_precode array
 	*/
@@ -3320,7 +3394,7 @@ Scope.prototype = {
 		this.sentences_precode.push(code)
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method addSentence
 	@desc adds a sentence to the current scope.sentences array
 	*/
@@ -3328,7 +3402,7 @@ Scope.prototype = {
 		sentence.number = this.sentences.push[sentence]
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method addBuiltinGLSL
 	@desc generates the built-in variables of the scope. Those objects arent
 	 	a singleton in case of multiple codes on different versions of GLSL, like
@@ -3479,6 +3553,13 @@ function CodeTree(src, js_variables) {
 CodeTree.prototype = {
 	/**
 	@memberof NEngine.GLNSLCompiler.CodeTree.prototype
+	@member {Object<String,String>} prefix - Prefix configuration
+	*/
+	prefix: {
+		variables: 'GLNSL_VAR_',
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.CodeTree.prototype
 	@method interpret
 	@desc create scope tree and fills with sentences, also maps each string to
 		a symbols in the src mapping, referenced has "string_number"
@@ -3586,8 +3667,8 @@ CodeTree.prototype = {
 				//{: to recognize also scope-creating sentences
 				if(c == ';' || c == '{' || c == '}') {
 					sentence = new Sentence({
-						src: src.substr(index_a, i),
-						range: [index_a, i-1],
+						src: src.substr(index_a, i-index_a),
+						range: [index_a, i],
 						scope: (c=='{')? scope_parent: scope_current,
 						thisScope: (c=='{')? scope_current: null,
 						strings: strings,
@@ -3613,30 +3694,25 @@ CodeTree.prototype = {
 	*/
 	translate: function translate() {
 		if(!this.rootScope) return null
+		var sentences = this.sentences, range,
+			out = this.src.original
 
-		var i, l, sentences = this.sentences, sentence,
-			src = this.src,
-			out = '',
-			a = 0, b,
-			precode = this.precode()
+		console.log('codetree.translate: src', out)
 
 		//for each sentence that needs translation
-		for(i=0, l = this.sentences.length; i<l; i++) {
-			sentence = sentences[i]
+		sentences.reverse().forEach(function (sentence){
 			if(sentence.needsTranslation()) {
-
+				range = sentence.range
 				//add translated sentence to previous non-translated content into out
-				b = sentence.range[0]
-				out += src.substr(a, b) + sentence.translate()
-				a = sentence.range[1]+1
+				out = out.substr(0, range[0]) +
+					sentence.translate() + out.substr(range[1]+1, out.length)
 			}
-		}
+		})
+		console.log('codetree.translate: translated', out)
 
-		//add remaining piece.
-		b = src.length
-		out += src.substr(a,b)
 		//add precode
 		out = this.rootScope.precode() + out
+		console.log('codetree.translate: added precode', out)
 
 		return this.out = out
 	},
@@ -3675,7 +3751,7 @@ function Shader(opts) {
 	this.code_tree = null
 	this.out = null
 
-	this.js_variables = opts.js_variables || {}
+	this.js_variables = opts.js_variables || {n:3}
 	this.uniforms = opts.uniforms || {}
 	this.attributes = opts.attributes || {}
 

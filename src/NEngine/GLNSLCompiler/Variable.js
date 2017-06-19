@@ -28,7 +28,7 @@ var Variable = (function VariableLoader() {
 	@param {Scope} opts.scope -
 
 	@param {String} opts.type - "primitive" or "function"
-	@param {Array} opts.qualifiers - same as same name property
+	@param {String[]} opts.qualifiers - ['invariant', 'storage', 'precision', 'datatype']
 	@param {Function} opts.translate - for dynamic functions
 
 	@param {String} opts.value -
@@ -64,7 +64,7 @@ function Variable(opts) {
 }
 Variable.prototype = {
 	/**
-	@memberof NEngine.GLNSLCompiler.Variable
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
 	@desc returns the identifiers token associated to this var
 	TODO: add function token id (handles operator overloading)
 	*/
@@ -73,35 +73,16 @@ Variable.prototype = {
 		return this.name
 	},
 	/**
-	@method translate
-	@memberof NEngine.GLNSLCompiler.Variable
-	@desc For dynamic functions, translates function
-	@param {Expression[]} params - the parametters as expression trees
-	*/
-	/**
-	@memberof NEngine.GLNSLCompiler.Variable
-	@desc Sets it type_data
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
+	@desc Sets it type_data getting a VarType
 	*/
 	config: function config() {
-		if(!(this.type == 'primitive')) return
+		if( !(this.type == 'primitive') ) return
 
-		var datatype, types = VarTypes.types,
-			type, prim_qualifier = this.qualifiers[3],
-			reg_res
-
-		for(datatype in types) {
-			type = types[datatype]
-			reg_res = RegExp(type.exp).exec(prim_qualifier)
-			if(reg_res)
-				this.type_data = type.constructor( this.qualifiers, this )
-
-			break
-		}
-
-		this.type_data
+		this.type_data = VarTypes.type(this.qualifiers)
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Variable
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
 	@desc registers to the variable dictionary in the scope
 	@throws Error if its identifier was already declared
 	*/
@@ -115,8 +96,22 @@ Variable.prototype = {
 		//register to variable scope
 		this.scope.variables[this.name] = this
 	},
+	/**
+	@method translate
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
+	@desc For dynamic functions, translates function
+	@param {Expression[]} params - the parametters as expression trees
+	*/
 	translate: function translate() {
 		return this.type_data.translate()
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.Variable.prototype
+	@return {Boolean} translatable - if it needs/is translatable
+	*/
+	translatable: function tanslatable() {
+		//TODO qualifiers -> then translatable
+		// return this.type_data.translatable()
 	}
 }
 

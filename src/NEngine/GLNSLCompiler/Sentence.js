@@ -56,7 +56,7 @@ function Sentence(opts) {
 }
 Sentence.prototype = {
 	/**
-	@memberof NEngine.GLNSLCompiler.Sentence
+	@memberof NEngine.GLNSLCompiler.Sentence.prototype
 	@desc fills the sentence information interpreting the sentence str components
 	list, its type and type related cfg, recognizes the sentence type and
 	configures it accordingly currently only types declaration, expression and
@@ -105,7 +105,7 @@ Sentence.prototype = {
 			res.shift()
 			res[0] = res[0] || null
 			res[1] = res[1] || 'none'
-			if(!res[3]) throw 'no datatype on variable declaration'
+			if(!res[3]) throw new Error('no datatype on variable declaration')
 
 			//variable constructor data
 			opts = {
@@ -126,10 +126,12 @@ Sentence.prototype = {
 
 				//construct variable (copy-in memory qualifiers)
 				opts.sentence_place = variables.length
-				opts.qualifiers = opts.qualifiers.concat([])
+				opts.qualifiers = opts.qualifiers.slice()
 				opts.qualifiers[4] = (/\w+/g).exec(res[0])[0]
+
 				variable = new Variable(opts)
 				variables.push(variable)
+
 				console.log('sentence: variable declared:',res, opts, variable, (/^\s*\w+/g).exec(res[0])[0])
 
 				//construct associated expression
@@ -152,21 +154,21 @@ Sentence.prototype = {
 			this.type = null
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Sentence
+	@memberof NEngine.GLNSLCompiler.Sentence.prototype
 	@desc Tells you if this needs translation
 	@return {Boolean}
 	*/
 	needsTranslation: function() {
 		if(this.type == 'declaration' || this.type == 'expression') {
 			this.variables.forEach(function(e){
-				if(e.translatable) return true
+				if(e.translatable()) return true
 			})
 		}
 
 		return false
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Sentence
+	@memberof NEngine.GLNSLCompiler.Sentence.prototype
 	@desc generates a valid GLSL sentence (or group of sentences) that mimics the
 	functionality on this sentence and stores it in this.out as a str. It works
 	differently on each sentence type

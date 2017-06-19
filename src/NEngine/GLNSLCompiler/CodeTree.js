@@ -42,6 +42,13 @@ function CodeTree(src, js_variables) {
 CodeTree.prototype = {
 	/**
 	@memberof NEngine.GLNSLCompiler.CodeTree.prototype
+	@member {Object<String,String>} prefix - Prefix configuration
+	*/
+	prefix: {
+		variables: 'GLNSL_VAR_',
+	},
+	/**
+	@memberof NEngine.GLNSLCompiler.CodeTree.prototype
 	@method interpret
 	@desc create scope tree and fills with sentences, also maps each string to
 		a symbols in the src mapping, referenced has "string_number"
@@ -149,8 +156,8 @@ CodeTree.prototype = {
 				//{: to recognize also scope-creating sentences
 				if(c == ';' || c == '{' || c == '}') {
 					sentence = new Sentence({
-						src: src.substr(index_a, i),
-						range: [index_a, i-1],
+						src: src.substr(index_a, i-index_a),
+						range: [index_a, i],
 						scope: (c=='{')? scope_parent: scope_current,
 						thisScope: (c=='{')? scope_current: null,
 						strings: strings,
@@ -176,30 +183,25 @@ CodeTree.prototype = {
 	*/
 	translate: function translate() {
 		if(!this.rootScope) return null
+		var sentences = this.sentences, range,
+			out = this.src.original
 
-		var i, l, sentences = this.sentences, sentence,
-			src = this.src,
-			out = '',
-			a = 0, b,
-			precode = this.precode()
+		console.log('codetree.translate: src', out)
 
 		//for each sentence that needs translation
-		for(i=0, l = this.sentences.length; i<l; i++) {
-			sentence = sentences[i]
+		sentences.reverse().forEach(function (sentence){
 			if(sentence.needsTranslation()) {
-
+				range = sentence.range
 				//add translated sentence to previous non-translated content into out
-				b = sentence.range[0]
-				out += src.substr(a, b) + sentence.translate()
-				a = sentence.range[1]+1
+				out = out.substr(0, range[0]) +
+					sentence.translate() + out.substr(range[1]+1, out.length)
 			}
-		}
+		})
+		console.log('codetree.translate: translated', out)
 
-		//add remaining piece.
-		b = src.length
-		out += src.substr(a,b)
 		//add precode
 		out = this.rootScope.precode() + out
+		console.log('codetree.translate: added precode', out)
 
 		return this.out = out
 	},

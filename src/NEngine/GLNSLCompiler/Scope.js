@@ -63,8 +63,10 @@ function Scope(opts) {
 }
 Scope.prototype = {
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Correctly sets the parentScope
+	@param {Scope} parent - new parent
+	@return this
 	*/
 	setParent: function(parent) {
 		this.unsetParent()
@@ -72,19 +74,24 @@ Scope.prototype = {
 		parent.childs.push(this)
 
 		this.rootScope = parent.rootScope || parent
+
+		return this
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
-	@desc Correctly unsets the parentScope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
+	@desc Correctly unsets the parentScope: removes itself from childs array.
+	@return this
 	*/
 	unsetParent: function() {
 		if(!this.parent) return
 
 		this.parent.childs.splice(this.parent.childs.indexOf(this),1)
 		this.parent = null
+
+		return this
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Recursively in the scope tree searches the variable, takes built-in
 	into account.
 	@param {String} varname - Target variable name
@@ -105,7 +112,7 @@ Scope.prototype = {
 		return variable
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Get the variable from the builtin, or dynamic generated builtin
 	@param {String} varname - Target variable name
 	@return {Variable} Return null if it cant be find
@@ -114,7 +121,7 @@ Scope.prototype = {
 
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Generate a dynamic variable if it matches a dynamic variable type, and
 	adds it to the builtin variables, returning it
 	@param {String} varname - Target variable name
@@ -146,7 +153,7 @@ Scope.prototype = {
 		this.built_in.variables[generated.identifierToken()] = generated
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Gets a dynamic_variable matching a variable name or general qualificated
 	name.:
 	@param {String} varname - Target variable name
@@ -167,7 +174,7 @@ Scope.prototype = {
 		}
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc If this scope is the scopeRoot or not
 	@return {Boolean} isScopeRoot
 	*/
@@ -175,7 +182,7 @@ Scope.prototype = {
 		return !this.rootScope || (this.rootScope == this)
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Ensures that a given type has its cache variables instantiated for
 	operations upon it, this is useful only during translation and final
 	code writting, indexes them by codename. <br/>
@@ -217,7 +224,7 @@ Scope.prototype = {
 
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@desc Iterates over the cached variables to avoid dataloss on
 	two-handed cache operations (they require 3 cache vars)
 	@param {Variable} variable - Contains datatype description
@@ -235,7 +242,7 @@ Scope.prototype = {
 		return res
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method precode
 	@desc updates precode_, returns pre-code sentences in translated text
 		format, using sentences_precode
@@ -243,13 +250,13 @@ Scope.prototype = {
 	*/
 	precode: function (cached) {
 		if( !this.isRoot() )
-			this.rootScope.precode(cached)
+			return this.rootScope.precode(cached)
 
 		if(cached) return this.precode_
 		return this.precode_ = this.sentences_precode.join(' \n')
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method addPrecode
 	@desc adds a sentence to the rootScope.sentences_precode array
 	*/
@@ -263,7 +270,7 @@ Scope.prototype = {
 		this.sentences_precode.push(code)
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method addSentence
 	@desc adds a sentence to the current scope.sentences array
 	*/
@@ -271,7 +278,7 @@ Scope.prototype = {
 		sentence.number = this.sentences.push[sentence]
 	},
 	/**
-	@memberof NEngine.GLNSLCompiler.Scope
+	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method addBuiltinGLSL
 	@desc generates the built-in variables of the scope. Those objects arent
 	 	a singleton in case of multiple codes on different versions of GLSL, like

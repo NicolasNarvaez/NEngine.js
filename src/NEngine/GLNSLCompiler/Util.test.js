@@ -93,7 +93,7 @@ describe('Util module', () => {
 			var tree = new SymbolTree( compiler_examples.basic_small )
 			tree.strip()
 
-			expect(tree.root()).to.equal(`terrain = vec5"${tree.prefix}_0";`)
+			expect(tree.root()).to.equal(`lowp vec5 terrain = vec5"${tree.prefix}_0";`)
 
 			tree.root('prim()er segundo(s)')
 			tree.strip()
