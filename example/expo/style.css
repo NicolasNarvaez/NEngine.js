@@ -1,0 +1,123 @@
+* {
+  font-family: 'Anton', sans-serif;
+}
+a {
+  color:inherit;
+}
+body {
+  margin: 0;
+}
+
+#menu, #games  {
+  color: black;
+  background-color: white;
+}
+
+/* ///////// Games ///////// */
+
+#games {
+  display: inline-block;
+  width: 80%;
+  float: left;
+  perspective: 800px;
+}
+
+.game-section {
+  width: 17vw;
+  height: 17vw;
+  float: right;
+  text-align: center;
+  transition: all 1s;
+}
+
+.game-section:hover {
+  background-color: rgba(100, 100, 100, 0.5);
+  transition: all 1s;
+}
+
+.game-back-container {
+  left: 3.5vw;
+  top: 3.5vw;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+.game-back {
+  position: absolute;
+  border: 1vw solid black;
+  width: 8vw;
+  height: 8vw;
+  transform: rotate(0);
+  animation: cardrotate 10s linear infinite;
+  transition: transform 2s, animation 2s;
+  /*animation-fill-mode: forward;*/
+}
+/*.game-link:hover .game-back {
+  transform: rotate(0);
+  animation: none_anim 5s linear infinite;
+  transition: transform 2s, animation 2s;
+  animation-fill-mode: both;
+}*/
+
+@keyframes cardrotate {
+  100% {
+    transform: matrix3d(
+      0, -1, 0, 0,
+      -1, 0, 0, 0,
+      0, 0, -1, 0,
+      0, 0, 0, 1);
+  }
+}
+@keyframes none_anim {
+  50% {
+    transform: rotateX(45deg);
+  }
+}
+
+.game-title {
+  margin-left:0;
+
+}
+.game-title p {
+  font-size: 2em;
+  margin:0;
+  margin-top: 4.25em;
+}
+
+/* ///////// Menu ///////// */
+
+#menu {
+  display: block;
+  width: 18%;
+  height: 100vh;
+  float: left;
+  padding-right: 0;
+}
+
+#title {
+  /*color: white;*/
+  font-size: 4em;
+  text-align: right;
+}
+
+#comment {
+  clear:both;
+  text-align: right;
+  padding-top: 3em;
+}
+
+#github img {
+  max-width: 7vw;
+  float:right;
+}
+
+
+/* ///////// General purpose ///////// */
+
+.red {
+  color: red;
+}
+
+.float-right {
+  float: right;
+}

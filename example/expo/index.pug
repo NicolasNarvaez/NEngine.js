@@ -78,7 +78,7 @@ html(lang='en')
           gl_Position.z <= -10.0
           ) {
 
-          gl_Position.z = 10000.0*gl_Position.w;
+          gl_Position.z = 10000.0*gl_Position.w;5
         }
         else {
           gl_Position.z = a_position_v; //this will allow that all depth related
@@ -95,11 +95,37 @@ html(lang='en')
       }
 
   body
-    - for(var i=files.length; i--;)
-      div= files[i]
-    
-  link(rel='stylesheet', type='text/css', href='style.css')
-  script(type='text/javascript', src='/lib/twgl-full.min.js')
-  script(type='text/javascript', src='/lib/Input.js')
-  script(type='text/javascript', src='/lib/NMath.js')
-  script(type='text/javascript', src='/dist/NEngine.js')
+    #games
+      - for(var i=files.length; i--;)
+        a.game-link(href=files[i].href)
+          .game-section
+            .game-back-container
+              .game-back
+            .game-title
+              p= files[i].name
+        
+    #menu
+      #title
+        p <span class='red'>N</span>Engine Lab
+      #github
+        a(href='https://github.com/NicolasNarvaez/NEngine.js')
+          img(src='/assets/octocat.png')
+      #comment
+        //It involves a whole lot of new toys that you are going to be the first to try out.
+        //The world of games is in a kind of trance.
+        //- p.
+          People are programmed to accept so little, but the posibilities are so great.
+          NEngine* is not just a game, its an entirely new game system.
+          <br/>
+          You are the power source, your body, your nervous system.
+          <br/><br/>
+          <span class='float-right'>David Cronenberg, Existenz</span>
+        //- p.
+        //-   * It says Existenz, not NEngine.
+  link(href="https://fonts.googleapis.com/css?family=Anton" 
+    rel="stylesheet" type='text/css')
+  link(rel='stylesheet' type='text/css' href='style.css')
+  script(type='text/javascript' src='/lib/twgl-full.min.js')
+  script(type='text/javascript' src='/lib/Input.js')
+  script(type='text/javascript' src='/lib/NMath.js')
+  script(type='text/javascript' src='/dist/NEngine.js')

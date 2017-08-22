@@ -6,7 +6,7 @@ var cfg = require('./cfg.js'),
 	http_server = require('http').Server(app),
 	io = require('socket.io')(http_server),
 	pug_static = require('./pug-static.js'),
-	pug_locals = {files: ['test1', 'test2']}
+	pug_locals = {files: []}
 
 app.use(bodyParser.json())
 app.use((req, res, next) => {
@@ -16,23 +16,29 @@ app.use((req, res, next) => {
 
 
 
-['doc', 'lib', 'dist'].forEach( e =>
+['doc', 'lib', 'dist', 'assets'].forEach( e =>
 	app.use('/'+e, express.static(__dirname+'/../'+e))
 )
 
 
 
-fs.readdir(__dirname+'/showcase/expo/', (err, files) => {
-	console.log(__dirname+'/showcase/expo/',err, files)
-	pug_locals.files = files
-} )
+fs.readdir(__dirname+'/expo/games/', (err, files) => {
+	pug_locals.files = files.map( e => {
+		return {
+			name: e,
+			href: '/expo/games/'+encodeURI(e)+'/',
+		}
+	} )
+	console.log(__dirname+'/expo/games/',err, files, pug_locals.files)
+
+})
 app.use('/example/', express.static(__dirname+'/ngrid/'))
-app.use('/showcase/', pug_static({
-	src: __dirname+'/showcase/',
+app.use('/expo/', pug_static({
+	src: __dirname+'/expo/',
 	html: true,
 	locals: pug_locals
 }) )
-app.use('/showcase/', express.static(__dirname+'/showcase/'))
+app.use('/expo/', express.static(__dirname+'/expo/'))
 
 
 
