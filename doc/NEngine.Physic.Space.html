@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Entity - Documentation</title>
+    <title>Space - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Entity</h1>
+    <h1 class="page-title">Space</h1>
     
 
     
@@ -41,9 +41,9 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="NEngine.html">NEngine</a>.</span>
+            <span class="ancestors"><a href="NEngine.html">NEngine</a><a href="NEngine.Physic.html">.Physic</a>.</span>
         
-        Entity
+        Space
         </h2>
         
     
@@ -56,18 +56,15 @@
 
     
 
-    <h4 class="name" id="Entity"><span class="type-signature"></span>new Entity<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Space"><span class="type-signature"></span>new Space<span class="signature">(dim, size, length, level, fill)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Has minimal abstract object information position, rotation, meta-data,
-geometry, material, collision config.
-<br/><br/>
-Its extremely useful to represent a dynamic object that can interact physically
-with its environment, can be pluged into physics spaces and have meta-data.
+    SpaceNode network container, holds common configurations
+for every SpaceNode.
 </div>
 
 
@@ -78,15 +75,10 @@ with its environment, can be pluged into physics spaces and have meta-data.
 
 
 
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
+    <h5>Parameters:</h5>
     
 
-<table class="props">
+<table class="params">
     <thead>
     <tr>
         
@@ -124,20 +116,20 @@ with its environment, can be pluged into physics spaces and have meta-data.
 
             
 
-            <td class="description last">Dimensionality of Ent.</td>
+            <td class="description last">-</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>geometry</code></td>
+                <td class="name"><code>size</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Geom</span>
+<span class="param-type">Integer</span>
 
 
             
@@ -147,20 +139,20 @@ with its environment, can be pluged into physics spaces and have meta-data.
 
             
 
-            <td class="description last">The visual geometry for the entity</td>
+            <td class="description last">-</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>material</code></td>
+                <td class="name"><code>length</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Material</span>
+<span class="param-type">Number</span>
 
 
             
@@ -170,20 +162,20 @@ with its environment, can be pluged into physics spaces and have meta-data.
 
             
 
-            <td class="description last">The material data for the shader</td>
+            <td class="description last">-</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>collider</code></td>
+                <td class="name"><code>level</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Integer</span>
 
 
             
@@ -193,21 +185,20 @@ with its environment, can be pluged into physics spaces and have meta-data.
 
             
 
-            <td class="description last">Collision processing info (type of detection,
-geom, etc)</td>
+            <td class="description last">0 is for bottom, give the level for root, huper node</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>phy</code></td>
+                <td class="name"><code>fill</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Boolean</span>
 
 
             
@@ -217,15 +208,138 @@ geom, etc)</td>
 
             
 
-            <td class="description last">Physical data, for physical processors (elasticity, mass,
-friction coeficient, etc)</td>
+            <td class="description last">if fill Space Network on creation</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">kind of space network that holds // add opts new types or separate them??</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>container</code></td>
+                <td class="name"><code>dim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">dims of SpaceNode network</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">number of subnodes along an axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">length of the subnode on depth 0, to generate
+    space coordinates</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>root</code></td>
             
 
             <td class="type">
@@ -241,7 +355,77 @@ friction coeficient, etc)</td>
 
             
 
-            <td class="description last">The SpaceNode that holds this entity</td>
+            <td class="description last">the root node of the SpaceNodes network,
+    root.parent equals null</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>level</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the number of levels deper the network is</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lib_vec</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">corresponding vectorial lib (example: NMath.vec5)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lib_mat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">corresponding matrix lib (same as lib_vec)</td>
         </tr>
 
     
@@ -280,7 +464,7 @@ friction coeficient, etc)</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line1190">line 1190</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line3956">line 3956</a>
     </li></ul></dd>
     
 
@@ -329,22 +513,17 @@ friction coeficient, etc)</td>
 
     
 
-    <h4 class="name" id="set"><span class="type-signature"></span>set<span class="signature">(type, opt)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="addEnt"><span class="type-signature"></span>addEnt<span class="signature">(Entity)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Requires that the entity is previously registered on a space node.
-    <br/><br/>
-    Sets a physics type on the entity, using a module object, module name, or
-    module enum. Checks whether the objects array in the entity container (a
-    SpaceNode) has the needed object type array instantiated, and conects this
-    entity to it so it will be processed by the processors of the given type.
-    <br/><br/>
-    This way you can configure an entity to be of a given type and be
-    processed by the processors that process that type in the SpaceTree
+    adds an entity to the space system
+checks that the systems has instantiated the corresponding space
+node and then adds it to the objects array[0] (entity) (checking
+coherent instantiation of it)
 </div>
 
 
@@ -380,19 +559,13 @@ friction coeficient, etc)</td>
 
         <tr>
             
-                <td class="name"><code>type</code></td>
+                <td class="name"><code>Entity</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">PhysicModule</span>
-|
-
-<span class="param-type">String</span>
-|
-
-<span class="param-type">Integer</span>
+<span class="param-type">Entity</span>
 
 
             
@@ -402,33 +575,7 @@ friction coeficient, etc)</td>
 
             
 
-            <td class="description last">The module that defines the
-    type you want to set into this entity, it can be the module, its
-    registered name, or its enum Integer in the PhysicModulesEnum</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>opt</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The options passed to the convert function of the
-    module.</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -469,7 +616,269 @@ friction coeficient, etc)</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line1237">line 1237</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4074">line 4074</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="enlarge"><span class="type-signature"></span>enlarge<span class="signature">(repeat)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    add hupper levels to the space system
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>repeat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Number of levels to generate</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4018">line 4018</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="remEnt"><span class="type-signature"></span>remEnt<span class="signature">(Entity)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    removes an entity from the space system
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>Entity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Entity</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4057">line 4057</a>
     </li></ul></dd>
     
 

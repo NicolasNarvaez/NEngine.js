@@ -1,0 +1,105 @@
+html(lang='en')
+  head
+    title NEngine showcase
+    <!-- Metadatos de OpenGraph -->
+    meta(property='og:title', content='NEngine showcase')
+    meta(property='og:type', content='website')
+    meta(property='og:site_name', content='NEngine showcase')
+    meta(property='og:url', content='http://ngrid.cl')
+    // <meta property="og:image" content="http://archetype-0.cl/ngrid/cover.jpg" />
+    meta(property='og:description', content='El único motor hiperdimensional de videojuegos!')
+
+    script#vs(type='vs').
+      
+      attribute vec4 a_position;
+      highp float a_position_v;
+      highp float a_position_tmp;
+      attribute vec4 a_color;
+
+      uniform mat4 uPMVMatrix1;
+      uniform mat4 uPMVMatrix2;
+
+      highp mat4 uPMVMatrix;
+
+      uniform mat4 uPMatrix1;
+      uniform mat4 uPMatrix2;
+
+      uniform mat4 uMVMatrix1;
+      uniform mat4 uMVMatrix2;
+
+      uniform mat4 uPMVMatrix3D;
+
+      varying highp vec4 vColor;
+      void main(void) {
+
+        //gl_Position = uPMVMatrix * gl_Position
+          gl_Position = uPMVMatrix1*a_position;
+          gl_Position.x += uPMVMatrix2[0][1];
+          gl_Position.y += uPMVMatrix2[1][1];
+          gl_Position.z += uPMVMatrix2[2][1];
+          gl_Position.w += uPMVMatrix2[3][1];
+          //final, homogenous coordinate
+          a_position_v = uPMVMatrix2[0][0]*a_position.x + uPMVMatrix2[1][0]*a_position.y +
+          uPMVMatrix2[2][0]*a_position.z + uPMVMatrix2[3][0]*a_position.w + uPMVMatrix2[0][2];
+
+        //use homogenous cooordinate
+        gl_Position /= a_position_v;
+
+        //just... this!: https://soundcloud.com/kellerkind/sets/dj-mixes
+        gl_Position.w *= a_position_v; //repair depth coordinate to generate linear distribution
+
+        vColor = a_color;
+        a_position_v = gl_Position.w; //store depth value
+        //already in NDC !!!
+
+        /////////////////////////////////////////////////////////////////convert to 3D eyespace
+        gl_Position.z += 2.0;
+        gl_Position *= 100.0;
+
+        gl_Position.w = 1.0;
+
+        /////////////////////////////////////////////////////////////////convert to NDC 3D
+        gl_Position = uPMVMatrix3D*gl_Position; //doing *= will do the operation row-vector type...
+        //yes, like if it where fucking undebuggable transposed shit.
+
+        a_position_tmp = gl_Position.w; //store depth value
+        gl_Position /= gl_Position.w;
+        //manual culling
+        //gl_Position.z += 1.0;
+        if(
+          a_position_v >= 10.0 ||
+          a_position_v <= -1.0 ||
+
+          gl_Position.x >= 10.0 ||
+          gl_Position.x <= -10.0 ||
+          gl_Position.y >= 10.0 ||
+          gl_Position.y <= -10.0  ||
+          gl_Position.z >= 10.0 ||
+          gl_Position.z <= -10.0
+          ) {
+
+          gl_Position.z = 10000.0*gl_Position.w;
+        }
+        else {
+          gl_Position.z = a_position_v; //this will allow that all depth related
+          //vColor.a *= (5.0 - gl_Position.z)/(5.0);
+        }
+        gl_Position *= a_position_tmp;
+      }
+      
+    script#fs(type='fs').
+      varying highp vec4 vColor;
+      void main(void) {
+        gl_FragColor = vColor;
+        gl_FragColor.a = 1.0;
+      }
+
+  body
+    - for(var i=files.length; i--;)
+      div= files[i]
+    
+  link(rel='stylesheet', type='text/css', href='style.css')
+  script(type='text/javascript', src='/lib/twgl-full.min.js')
+  script(type='text/javascript', src='/lib/Input.js')
+  script(type='text/javascript', src='/lib/NMath.js')
+  script(type='text/javascript', src='/dist/NEngine.js')

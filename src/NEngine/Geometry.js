@@ -218,7 +218,7 @@ geometry = (function() {
     offset_from = ((av)?av.length/dim:0);
     if(bd.edges) {
       offset_to = (ad.edges)? ad.edges.length : 0;
-      console.log(offset_to)
+      // console.log(offset_to)
       for(i=bd.edges.length; i--;)
         od.edges[i+offset_to] = bd.edges[i] + offset_from;
     }
@@ -275,6 +275,8 @@ geometry = (function() {
         type: Float32Array
       }
     }
+
+    return g
   }
 
   /**
@@ -325,7 +327,7 @@ geometry = (function() {
     this.boundingBoxMax = 0;
     this.boundingSphereRadius = 0;
 
-    this.dim;
+    this.dim = 0;
 
     this.data = {
       vertex: null,
@@ -335,6 +337,7 @@ geometry = (function() {
       faces: null,
     };
     this.buffers = {};
+    return this
   }
 
   Geom.prototype = (function() {

@@ -1,23 +1,65 @@
 var cfg = require('./cfg.js'),
+	fs = require('fs'),
 	express = require('express'),
 	bodyParser = require('body-parser'),
-	app = express()
-
+	app = express(),
+	http_server = require('http').Server(app),
+	io = require('socket.io')(http_server),
+	pug_static = require('./pug-static.js'),
+	pug_locals = {files: ['test1', 'test2']}
 
 app.use(bodyParser.json())
-
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
 	console.log('processing a request')
-	//console.dir(req, {depth:1})
 	next()
 });
 
-['doc', 'lib', 'dist'].forEach((e) => {
+
+
+['doc', 'lib', 'dist'].forEach( e =>
 	app.use('/'+e, express.static(__dirname+'/../'+e))
-})
+)
+
+
+
+fs.readdir(__dirname+'/showcase/expo/', (err, files) => {
+	console.log(__dirname+'/showcase/expo/',err, files)
+	pug_locals.files = files
+} )
 app.use('/example/', express.static(__dirname+'/ngrid/'))
+app.use('/showcase/', pug_static({
+	src: __dirname+'/showcase/',
+	html: true,
+	locals: pug_locals
+}) )
+app.use('/showcase/', express.static(__dirname+'/showcase/'))
 
 
-var server = app.listen(cfg.port)
+
+app.use('/save/', (req, res, next) => {
+})
+http_server.listen(cfg.port)
+var users = {},
+	last_user
+io.on('connection', sk => {
+	// if(last_user)
+	// 	io.to(sk.id).emit('set_id', last_user)
+	console.log('connecion', sk.id)
+	users[sk.id] = sk
+	last_user = sk.id
+
+	sk.on('key', key => {
+		console.log('event key')
+		// console.log('key, users:', users, 'last_user:', last_user)
+		if(last_user)
+			io.to(last_user).emit('key_press', key)
+	})
+
+	sk.on('log', log_arguments => {
+		console.log(log_arguments);
+		// console.log.apply(console, log_arguments)
+	})
+})
+
 // console.log(server)
-console.log("running in "+cfg.port)
+console.log('running in '+cfg.port, 'parametters: ', process.argv)

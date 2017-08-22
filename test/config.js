@@ -5,6 +5,14 @@ var expect = chai.expect,
 		terrain = vec9(0.0, 0.0, 0.0,
 					0.0, 0.0);
 	uniform highp mat4_n uPMVMatrix;`,
+		declaration: {
+			datatypes: `
+			highp vecn vec_n = vecn(0.0) + 1.0;
+			lowp mat_n_n mat_n1;
+			lowp mat_n_2 mat_n2;
+			lowp mat_6_n mat_n3;
+			`
+		},
 	}
 
 describe('meta', () => {
@@ -15,6 +23,7 @@ describe('meta', () => {
 			expect('asd').to.equal('asd')
 			done()
 		})
+
 		it('detects unequal correctly', (done) => {
 			expect('asd').to.not.equal('add')
 			done()

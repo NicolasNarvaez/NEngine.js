@@ -37,8 +37,10 @@
     "karma-nyan-reporter": "^0.2.5",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
+    "pug-static": "^1.0.1",
     "qs": "^6.4.0",
     "requirejs": "^2.3.3",
+    "socket.io": "^2.0.3",
     "supertest": "^3.0.0"
   },
   "devDependencies": {
@@ -51,6 +53,8 @@
     "karma-firefox-launcher": "^1.0.1",
     "karma-opera-launcher": "^1.0.0",
     "karma-requirejs": "^1.1.0",
-    "minami": "^1.1.1"
+    "minami": "^1.1.1",
+    "pug": "^2.0.0-rc.3",
+    "pug-static": "^1.0.1"
   }
 }

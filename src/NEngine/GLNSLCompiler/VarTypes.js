@@ -99,18 +99,19 @@ var type, types = {
 		@desc Returns the codename asociated to the qualifiers or the
 			vartype
 		@param {String[]} qualifiers - ['invariant', 'storage', 'precision', 'datatype']
-		@return {String} codename
+		@return {String} codename - undefined otherwise
 		*/
 		codename: function codename(qualifiers) {
 			if(!qualifiers) 	qualifiers = this.qualifiers
 
+			if(!qualifiers) return undefined
 			return (qualifiers[2] || '')+'_'+ qualifiers[3]
 		},
 		/**
 		@memberof NEngine.GLNSLCompiler.Vartypes.VarType.prototype
 		@desc Translates the datatype of the vartype if needed. If datatype is
 			given, translates it and returns it, here you check the datatypes are
-			setup correctly.
+			.
 		@param {String} [datatype]
 		@return {Vartype|String} This, or the translated datatype
 		*/
@@ -129,7 +130,7 @@ var type, types = {
 	}
 
 /**
-Append to each type construcotr, the type name to the resulting type object
+Append to each type constructor, the type name to the resulting type object
 */
 for(type in types)
 	types[type].constructor = (function() {

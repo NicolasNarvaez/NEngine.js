@@ -28,9 +28,8 @@ var Grammar = (function(){
 			'sampler2D',
 			'samplerCube',
 			'[bi]{0,1}vec\\d+?',
-			'mat\\d+?_\\d+?',
-			'mat\d+?',//n*m matrix
-			'\\w*["\'].*?["\']\\w*', //dynamic type
+			'mat\\d+_\\d+',
+			// 'mat\\d+?',//n*m matrix
 		],
 		storage_qualifiers: [
 			'const',

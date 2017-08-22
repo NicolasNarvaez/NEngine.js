@@ -78,6 +78,6 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('dev', ['compile:dev','concurrent:dev'])
 	grunt.registerTask('devall', ['compile:dev','concurrent:devall'])
-	grunt.registerTask('default', 'dev')
+	grunt.registerTask('default', 'devall')
 
 }

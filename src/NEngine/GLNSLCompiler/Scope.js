@@ -198,7 +198,7 @@ Scope.prototype = {
 			return this.rootScope.ensureTypeCache(variable)
 
 		var cache, i, l, type=variable.data_type,
-			codename = type.codename
+			codename = type.codename()
 
 		if(cache = this.cacheVariables[codename]) return
 
@@ -233,7 +233,7 @@ Scope.prototype = {
 	*/
 	getTypeCache: function getTypeCache(variable) {
 		this.ensureTypeCache(variable)
-		var codename = variable.data_type.codename,
+		var codename = variable.data_type.codename(),
 			cache = this.cacheVariables[codename],
 			res = cache.history.shift()
 
@@ -281,13 +281,13 @@ Scope.prototype = {
 	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method addBuiltinGLSL
 	@desc generates the built-in variables of the scope. Those objects arent
-	 	a singleton in case of multiple codes on different versions of GLSL, like
-		keep generating those maps dynamically.
+	 	a singleton in case of multiple codes on different versions of GLSL,
+		like keep generating those objects dynamically.
 	*/
 	addBuiltinGLSL: function() {
 		var variables = {
 				/**
-					THose variables get translated directly
+					Those variables get translated directly
 				*/
 				'gl_Position': new Variable({
 					type: 'primitive',
@@ -365,8 +365,8 @@ Scope.prototype = {
 
 		//add already built-in dynamically defined variables
 		(['mat', 'vec', 'ivec', 'bvec']).forEach(function(prefix){
-			already_built_in = already_built_in.concat([2,3,4].
-				map(function(e){return prefix+e}))
+			already_built_in = already_built_in.concat(
+				[2,3,4].map(function(e){return prefix+e}) )
 		})
 
 		console.log('right here', already_built_in)

@@ -57,7 +57,8 @@ function Variable(opts) {
 		this.name = opts.name || ''
 
 	if(this.qualifiers && this.type) {
-		this.config()
+		if( this.type == 'primitive' )
+			this.type_data = VarTypes.type(this.qualifiers)
 
 		if(this.name)	this.declare()
 	}
@@ -71,15 +72,6 @@ Variable.prototype = {
 	identifierToken: function identifierToken(qualifiers) {
 		qualifiers = qualifiers || this.qualifiers
 		return this.name
-	},
-	/**
-	@memberof NEngine.GLNSLCompiler.Variable.prototype
-	@desc Sets it type_data getting a VarType
-	*/
-	config: function config() {
-		if( !(this.type == 'primitive') ) return
-
-		this.type_data = VarTypes.type(this.qualifiers)
 	},
 	/**
 	@memberof NEngine.GLNSLCompiler.Variable.prototype

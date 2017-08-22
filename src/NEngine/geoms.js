@@ -26,14 +26,31 @@ SOFTWARE.
 @memberof NEngine.geometry
 @function grid{n}
 
-@param {Object} options cfg object
-@param {Integer} options.size the subdivisions of the grid for each axis
+@param {Object} options - cfg object
+@param {Integer} options.size - the subdivisions of the grid for each axis
 @param {Integer} options.size_{component} you can target specific components
 (x, y, z, w) to override options.size on it
-@param {Float} options.length the length of the grid on all axis
+@param {Float} options.length - the length of the grid on all axis
 @param {Float} options.length_{component} you can target specific components
 (x, y, z, w) to override options.length on it
-@param {Boolean} options.wire if generate wire or face data on data buffers
+@param {Boolean} options.wire - if generate wire or face data on data buffers
+
+@param {Function} options.iteration - function to execute on each vertex.
+  Receives vertex position according to parametters and the options object
+  itself with extra fields for locating the iteration function in the fractal.
+  <br/><br/>
+  iteration : function(p, options) {} <br/>
+  p: the position of the current vertex according to initial parametters
+  (size, length) <br/>
+  options: options + {recursion_i, recursion_is, recursion_p, recursion_ps} <br/>
+  recursion_i is the index of the current vertex in integer, internall format,
+  recursion_p is the scaled to world coordinates format. </br>
+  options.recursion_is, recursion_ps to get the index of the vertex in the
+  fractal grid in the format [ p1 = [p1x, p1y, ..], p2, .. ] for each format.
+@param {Integer} options.recursion_depth - To execute recursively, indicating
+  height (0 is normal).
+@param {Boolean} options.functional - True if to only execute vertex iteration
+  and exit avoiding geometry computation.
 
 @desc creates a grid geometry, a grid is understod as a 2 dimensional net, this
 time we extend it to n dimensions. Each axis repeats the grid onto it,
@@ -43,19 +60,19 @@ letter: (grid3, grid4)
 TODO: extend to N
 @return {Geom} grid finished geometry
 */
-function grid4(options) {
-  if(!options) options = {};
+function grid4(ops) {
+  if(!ops) ops = {};
 
   var
-    size_x = options.size_x || options.size || 2,
-    size_y = options.size_y || options.size || size_x,
-    size_z = options.size_z || options.size || size_y,
-    size_w = options.size_w || options.size || size_z,
+    size_x = ops.size_x || ops.size || 2,
+    size_y = ops.size_y || ops.size || size_x,
+    size_z = ops.size_z || ops.size || size_y,
+    size_w = ops.size_w || ops.size || size_z,
 
-    length_x = options.length_x || options.length || 1,
-    length_y = options.length_y || options.length || length_x,
-    length_z = options.length_z || options.length || length_y,
-    length_w = options.length_w || options.length || length_z,
+    length_x = ops.length_x || ops.length || 1,
+    length_y = ops.length_y || ops.length || length_x,
+    length_z = ops.length_z || ops.length || length_y,
+    length_w = ops.length_w || ops.length || length_z,
 
     //this transforms from vertex coordinate to array coordinate
     size_step_x = 4,
@@ -76,29 +93,33 @@ function grid4(options) {
     length_w_m = length_w/2,
 
     //loop iterators
-    i_w, i_z, i_y, i_x, i_dir, i_dir2;
+    i_w, i_z, i_y, i_x, i_dir, i_dir2,
+
+    g;
 
   //just a recursion, calm down guys
-  if(options.iteration || options.recursion_depth) {
+  if(ops.iteration || ops.recursion_depth) {
     var p = NMath.vec4.create(),
       recursion_i = Array(4);
 
-    if(options.recursion_depth) {
-      if(!options.recursion_depth_total) {
-        options.recursion_depth_total = options.recursion_depth;
-        options.recursion_depth_current = 0;
-      }
 
-      if(!options.recursion_is)
-        options.recursion_is = [recursion_i];
-      else
-        options.recursion_is.push(recursion_i);
-
-      if(!options.recursion_ps)
-        options.recursion_ps = [p];
-      else
-        options.recursion_ps.push(p);
+    if(!ops.recursion_depth_total) {
+      ops.recursion_depth_total = ops.recursion_depth;
+      ops.recursion_depth_current = 0;
     }
+    // console.log('ops.recursion_is');
+    if(!ops.recursion_is)
+      ops.recursion_is = [recursion_i];
+    else
+    ops.recursion_is.push(recursion_i);
+
+    // console.log('ops.recursion_is', ops.recursion_is);
+
+
+    if(!ops.recursion_ps)
+      ops.recursion_ps = [p];
+    else
+      ops.recursion_ps.push(p);
 
     for(recursion_i[3] = size_w; recursion_i[3]--;)
       for(recursion_i[2] = size_z; recursion_i[2]--;)
@@ -110,24 +131,30 @@ function grid4(options) {
             p[2] =  recursion_i[2]*length_step_z - length_z_m;
             p[3] =  recursion_i[3]*length_step_w - length_w_m;
 
-            options.recursion_i = recursion_i;
-            options.iteration(p, options);
+            ops.recursion_i = recursion_i;
+            if(ops.iteration)
+              ops.iteration(p, ops);
 
-            if(options.recursion_depth) {
-              options.recursion_depth--;
-              options.recursion_depth_current++;
-              grid4(options);
-              options.recursion_depth++;
-              options.recursion_depth_current--;
+            if(ops.recursion_continue === false)
+              continue
+            if(ops.recursion_depth) {
+              // console.log('starting new grid', ops.recursion_depth)
+              ops.recursion_depth--;
+              ops.recursion_depth_current++;
+              grid4(ops);
+              ops.recursion_depth++;
+              ops.recursion_depth_current--;
             }
           }
-      if(options.functional)
+    ops.recursion_ps.pop();
+    ops.recursion_is.pop();
+      if(ops.functional)
         return
   }
 
   var position = new GLMAT_ARRAY_TYPE(size_w*size_z*size_y*size_x*4),
     color = new GLCOLOR_ARRAY_TYPE(size_w*size_z*size_y*size_x*4),
-    indices = (options.wire)? new GLINDEX_ARRAY_TYPE(2*(
+    indices = (ops.wire)? new GLINDEX_ARRAY_TYPE(2*(
       size_w*size_z*size_y*(size_x-1) +
       size_w*size_z*(size_y-1)*size_x +
       size_w*(size_z-1)*size_y*size_x +
@@ -136,7 +163,7 @@ function grid4(options) {
 
     );
 
-  if(options.wire){
+  if(ops.wire){
     //fill vertex position data
     for(i_w = size_w; i_w--;)
       for(i_z = size_z; i_z--;)
@@ -213,30 +240,28 @@ function grid4(options) {
     }
 
 
-    Geom.apply(this);
-    this.dim = 4;
+    g = Geom.apply({
+      length_x : length_x,
+      length_y : length_y,
+      length_z : length_z,
+      length_w : length_w,
 
-    this.length_x = length_x;
-    this.length_y = length_y;
-    this.length_z = length_z;
-    this.length_w = length_w;
+      size_x : size_x,
+      size_y : size_y,
+      size_z : size_z,
+      size_w : size_w,
+    })
+    g.dim = 4
 
-    this.size_x = size_x;
-    this.size_y = size_y;
-    this.size_z = size_z;
-    this.size_w = size_w;
 
-    this.data = {}
-    this.data.vertex = position;
-    if(options.wire)
-      this.data.edges = indices;
-    else
-      this.data.faces = indices;
+    g.data = {}
+    g.data.vertex = position
+    if(ops.wire)  g.data.edges = indices
+    else  g.data.faces = indices
 
-    this.data.color = color;
+    g.data.color = color
 
-    twglize(this);
-    return this;
+    return twglize(g)
 }
 grid4.prototype = Geom.prototype;
 
@@ -258,7 +283,7 @@ TODO: extend to N
 @return {Geom} simplex finished geometry
 */
 function simplex4(ops) {
-  var size = ops.size, type = ops.enemy,
+  var g, size = ops.size, type = ops.enemy,
    p = new GLMAT_ARRAY_TYPE([
       -0.5, -0.28867512941360474, -0.2041241452319315, -0.15811388194561005,
       0.5, -0.28867512941360474, -0.2041241452319315, -0.15811388194561005,
@@ -266,7 +291,19 @@ function simplex4(ops) {
       0, 0, 0.6123724431685174, -0.15811388194561005,
       0, 0, 0, 0.6324555330964848
     ]),
-    c,
+    c = (type)? new GLCOLOR_ARRAY_TYPE([
+      1, 0, 0, 1,
+      1, 0, 0, 1,
+      0, 1, 0, 1,
+      0, 1, 0, 1,
+      1, 1, 0, 1,
+    ]) : new GLCOLOR_ARRAY_TYPE([
+      1, 0, 1, 1,
+      0, 1, 1, 1,
+      1, 1, 1, 1,
+      1, 1, 0, 1,
+      0, 0, 0, 1,
+    ]),
     i = (ops.wire)?new GLINDEX_ARRAY_TYPE([ //if a wire
       0, 1,
       0, 2,
@@ -279,6 +316,7 @@ function simplex4(ops) {
       2,4,
       3,4,
     ]):
+
     new GLINDEX_ARRAY_TYPE([  //if 3D face (4D sub-filling)
       0,1,2,
       0,1,3,
@@ -292,39 +330,24 @@ function simplex4(ops) {
       2,3,4,
     ])
 
-    if(type)
-    c = new GLCOLOR_ARRAY_TYPE([
-      1, 0, 0, 1,
-      1, 0, 0, 1,
-      0, 1, 0, 1,
-      0, 1, 0, 1,
-      1, 1, 0, 1,
-    ])
-    else
-    c = new GLCOLOR_ARRAY_TYPE([
-      1, 0, 1, 1,
-      0, 1, 1, 1,
-      1, 1, 1, 1,
-      1, 1, 0, 1,
-      0, 0, 0, 1,
-    ])
-
-
     /*
     v_tmp[0] = 1.0 + 0.5*3;
     v_tmp[1] = 0.8660254037844386 + 0.28867513459481287*2;
     v_tmp[2] = 0.816496580927726 + 0.2041241452319315;
     v_tmp[3] = 0.7905694150420949;
     */
+  g = Geom.apply({
+    })
 
-  return {
+  g.dim = 4;
 
-    buffers: {
-      position: {numComponents: 4, data: p , type: GLMAT_ARRAY_TYPE},
-      indices: {numComponents: (ops.wire)?2:3, data: i, type: GLINDEX_ARRAY_TYPE},
-      color: {numComponents: 4, data: c, type: GLCOLOR_ARRAY_TYPE}
-      }
-    }
+  g.data = {}
+  g.data.vertex = p;
+  if(ops.wire)  g.data.edges = i;
+  else  g.data.faces = i;
+  g.data.color = c;
+
+  return twglize(g);
 }
 
 /**
@@ -343,7 +366,7 @@ TODO: extend to N
 */
 
 function octahedron4(ops) {
-  var size = ops.size,
+  var g, size = ops.size,
     p = new GLMAT_ARRAY_TYPE([
     size, 0, 0, 0,
     -size, 0, 0, 0,
@@ -451,23 +474,27 @@ function octahedron4(ops) {
     5,6,7,
   ]);
 
-  return {
+  g = Geom.apply({
     boundingSphereRadius: size,
     boundingBoxMax: size,
     boundingBoxMin: size,
-    buffers: {
-      position: {numComponents: 4, data: p , type: GLMAT_ARRAY_TYPE},
-      indices: {numComponents: (ops.wire)?2:3, data: i, type: GLINDEX_ARRAY_TYPE},
-      color: {numComponents: 4, data: c, type: GLCOLOR_ARRAY_TYPE}
-      }
-    }
+    })
+  g.dim = 4;
+
+  g.data = {}
+  g.data.vertex = p;
+  if(ops.wire)  g.data.edges = i;
+  else  g.data.faces = i;
+  g.data.color = c;
+
+  return twglize(g);
 }
 
 /**
 @memberof NEngine.geometry
 @function axis{n}
 
-@param {Object} options cfg object
+@param {Object} ops - cfg object
 
 @desc an axis in n-d is just n orthogonal lines that intersec in the origin
 this one has a different colour for each line so you can use it as a guide
@@ -478,8 +505,8 @@ TODO: extend to N
 @return {Geom} axis finished geometry
 */
 
-function axis4(options){
-  var s = options.size,p = new GLMAT_ARRAY_TYPE([
+function axis4(ops){
+  var s = ops.size,p = new GLMAT_ARRAY_TYPE([
     0, 0, 0, 0,
     s, 0, 0, 0,
     0, s, 0, 0,
@@ -500,15 +527,19 @@ function axis4(options){
     0, 3,
     0, 4,
   ]);
-  return {
-    buffers: {
-      position: {numComponents: 4, data: p , type: GLMAT_ARRAY_TYPE},
-      indices: {numComponents: 2, data: i, type: GLINDEX_ARRAY_TYPE},
-      color: {numComponents: 4, data: c, type: GLCOLOR_ARRAY_TYPE}
-      }
-    }
+
+  g = new Geom()
+  g.dim = 4
+
+  g.data = {
+    vertex : p,
+    edges : i,
+    color : c,
+  }
+
+  return twglize(g)
 }
 
-function tree4(options) {
+function tree4(ops) {
 
 }

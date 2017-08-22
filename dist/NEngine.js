@@ -329,7 +329,7 @@ geometry = (function() {
     offset_from = ((av)?av.length/dim:0);
     if(bd.edges) {
       offset_to = (ad.edges)? ad.edges.length : 0;
-      console.log(offset_to)
+      // console.log(offset_to)
       for(i=bd.edges.length; i--;)
         od.edges[i+offset_to] = bd.edges[i] + offset_from;
     }
@@ -386,6 +386,8 @@ geometry = (function() {
         type: Float32Array
       }
     }
+
+    return g
   }
 
   /**
@@ -436,7 +438,7 @@ geometry = (function() {
     this.boundingBoxMax = 0;
     this.boundingSphereRadius = 0;
 
-    this.dim;
+    this.dim = 0;
 
     this.data = {
       vertex: null,
@@ -446,6 +448,7 @@ geometry = (function() {
       faces: null,
     };
     this.buffers = {};
+    return this
   }
 
   Geom.prototype = (function() {
@@ -502,14 +505,31 @@ SOFTWARE.
 @memberof NEngine.geometry
 @function grid{n}
 
-@param {Object} options cfg object
-@param {Integer} options.size the subdivisions of the grid for each axis
+@param {Object} options - cfg object
+@param {Integer} options.size - the subdivisions of the grid for each axis
 @param {Integer} options.size_{component} you can target specific components
 (x, y, z, w) to override options.size on it
-@param {Float} options.length the length of the grid on all axis
+@param {Float} options.length - the length of the grid on all axis
 @param {Float} options.length_{component} you can target specific components
 (x, y, z, w) to override options.length on it
-@param {Boolean} options.wire if generate wire or face data on data buffers
+@param {Boolean} options.wire - if generate wire or face data on data buffers
+
+@param {Function} options.iteration - function to execute on each vertex.
+  Receives vertex position according to parametters and the options object
+  itself with extra fields for locating the iteration function in the fractal.
+  <br/><br/>
+  iteration : function(p, options) {} <br/>
+  p: the position of the current vertex according to initial parametters
+  (size, length) <br/>
+  options: options + {recursion_i, recursion_is, recursion_p, recursion_ps} <br/>
+  recursion_i is the index of the current vertex in integer, internall format,
+  recursion_p is the scaled to world coordinates format. </br>
+  options.recursion_is, recursion_ps to get the index of the vertex in the
+  fractal grid in the format [ p1 = [p1x, p1y, ..], p2, .. ] for each format.
+@param {Integer} options.recursion_depth - To execute recursively, indicating
+  height (0 is normal).
+@param {Boolean} options.functional - True if to only execute vertex iteration
+  and exit avoiding geometry computation.
 
 @desc creates a grid geometry, a grid is understod as a 2 dimensional net, this
 time we extend it to n dimensions. Each axis repeats the grid onto it,
@@ -519,19 +539,19 @@ letter: (grid3, grid4)
 TODO: extend to N
 @return {Geom} grid finished geometry
 */
-function grid4(options) {
-  if(!options) options = {};
+function grid4(ops) {
+  if(!ops) ops = {};
 
   var
-    size_x = options.size_x || options.size || 2,
-    size_y = options.size_y || options.size || size_x,
-    size_z = options.size_z || options.size || size_y,
-    size_w = options.size_w || options.size || size_z,
+    size_x = ops.size_x || ops.size || 2,
+    size_y = ops.size_y || ops.size || size_x,
+    size_z = ops.size_z || ops.size || size_y,
+    size_w = ops.size_w || ops.size || size_z,
 
-    length_x = options.length_x || options.length || 1,
-    length_y = options.length_y || options.length || length_x,
-    length_z = options.length_z || options.length || length_y,
-    length_w = options.length_w || options.length || length_z,
+    length_x = ops.length_x || ops.length || 1,
+    length_y = ops.length_y || ops.length || length_x,
+    length_z = ops.length_z || ops.length || length_y,
+    length_w = ops.length_w || ops.length || length_z,
 
     //this transforms from vertex coordinate to array coordinate
     size_step_x = 4,
@@ -552,29 +572,33 @@ function grid4(options) {
     length_w_m = length_w/2,
 
     //loop iterators
-    i_w, i_z, i_y, i_x, i_dir, i_dir2;
+    i_w, i_z, i_y, i_x, i_dir, i_dir2,
+
+    g;
 
   //just a recursion, calm down guys
-  if(options.iteration || options.recursion_depth) {
+  if(ops.iteration || ops.recursion_depth) {
     var p = NMath.vec4.create(),
       recursion_i = Array(4);
 
-    if(options.recursion_depth) {
-      if(!options.recursion_depth_total) {
-        options.recursion_depth_total = options.recursion_depth;
-        options.recursion_depth_current = 0;
-      }
 
-      if(!options.recursion_is)
-        options.recursion_is = [recursion_i];
-      else
-        options.recursion_is.push(recursion_i);
-
-      if(!options.recursion_ps)
-        options.recursion_ps = [p];
-      else
-        options.recursion_ps.push(p);
+    if(!ops.recursion_depth_total) {
+      ops.recursion_depth_total = ops.recursion_depth;
+      ops.recursion_depth_current = 0;
     }
+    // console.log('ops.recursion_is');
+    if(!ops.recursion_is)
+      ops.recursion_is = [recursion_i];
+    else
+    ops.recursion_is.push(recursion_i);
+
+    // console.log('ops.recursion_is', ops.recursion_is);
+
+
+    if(!ops.recursion_ps)
+      ops.recursion_ps = [p];
+    else
+      ops.recursion_ps.push(p);
 
     for(recursion_i[3] = size_w; recursion_i[3]--;)
       for(recursion_i[2] = size_z; recursion_i[2]--;)
@@ -586,24 +610,30 @@ function grid4(options) {
             p[2] =  recursion_i[2]*length_step_z - length_z_m;
             p[3] =  recursion_i[3]*length_step_w - length_w_m;
 
-            options.recursion_i = recursion_i;
-            options.iteration(p, options);
+            ops.recursion_i = recursion_i;
+            if(ops.iteration)
+              ops.iteration(p, ops);
 
-            if(options.recursion_depth) {
-              options.recursion_depth--;
-              options.recursion_depth_current++;
-              grid4(options);
-              options.recursion_depth++;
-              options.recursion_depth_current--;
+            if(ops.recursion_continue === false)
+              continue
+            if(ops.recursion_depth) {
+              // console.log('starting new grid', ops.recursion_depth)
+              ops.recursion_depth--;
+              ops.recursion_depth_current++;
+              grid4(ops);
+              ops.recursion_depth++;
+              ops.recursion_depth_current--;
             }
           }
-      if(options.functional)
+    ops.recursion_ps.pop();
+    ops.recursion_is.pop();
+      if(ops.functional)
         return
   }
 
   var position = new GLMAT_ARRAY_TYPE(size_w*size_z*size_y*size_x*4),
     color = new GLCOLOR_ARRAY_TYPE(size_w*size_z*size_y*size_x*4),
-    indices = (options.wire)? new GLINDEX_ARRAY_TYPE(2*(
+    indices = (ops.wire)? new GLINDEX_ARRAY_TYPE(2*(
       size_w*size_z*size_y*(size_x-1) +
       size_w*size_z*(size_y-1)*size_x +
       size_w*(size_z-1)*size_y*size_x +
@@ -612,7 +642,7 @@ function grid4(options) {
 
     );
 
-  if(options.wire){
+  if(ops.wire){
     //fill vertex position data
     for(i_w = size_w; i_w--;)
       for(i_z = size_z; i_z--;)
@@ -689,30 +719,28 @@ function grid4(options) {
     }
 
 
-    Geom.apply(this);
-    this.dim = 4;
+    g = Geom.apply({
+      length_x : length_x,
+      length_y : length_y,
+      length_z : length_z,
+      length_w : length_w,
 
-    this.length_x = length_x;
-    this.length_y = length_y;
-    this.length_z = length_z;
-    this.length_w = length_w;
+      size_x : size_x,
+      size_y : size_y,
+      size_z : size_z,
+      size_w : size_w,
+    })
+    g.dim = 4
 
-    this.size_x = size_x;
-    this.size_y = size_y;
-    this.size_z = size_z;
-    this.size_w = size_w;
 
-    this.data = {}
-    this.data.vertex = position;
-    if(options.wire)
-      this.data.edges = indices;
-    else
-      this.data.faces = indices;
+    g.data = {}
+    g.data.vertex = position
+    if(ops.wire)  g.data.edges = indices
+    else  g.data.faces = indices
 
-    this.data.color = color;
+    g.data.color = color
 
-    twglize(this);
-    return this;
+    return twglize(g)
 }
 grid4.prototype = Geom.prototype;
 
@@ -734,7 +762,7 @@ TODO: extend to N
 @return {Geom} simplex finished geometry
 */
 function simplex4(ops) {
-  var size = ops.size, type = ops.enemy,
+  var g, size = ops.size, type = ops.enemy,
    p = new GLMAT_ARRAY_TYPE([
       -0.5, -0.28867512941360474, -0.2041241452319315, -0.15811388194561005,
       0.5, -0.28867512941360474, -0.2041241452319315, -0.15811388194561005,
@@ -742,7 +770,19 @@ function simplex4(ops) {
       0, 0, 0.6123724431685174, -0.15811388194561005,
       0, 0, 0, 0.6324555330964848
     ]),
-    c,
+    c = (type)? new GLCOLOR_ARRAY_TYPE([
+      1, 0, 0, 1,
+      1, 0, 0, 1,
+      0, 1, 0, 1,
+      0, 1, 0, 1,
+      1, 1, 0, 1,
+    ]) : new GLCOLOR_ARRAY_TYPE([
+      1, 0, 1, 1,
+      0, 1, 1, 1,
+      1, 1, 1, 1,
+      1, 1, 0, 1,
+      0, 0, 0, 1,
+    ]),
     i = (ops.wire)?new GLINDEX_ARRAY_TYPE([ //if a wire
       0, 1,
       0, 2,
@@ -755,6 +795,7 @@ function simplex4(ops) {
       2,4,
       3,4,
     ]):
+
     new GLINDEX_ARRAY_TYPE([  //if 3D face (4D sub-filling)
       0,1,2,
       0,1,3,
@@ -768,39 +809,24 @@ function simplex4(ops) {
       2,3,4,
     ])
 
-    if(type)
-    c = new GLCOLOR_ARRAY_TYPE([
-      1, 0, 0, 1,
-      1, 0, 0, 1,
-      0, 1, 0, 1,
-      0, 1, 0, 1,
-      1, 1, 0, 1,
-    ])
-    else
-    c = new GLCOLOR_ARRAY_TYPE([
-      1, 0, 1, 1,
-      0, 1, 1, 1,
-      1, 1, 1, 1,
-      1, 1, 0, 1,
-      0, 0, 0, 1,
-    ])
-
-
     /*
     v_tmp[0] = 1.0 + 0.5*3;
     v_tmp[1] = 0.8660254037844386 + 0.28867513459481287*2;
     v_tmp[2] = 0.816496580927726 + 0.2041241452319315;
     v_tmp[3] = 0.7905694150420949;
     */
+  g = Geom.apply({
+    })
 
-  return {
+  g.dim = 4;
 
-    buffers: {
-      position: {numComponents: 4, data: p , type: GLMAT_ARRAY_TYPE},
-      indices: {numComponents: (ops.wire)?2:3, data: i, type: GLINDEX_ARRAY_TYPE},
-      color: {numComponents: 4, data: c, type: GLCOLOR_ARRAY_TYPE}
-      }
-    }
+  g.data = {}
+  g.data.vertex = p;
+  if(ops.wire)  g.data.edges = i;
+  else  g.data.faces = i;
+  g.data.color = c;
+
+  return twglize(g);
 }
 
 /**
@@ -819,7 +845,7 @@ TODO: extend to N
 */
 
 function octahedron4(ops) {
-  var size = ops.size,
+  var g, size = ops.size,
     p = new GLMAT_ARRAY_TYPE([
     size, 0, 0, 0,
     -size, 0, 0, 0,
@@ -927,23 +953,27 @@ function octahedron4(ops) {
     5,6,7,
   ]);
 
-  return {
+  g = Geom.apply({
     boundingSphereRadius: size,
     boundingBoxMax: size,
     boundingBoxMin: size,
-    buffers: {
-      position: {numComponents: 4, data: p , type: GLMAT_ARRAY_TYPE},
-      indices: {numComponents: (ops.wire)?2:3, data: i, type: GLINDEX_ARRAY_TYPE},
-      color: {numComponents: 4, data: c, type: GLCOLOR_ARRAY_TYPE}
-      }
-    }
+    })
+  g.dim = 4;
+
+  g.data = {}
+  g.data.vertex = p;
+  if(ops.wire)  g.data.edges = i;
+  else  g.data.faces = i;
+  g.data.color = c;
+
+  return twglize(g);
 }
 
 /**
 @memberof NEngine.geometry
 @function axis{n}
 
-@param {Object} options cfg object
+@param {Object} ops - cfg object
 
 @desc an axis in n-d is just n orthogonal lines that intersec in the origin
 this one has a different colour for each line so you can use it as a guide
@@ -954,8 +984,8 @@ TODO: extend to N
 @return {Geom} axis finished geometry
 */
 
-function axis4(options){
-  var s = options.size,p = new GLMAT_ARRAY_TYPE([
+function axis4(ops){
+  var s = ops.size,p = new GLMAT_ARRAY_TYPE([
     0, 0, 0, 0,
     s, 0, 0, 0,
     0, s, 0, 0,
@@ -976,16 +1006,20 @@ function axis4(options){
     0, 3,
     0, 4,
   ]);
-  return {
-    buffers: {
-      position: {numComponents: 4, data: p , type: GLMAT_ARRAY_TYPE},
-      indices: {numComponents: 2, data: i, type: GLINDEX_ARRAY_TYPE},
-      color: {numComponents: 4, data: c, type: GLCOLOR_ARRAY_TYPE}
-      }
-    }
+
+  g = new Geom()
+  g.dim = 4
+
+  g.data = {
+    vertex : p,
+    edges : i,
+    color : c,
+  }
+
+  return twglize(g)
 }
 
-function tree4(options) {
+function tree4(ops) {
 
 }
 
@@ -1638,6 +1672,13 @@ renderer = (function() {
   }
   function resize() {
     //regenerate renderer transform matrix to catch canvas reshape
+    if(emit_log) {
+      emit_log('resizing', 'h:', canvas.height,'w', canvas.width)
+      emit_log('resizing', 'h:', window.innerHeight,
+        'w', window.innerWidth)
+      emit_log('stereodim : ',config.stereo_dim)
+    }
+
     var const_vert = 1,
       const_hor = 1;
 
@@ -1817,9 +1858,13 @@ renderer = (function() {
           twgl.setUniforms(shader_info, uniforms);
           if(config.stereo_dim) {
             if( (i === 0 && config.stereo_crossed) || (i !== 0 && !config.stereo_crossed) )
+            // if( (i === 0 && !config.stereo_crossed) || (i !== 0 && config.stereo_crossed) )
               context.viewport(0, 0, canvas.width/2, canvas.height);
-            else
+            else {
+              // window.interval_log('cw',canvas.width,
+              // 'cw/2', canvas.width/2)
               context.viewport(canvas.width/2, 0, canvas.width/2, canvas.height);
+            }
           }
           else context.viewport(0, 0, canvas.width, canvas.height);
 
@@ -1834,6 +1879,16 @@ renderer = (function() {
       obj.geom.buffers_info = twgl.createBufferInfoFromArrays(context, obj.geom.buffers );
     }
     obj_list.push(obj);
+  }
+
+  window.interval_log = function() {
+    if(!window._interval_log)
+      window._interval_log = Date.now()
+
+    if(window._interval_log < Date.now()) {
+      if(emit_log) emit_log(arguments)
+      window._interval_log = Date.now() + 1000*2
+    }
   }
 
   function objRm(obj) {
@@ -1975,9 +2030,8 @@ var Grammar = (function(){
 			'sampler2D',
 			'samplerCube',
 			'[bi]{0,1}vec\\d+?',
-			'mat\\d+?_\\d+?',
-			'mat\d+?',//n*m matrix
-			'\\w*["\'].*?["\']\\w*', //dynamic type
+			'mat\\d+_\\d+',
+			// 'mat\\d+?',//n*m matrix
 		],
 		storage_qualifiers: [
 			'const',
@@ -2578,7 +2632,7 @@ return Expression
 	- translate first expressions
 	- start translating full code
 
-	Added variables.identifierTOken:
+	Added variables.identifierToken:
 		suṕports multiple function on same variable definition
 		empty qualifiers encode free-vaue generalizattion on generators
 		and scope
@@ -2604,11 +2658,11 @@ return Expression
 			new token proposal: function:qualifier1,qualifier2,..
 			use old syntax on no candidate as fallback
 				new politik be lik:
-					full function qualified identifier: get da
+					full function qualified identifier: get that
 					just name -> match any qualifications :3
 		add dynamic built-in function include() function, called in built-in
 			function creation, adds function code to scope.precode
-		add firts built-in from dyn-built-in functions (standard defined)
+		add firsts built-in from dyn-built-in functions (standard defined)
 
 
 Important (relevant for stability) (cant the remember ths note):
@@ -2677,7 +2731,8 @@ function Variable(opts) {
 		this.name = opts.name || ''
 
 	if(this.qualifiers && this.type) {
-		this.config()
+		if( this.type == 'primitive' )
+			this.type_data = VarTypes.type(this.qualifiers)
 
 		if(this.name)	this.declare()
 	}
@@ -2691,15 +2746,6 @@ Variable.prototype = {
 	identifierToken: function identifierToken(qualifiers) {
 		qualifiers = qualifiers || this.qualifiers
 		return this.name
-	},
-	/**
-	@memberof NEngine.GLNSLCompiler.Variable.prototype
-	@desc Sets it type_data getting a VarType
-	*/
-	config: function config() {
-		if( !(this.type == 'primitive') ) return
-
-		this.type_data = VarTypes.type(this.qualifiers)
 	},
 	/**
 	@memberof NEngine.GLNSLCompiler.Variable.prototype
@@ -2841,18 +2887,19 @@ var type, types = {
 		@desc Returns the codename asociated to the qualifiers or the
 			vartype
 		@param {String[]} qualifiers - ['invariant', 'storage', 'precision', 'datatype']
-		@return {String} codename
+		@return {String} codename - undefined otherwise
 		*/
 		codename: function codename(qualifiers) {
 			if(!qualifiers) 	qualifiers = this.qualifiers
 
+			if(!qualifiers) return undefined
 			return (qualifiers[2] || '')+'_'+ qualifiers[3]
 		},
 		/**
 		@memberof NEngine.GLNSLCompiler.Vartypes.VarType.prototype
 		@desc Translates the datatype of the vartype if needed. If datatype is
 			given, translates it and returns it, here you check the datatypes are
-			setup correctly.
+			.
 		@param {String} [datatype]
 		@return {Vartype|String} This, or the translated datatype
 		*/
@@ -2871,7 +2918,7 @@ var type, types = {
 	}
 
 /**
-Append to each type construcotr, the type name to the resulting type object
+Append to each type constructor, the type name to the resulting type object
 */
 for(type in types)
 	types[type].constructor = (function() {
@@ -3322,7 +3369,7 @@ Scope.prototype = {
 			return this.rootScope.ensureTypeCache(variable)
 
 		var cache, i, l, type=variable.data_type,
-			codename = type.codename
+			codename = type.codename()
 
 		if(cache = this.cacheVariables[codename]) return
 
@@ -3357,7 +3404,7 @@ Scope.prototype = {
 	*/
 	getTypeCache: function getTypeCache(variable) {
 		this.ensureTypeCache(variable)
-		var codename = variable.data_type.codename,
+		var codename = variable.data_type.codename(),
 			cache = this.cacheVariables[codename],
 			res = cache.history.shift()
 
@@ -3405,13 +3452,13 @@ Scope.prototype = {
 	@memberof NEngine.GLNSLCompiler.Scope.prototype
 	@method addBuiltinGLSL
 	@desc generates the built-in variables of the scope. Those objects arent
-	 	a singleton in case of multiple codes on different versions of GLSL, like
-		keep generating those maps dynamically.
+	 	a singleton in case of multiple codes on different versions of GLSL,
+		like keep generating those objects dynamically.
 	*/
 	addBuiltinGLSL: function() {
 		var variables = {
 				/**
-					THose variables get translated directly
+					Those variables get translated directly
 				*/
 				'gl_Position': new Variable({
 					type: 'primitive',
@@ -3489,8 +3536,8 @@ Scope.prototype = {
 
 		//add already built-in dynamically defined variables
 		(['mat', 'vec', 'ivec', 'bvec']).forEach(function(prefix){
-			already_built_in = already_built_in.concat([2,3,4].
-				map(function(e){return prefix+e}))
+			already_built_in = already_built_in.concat(
+				[2,3,4].map(function(e){return prefix+e}) )
 		})
 
 		console.log('right here', already_built_in)
@@ -3863,18 +3910,23 @@ SOFTWARE.
 @namespace Physic
 @memberof NEngine
 @desc All physic related stuff, structures to index and optimize n-dimensional
-spaces with lots or hundreds of entities like space trees. It also holds the
-PhysicModules wich define diferent kinds of physic processors and physic
-types, and defines the SpaceGraph for easy space configuration (lots of TODO
-here)
+spaces with lots or hundreds of entities like space trees and boxes. It also
+holds the PhysicModules wich define diferent kinds of physic processors and
+physic types, and defines the SpaceGraph for easy space configuration (lots of
+TODO here)
 <br/><br/>
-Space and SpaceNode implement an axis oriented topology
-cappable of optimize them for collisisions and interspace
-intersections.
+Space and SpaceNode implement an tree topology
+cappable of optimize objects for collisisions and interspace
+intersections (different SpaceGraph nodes).
 <br/><br/>
 Space is the SpaceNode network container, and holds common configurations
 for every SpaceNode.<br/>
-SpaceNode is a recursive representation of a n-axis
+SpaceNode is a "Hexakaideca"tree (in 4D) or an octree in 3D, in other words a
+  n^2 generalized tree (Currently isnt implemented this way, but using more subdivided
+  trees, you can get a normal binary partition tree by setting the size to 2).
+  Multiple optimization algorithms should be present.
+  Space Node keeps the netowork refrences coherent on multiple situations so
+  it can be slow, try deactivating stuff. (Help here)
 */
 Physic = (function() {
 
@@ -3898,34 +3950,36 @@ Physic = (function() {
     return SpaceGraph;
   })()
 
-  /**
-  * Space
-  *
-  * type - kind of space network that holds // add opts new types or separate them??
-
-  * dim - dims of SpaceNode network
-  * size - number of subnodes along an axis
-  * length - length of the subnode on depth 0, to generate space coordinates
-
-  * root - the root node of the SpaceNodes network, root.parent equals null
-  * level - the number of levels deper the network is
-
-  * lib_vec - corresponding vectorial lib
-  * lib_mat - corresponding matrix lib
-  */
 
   Space = (function() {
 
     /**
-    * Space Constructor
+    * @memberof NEngine.Physic
+    * @class Space
+    * @desc SpaceNode network container, holds common configurations
+    * for every SpaceNode.
     *
-    * @param dim -
+    * @prop {String} type - kind of space network that holds // add opts new types or separate them??
+
+    * @prop {Integer} dim - dims of SpaceNode network
+    * @prop {Integer} size - number of subnodes along an axis
+    * @prop {Number} length - length of the subnode on depth 0, to generate
+    space coordinates
+
+    * @prop {SpaceNode} root - the root node of the SpaceNodes network,
+    root.parent equals null
+    * @prop {Integer} level - the number of levels deper the network is
+
+    * @prop {Object} lib_vec - corresponding vectorial lib (example: NMath.vec5)
+    * @prop {Object} lib_mat - corresponding matrix lib (same as lib_vec)
     *
-    * @param size -
-    * @param length -
-    * @param level -  0 is for bottom, give the level for root, huper node
+    * @param {Integer} dim -
     *
-    * @param fill - if fill Space Network on creation
+    * @param {Integer} size -
+    * @param {Number} length -
+    * @param {Integer} level -  0 is for bottom, give the level for root, huper node
+    *
+    * @param {Boolean} fill - if fill Space Network on creation
     */
     function Space(opts) {
       this.type = 'Euclid';
@@ -3962,7 +4016,10 @@ Physic = (function() {
 
     Space.prototype = {
       /**
-      * add hupper levels to the space system
+      * @memberof NEngine.Physic.Space.prototype
+      * @method enlarge
+      * @desc add hupper levels to the space system
+      * @param {Integer} repeat - Number of levels to generate
       */
       enlarge: function(repeat) {
         //create new root node
@@ -3998,7 +4055,10 @@ Physic = (function() {
           this.enlarge(--repeat);
       },
       /**
-      * removes an entity from the space system
+      * @memberof NEngine.Physic.Space.prototype
+      * @method remEnt
+      * @param {Entity} Entity
+      * @desc removes an entity from the space system
       */
       remEnt: function(ent) {
         if(!ent.container) return;
@@ -4012,7 +4072,10 @@ Physic = (function() {
         ent.container = null;
       },
       /**
-      * adds an entity to the space system
+      * @memberof NEngine.Physic.Space.prototype
+      * @method addEnt
+      * @param {Entity} Entity
+      * @desc adds an entity to the space system
       * checks that the systems has instantiated the corresponding space
       * node and then adds it to the objects array[0] (entity) (checking
       * coherent instantiation of it)
@@ -4039,46 +4102,44 @@ Physic = (function() {
     return Space;
   })();
 
-  /**
-  * Represents single space net unit, if its a bottom SpaceNode
-  * it will contain lists for objects inside their respective physic
-  * processor type (for example, Entities in Dynamic array)
-  *
-  * space - Space containing general configs
-  * level - Space Index depnes, 0 equals bottom
-  * p - system relative position,
-  *
-  * parent - Spatially containing node
-  * siblings - Siblings linear Array
-  * capsuled - indicates whether all siblings are occupied
-  *
-  * last_visited - last time it was processed by physic processor
-  * active - If registered for physics processing
-  * index - index for fast translation into parent relative position
-  *        the mapping is from a n-d vector such as
-  *         p[0] + p[1]*size + p[2]*size*size [..]
-  *
-  * childs - Child Spaces linear Array
-  * objects - Dictionary containing the objects inside the SpaceNode
-  *       separated in arrays, each for each corresponding processor type
-  *
-  *
-  */
   SpaceNode = (function() {
 
     /**
-    * constructor
-    * fill isnt an automatic option because is rarely needed and
+    * @memberof NEngine.Physic
+    * @class SpaceNode
+    * @desc Represents single space net unit, if its a bottom SpaceNode
+    * it will contain lists for objects inside their respective physic
+    * processor type (for example, Entities in Dynamic array)
+    *
+    * @prop {Space} space - Space containing general configs
+    * @prop {Integer} level - Space Index depnes, 0 equals bottom
+    * @prop {Integer[]} p - system relative position, integer nd vector,
+    *
+    * @prop {SpaceNode} parent - Spatially containing node
+    * @prop {SpaceNode[]} siblings - Siblings linear Array
+    * @prop {Boolean} capsuled - indicates whether all siblings are occupied
+    *
+    * @prop {Integer} last_visited - last time it was processed by physic processor
+    * @prop {Boolean} active - If registered for physics processing
+    * @prop {Integer} index - index for fast translation into parent relative
+    *   position the mapping is from a n-d vector such as <br/>
+    *         p[0] + p[1]*size + p[2]*size**2 [..]
+    *
+    * childs - Child Spaces linear Array
+    * objects - Dictionary containing the objects inside the SpaceNode
+    *       separated in arrays, each for each corresponding processor type
+    *
+    * constructor: fill isnt an automatic option because is rarely needed and
     * extremply complicates code simplicity and opts caching
     +
-    * space -
-    * parent -
-    * level -
+    * @param {Space} space -
+    * @param {Space} parent -
+    * @param {Integer} level -
     *
-    * dim -
-    * size -
+    * @param {Integer} dim -
+    * @param {Integer} size -
     *
-    * index -
+    * @param {Integer} index -
     * p - requires
     *          undefined = calculate with setP, index and parent required
     *          null = leave empty
@@ -4120,33 +4181,41 @@ Physic = (function() {
     */
     SpaceNode.prototype = {
       /**
-      * calculates the position traslation from parent p vector
+      * @memberof NEngine.Physic.SpaceNode.prototype
+      * @desc  calculates the position traslation from parent p vector
       * to child p given the index and child level
+      * @param {Integer|Integer[]} child_index - Index relative to parent, can
+      *  be the computed index or a positional index
+      * @param {Integer} child_level - childNode.level
+      * @param {NVector} [p=NVector0] - vector to store data
+      * @return {NVector} p - result container
       */
       parentPSeparation: function(child_index, child_level, p) {
-        if(!p)  p = this.space.vec_lib.reate();
+        if(!p)  p = this.space.vec_lib.create()
 
-        if(child_index instanceof Number)
-          child_index = this.indextop(index);
+        if(child_index instanceof Number || child_index)
+          child_index = this.indextop(index)
 
         var index_p_middle = this.space.size/2, dim, dims,
-          length_transform = Math.pow(this.space.length, child_level);
+          length_transform = Math.pow(this.space.length, child_level)
 
         for(dim = 0; dim < dims; dim++)
-          p[dim] = (child_index[dim]+0.5  -index_p_middle)*length_transform;
+          p[dim] = (child_index[dim]+0.5 - index_p_middle)*length_transform
 
         return p;
         },
       /**
-      * configures p according to parent data
+      * @memberof NEngine.Physic.SpaceNode.prototype
+      * @desc configures p according to parent data
       */
       setP: function(p) {
-        if(!p) p = this.space.vec_lib.create();
+        var vel_lib = this.space.vec_lib
+        if(!p) p = (this.p)? this.p : vec_lib.create()
 
-        this.parentPSeparation(this.index, this.level, p);
-        this.space.vec_lib.add(p, p, this.parent.p);
+        this.parentPSeparation(this.index, this.level, p)
+        this.space.vec_lib.add(p, p, this.parent.p)
 
-        this.p = p;
+        this.p = p
       },
       /**
       * configures p using specific child data
@@ -4484,20 +4553,25 @@ Physic = (function() {
         var i,
           l = p.length, index = 0, size = this.space.size;
 
+
         for(i=0; i<l; i++)
           index += p[i]*Math.pow(size, i);
 
         return index;
       },
       /**
-      * converts index to its corresponding n-d position
+      * @memberof NEngine.Physic.SpaceNode.prototype
+      * @desc converts index to its corresponding n-d position
+      * @param {Integer} index - index for parent.childs array child
+      * @param {} p -
       */
       indextop: function(index, p) {
+        
         if(!p) p = this.space.lib_vec.create();
         var i, offset,
           size = this.space.size;
 
-        for(i = p.length-1; i >= 0; i--) {
+        for(i = p.length-1; i >= 0; i--) { //for each dim
           offset = Math.pow(size, i)
 
           while(index >= 0) {

@@ -271,6 +271,13 @@ renderer = (function() {
   }
   function resize() {
     //regenerate renderer transform matrix to catch canvas reshape
+    if(emit_log) {
+      emit_log('resizing', 'h:', canvas.height,'w', canvas.width)
+      emit_log('resizing', 'h:', window.innerHeight,
+        'w', window.innerWidth)
+      emit_log('stereodim : ',config.stereo_dim)
+    }
+
     var const_vert = 1,
       const_hor = 1;
 
@@ -450,9 +457,13 @@ renderer = (function() {
           twgl.setUniforms(shader_info, uniforms);
           if(config.stereo_dim) {
             if( (i === 0 && config.stereo_crossed) || (i !== 0 && !config.stereo_crossed) )
+            // if( (i === 0 && !config.stereo_crossed) || (i !== 0 && config.stereo_crossed) )
               context.viewport(0, 0, canvas.width/2, canvas.height);
-            else
+            else {
+              // window.interval_log('cw',canvas.width,
+              // 'cw/2', canvas.width/2)
               context.viewport(canvas.width/2, 0, canvas.width/2, canvas.height);
+            }
           }
           else context.viewport(0, 0, canvas.width, canvas.height);
 
@@ -467,6 +478,16 @@ renderer = (function() {
       obj.geom.buffers_info = twgl.createBufferInfoFromArrays(context, obj.geom.buffers );
     }
     obj_list.push(obj);
+  }
+
+  window.interval_log = function() {
+    if(!window._interval_log)
+      window._interval_log = Date.now()
+
+    if(window._interval_log < Date.now()) {
+      if(emit_log) emit_log(arguments)
+      window._interval_log = Date.now() + 1000*2
+    }
   }
 
   function objRm(obj) {

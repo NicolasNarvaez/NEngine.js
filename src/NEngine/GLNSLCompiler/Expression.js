@@ -215,7 +215,7 @@ return Expression
 	- translate first expressions
 	- start translating full code
 
-	Added variables.identifierTOken:
+	Added variables.identifierToken:
 		suṕports multiple function on same variable definition
 		empty qualifiers encode free-vaue generalizattion on generators
 		and scope
@@ -241,11 +241,11 @@ return Expression
 			new token proposal: function:qualifier1,qualifier2,..
 			use old syntax on no candidate as fallback
 				new politik be lik:
-					full function qualified identifier: get da
+					full function qualified identifier: get that
 					just name -> match any qualifications :3
 		add dynamic built-in function include() function, called in built-in
 			function creation, adds function code to scope.precode
-		add firts built-in from dyn-built-in functions (standard defined)
+		add firsts built-in from dyn-built-in functions (standard defined)
 
 
 Important (relevant for stability) (cant the remember ths note):

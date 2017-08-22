@@ -25,18 +25,23 @@ SOFTWARE.
 @namespace Physic
 @memberof NEngine
 @desc All physic related stuff, structures to index and optimize n-dimensional
-spaces with lots or hundreds of entities like space trees. It also holds the
-PhysicModules wich define diferent kinds of physic processors and physic
-types, and defines the SpaceGraph for easy space configuration (lots of TODO
-here)
+spaces with lots or hundreds of entities like space trees and boxes. It also
+holds the PhysicModules wich define diferent kinds of physic processors and
+physic types, and defines the SpaceGraph for easy space configuration (lots of
+TODO here)
 <br/><br/>
-Space and SpaceNode implement an axis oriented topology
-cappable of optimize them for collisisions and interspace
-intersections.
+Space and SpaceNode implement an tree topology
+cappable of optimize objects for collisisions and interspace
+intersections (different SpaceGraph nodes).
 <br/><br/>
 Space is the SpaceNode network container, and holds common configurations
 for every SpaceNode.<br/>
-SpaceNode is a recursive representation of a n-axis
+SpaceNode is a "Hexakaideca"tree (in 4D) or an octree in 3D, in other words a
+  n^2 generalized tree (Currently isnt implemented this way, but using more subdivided
+  trees, you can get a normal binary partition tree by setting the size to 2).
+  Multiple optimization algorithms should be present.
+  Space Node keeps the netowork refrences coherent on multiple situations so
+  it can be slow, try deactivating stuff. (Help here)
 */
 Physic = (function() {
 
@@ -60,34 +65,36 @@ Physic = (function() {
     return SpaceGraph;
   })()
 
-  /**
-  * Space
-  *
-  * type - kind of space network that holds // add opts new types or separate them??
-
-  * dim - dims of SpaceNode network
-  * size - number of subnodes along an axis
-  * length - length of the subnode on depth 0, to generate space coordinates
-
-  * root - the root node of the SpaceNodes network, root.parent equals null
-  * level - the number of levels deper the network is
-
-  * lib_vec - corresponding vectorial lib
-  * lib_mat - corresponding matrix lib
-  */
 
   Space = (function() {
 
     /**
-    * Space Constructor
+    * @memberof NEngine.Physic
+    * @class Space
+    * @desc SpaceNode network container, holds common configurations
+    * for every SpaceNode.
     *
-    * @param dim -
+    * @prop {String} type - kind of space network that holds // add opts new types or separate them??
+
+    * @prop {Integer} dim - dims of SpaceNode network
+    * @prop {Integer} size - number of subnodes along an axis
+    * @prop {Number} length - length of the subnode on depth 0, to generate
+    space coordinates
+
+    * @prop {SpaceNode} root - the root node of the SpaceNodes network,
+    root.parent equals null
+    * @prop {Integer} level - the number of levels deper the network is
+
+    * @prop {Object} lib_vec - corresponding vectorial lib (example: NMath.vec5)
+    * @prop {Object} lib_mat - corresponding matrix lib (same as lib_vec)
     *
-    * @param size -
-    * @param length -
-    * @param level -  0 is for bottom, give the level for root, huper node
+    * @param {Integer} dim -
     *
-    * @param fill - if fill Space Network on creation
+    * @param {Integer} size -
+    * @param {Number} length -
+    * @param {Integer} level -  0 is for bottom, give the level for root, huper node
+    *
+    * @param {Boolean} fill - if fill Space Network on creation
     */
     function Space(opts) {
       this.type = 'Euclid';
@@ -124,7 +131,10 @@ Physic = (function() {
 
     Space.prototype = {
       /**
-      * add hupper levels to the space system
+      * @memberof NEngine.Physic.Space.prototype
+      * @method enlarge
+      * @desc add hupper levels to the space system
+      * @param {Integer} repeat - Number of levels to generate
       */
       enlarge: function(repeat) {
         //create new root node
@@ -160,7 +170,10 @@ Physic = (function() {
           this.enlarge(--repeat);
       },
       /**
-      * removes an entity from the space system
+      * @memberof NEngine.Physic.Space.prototype
+      * @method remEnt
+      * @param {Entity} Entity
+      * @desc removes an entity from the space system
       */
       remEnt: function(ent) {
         if(!ent.container) return;
@@ -174,7 +187,10 @@ Physic = (function() {
         ent.container = null;
       },
       /**
-      * adds an entity to the space system
+      * @memberof NEngine.Physic.Space.prototype
+      * @method addEnt
+      * @param {Entity} Entity
+      * @desc adds an entity to the space system
       * checks that the systems has instantiated the corresponding space
       * node and then adds it to the objects array[0] (entity) (checking
       * coherent instantiation of it)
@@ -201,46 +217,44 @@ Physic = (function() {
     return Space;
   })();
 
-  /**
-  * Represents single space net unit, if its a bottom SpaceNode
-  * it will contain lists for objects inside their respective physic
-  * processor type (for example, Entities in Dynamic array)
-  *
-  * space - Space containing general configs
-  * level - Space Index depnes, 0 equals bottom
-  * p - system relative position,
-  *
-  * parent - Spatially containing node
-  * siblings - Siblings linear Array
-  * capsuled - indicates whether all siblings are occupied
-  *
-  * last_visited - last time it was processed by physic processor
-  * active - If registered for physics processing
-  * index - index for fast translation into parent relative position
-  *        the mapping is from a n-d vector such as
-  *         p[0] + p[1]*size + p[2]*size*size [..]
-  *
-  * childs - Child Spaces linear Array
-  * objects - Dictionary containing the objects inside the SpaceNode
-  *       separated in arrays, each for each corresponding processor type
-  *
-  *
-  */
   SpaceNode = (function() {
 
     /**
-    * constructor
-    * fill isnt an automatic option because is rarely needed and
+    * @memberof NEngine.Physic
+    * @class SpaceNode
+    * @desc Represents single space net unit, if its a bottom SpaceNode
+    * it will contain lists for objects inside their respective physic
+    * processor type (for example, Entities in Dynamic array)
+    *
+    * @prop {Space} space - Space containing general configs
+    * @prop {Integer} level - Space Index depnes, 0 equals bottom
+    * @prop {Integer[]} p - system relative position, integer nd vector,
+    *
+    * @prop {SpaceNode} parent - Spatially containing node
+    * @prop {SpaceNode[]} siblings - Siblings linear Array
+    * @prop {Boolean} capsuled - indicates whether all siblings are occupied
+    *
+    * @prop {Integer} last_visited - last time it was processed by physic processor
+    * @prop {Boolean} active - If registered for physics processing
+    * @prop {Integer} index - index for fast translation into parent relative
+    *   position the mapping is from a n-d vector such as <br/>
+    *         p[0] + p[1]*size + p[2]*size**2 [..]
+    *
+    * childs - Child Spaces linear Array
+    * objects - Dictionary containing the objects inside the SpaceNode
+    *       separated in arrays, each for each corresponding processor type
+    *
+    * constructor: fill isnt an automatic option because is rarely needed and
     * extremply complicates code simplicity and opts caching
     +
-    * space -
-    * parent -
-    * level -
+    * @param {Space} space -
+    * @param {Space} parent -
+    * @param {Integer} level -
     *
-    * dim -
-    * size -
+    * @param {Integer} dim -
+    * @param {Integer} size -
     *
-    * index -
+    * @param {Integer} index -
     * p - requires
     *          undefined = calculate with setP, index and parent required
     *          null = leave empty
@@ -282,33 +296,41 @@ Physic = (function() {
     */
     SpaceNode.prototype = {
       /**
-      * calculates the position traslation from parent p vector
+      * @memberof NEngine.Physic.SpaceNode.prototype
+      * @desc  calculates the position traslation from parent p vector
       * to child p given the index and child level
+      * @param {Integer|Integer[]} child_index - Index relative to parent, can
+      *  be the computed index or a positional index
+      * @param {Integer} child_level - childNode.level
+      * @param {NVector} [p=NVector0] - vector to store data
+      * @return {NVector} p - result container
       */
       parentPSeparation: function(child_index, child_level, p) {
-        if(!p)  p = this.space.vec_lib.reate();
+        if(!p)  p = this.space.vec_lib.create()
 
-        if(child_index instanceof Number)
-          child_index = this.indextop(index);
+        if(child_index instanceof Number || child_index)
+          child_index = this.indextop(index)
 
         var index_p_middle = this.space.size/2, dim, dims,
-          length_transform = Math.pow(this.space.length, child_level);
+          length_transform = Math.pow(this.space.length, child_level)
 
         for(dim = 0; dim < dims; dim++)
-          p[dim] = (child_index[dim]+0.5  -index_p_middle)*length_transform;
+          p[dim] = (child_index[dim]+0.5 - index_p_middle)*length_transform
 
         return p;
         },
       /**
-      * configures p according to parent data
+      * @memberof NEngine.Physic.SpaceNode.prototype
+      * @desc configures p according to parent data
       */
       setP: function(p) {
-        if(!p) p = this.space.vec_lib.create();
+        var vel_lib = this.space.vec_lib
+        if(!p) p = (this.p)? this.p : vec_lib.create()
 
-        this.parentPSeparation(this.index, this.level, p);
-        this.space.vec_lib.add(p, p, this.parent.p);
+        this.parentPSeparation(this.index, this.level, p)
+        this.space.vec_lib.add(p, p, this.parent.p)
 
-        this.p = p;
+        this.p = p
       },
       /**
       * configures p using specific child data
@@ -646,20 +668,25 @@ Physic = (function() {
         var i,
           l = p.length, index = 0, size = this.space.size;
 
+
         for(i=0; i<l; i++)
           index += p[i]*Math.pow(size, i);
 
         return index;
       },
       /**
-      * converts index to its corresponding n-d position
+      * @memberof NEngine.Physic.SpaceNode.prototype
+      * @desc converts index to its corresponding n-d position
+      * @param {Integer} index - index for parent.childs array child
+      * @param {} p -
       */
       indextop: function(index, p) {
+        
         if(!p) p = this.space.lib_vec.create();
         var i, offset,
           size = this.space.size;
 
-        for(i = p.length-1; i >= 0; i--) {
+        for(i = p.length-1; i >= 0; i--) { //for each dim
           offset = Math.pow(size, i)
 
           while(index >= 0) {
