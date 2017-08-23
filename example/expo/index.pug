@@ -1,10 +1,10 @@
 html(lang='en')
   head
-    title NEngine showcase
+    title NEngine Lab
     <!-- Metadatos de OpenGraph -->
-    meta(property='og:title', content='NEngine showcase')
+    meta(property='og:title', content='NEngine Lab')
     meta(property='og:type', content='website')
-    meta(property='og:site_name', content='NEngine showcase')
+    meta(property='og:site_name', content='NEngine Lab')
     meta(property='og:url', content='http://ngrid.cl')
     // <meta property="og:image" content="http://archetype-0.cl/ngrid/cover.jpg" />
     meta(property='og:description', content='El único motor hiperdimensional de videojuegos!')
@@ -110,11 +110,15 @@ html(lang='en')
       #github
         a(href='https://github.com/NicolasNarvaez/NEngine.js')
           img(src='/assets/octocat.png')
+      #doc 
+        a(href='/doc')
+          p.
+            documentation
       #comment
         //It involves a whole lot of new toys that you are going to be the first to try out.
         //The world of games is in a kind of trance.
-        //- p.
-          People are programmed to accept so little, but the posibilities are so great.
+        p.
+          People are programmed to accept so little, but the posibilities are so great.<br/>
           NEngine* is not just a game, its an entirely new game system.
           <br/>
           You are the power source, your body, your nervous system.
@@ -122,9 +126,10 @@ html(lang='en')
           <span class='float-right'>David Cronenberg, Existenz</span>
         //- p.
         //-   * It says Existenz, not NEngine.
+
   link(href="https://fonts.googleapis.com/css?family=Anton" 
     rel="stylesheet" type='text/css')
-  link(rel='stylesheet' type='text/css' href='style.css')
+  link(rel='stylesheet' type='text/css' href='/style.css')
   script(type='text/javascript' src='/lib/twgl-full.min.js')
   script(type='text/javascript' src='/lib/Input.js')
   script(type='text/javascript' src='/lib/NMath.js')

@@ -6,7 +6,12 @@ var cfg = require('./cfg.js'),
 	http_server = require('http').Server(app),
 	io = require('socket.io')(http_server),
 	pug_static = require('./pug-static.js'),
-	pug_locals = {files: []}
+	pug_locals = {files: []},
+	pug_static_midleware = pug_static({
+		src: __dirname+'/expo/',
+		html: true,
+		locals: pug_locals
+	})
 
 app.use(bodyParser.json())
 app.use((req, res, next) => {
@@ -23,27 +28,25 @@ app.use((req, res, next) => {
 
 
 fs.readdir(__dirname+'/expo/games/', (err, files) => {
-	pug_locals.files = files.map( e => {
+	files = pug_locals.files = files.map( e => {
 		return {
 			name: e,
 			href: '/expo/games/'+encodeURI(e)+'/',
 		}
-	} )
-	console.log(__dirname+'/expo/games/',err, files, pug_locals.files)
+	})
+	while(files.length < 7)
+		files.unshift({
+			name: '', href: ''
+		})
+	console.log(__dirname+'/expo/games/',err, files)
 
 })
 app.use('/example/', express.static(__dirname+'/ngrid/'))
-app.use('/expo/', pug_static({
-	src: __dirname+'/expo/',
-	html: true,
-	locals: pug_locals
-}) )
+app.use('/expo/', pug_static_midleware )
 app.use('/expo/', express.static(__dirname+'/expo/'))
+app.use('/', pug_static_midleware )
+app.use('/', express.static(__dirname+'/expo/'))
 
-
-
-app.use('/save/', (req, res, next) => {
-})
 http_server.listen(cfg.port)
 var users = {},
 	last_user

@@ -3,6 +3,11 @@
 }
 a {
   color:inherit;
+  text-decoration: none;
+}
+a:hover, a:visited, a:link, a:active
+{
+    text-decoration: none;
 }
 body {
   margin: 0;
@@ -28,6 +33,7 @@ body {
   float: right;
   text-align: center;
   transition: all 1s;
+  /*font-size: 56%;*/
 }
 
 .game-section:hover {
@@ -80,35 +86,63 @@ body {
 }
 .game-title p {
   font-size: 2em;
-  margin:0;
-  margin-top: 4.25em;
+  margin: 0;
+  margin-top: 8.5vw;
+  top: -0.8em;
+  position: relative;
 }
 
 /* ///////// Menu ///////// */
 
 #menu {
   display: block;
-  width: 18%;
+  width: 20%;
   height: 100vh;
   float: left;
   padding-right: 0;
+  text-align: center;
 }
 
 #title {
   /*color: white;*/
-  font-size: 4em;
-  text-align: right;
+  font-size: 290%;
+  /*text-align: right;*/
 }
 
 #comment {
-  clear:both;
-  text-align: right;
+  bottom: 0;
+  clear: both;
+  /* text-align: right; */
   padding-top: 3em;
+  margin: 2em;
+  position: absolute;
+  /*font-size: 70%;*/
+}
+@media only screen and (max-width:1100px) {
+  #comment {
+    font-size: 70%;
+    margin:2em;
+  }
+}
+@media only screen and (min-width:1100px) and (max-width:1400px) {
+  #comment {
+    font-size: 100%;
+    margin:2em;
+  }
+}
+
+@media only screen and (min-width:1400px) and (max-width:1600px) {
+  #comment {
+    margin:2em;
+  }
+}
+
+#doc {
 }
 
 #github img {
   max-width: 7vw;
-  float:right;
+  /*float:right;*/
 }
 
 
