@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Shader - Documentation</title>
+    <title>AudioAnalyser - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Shader</h1>
+    <h1 class="page-title">AudioAnalyser</h1>
     
 
     
@@ -41,9 +41,9 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="NEngine.html">NEngine</a><a href="NEngine.GLNSLCompiler.html">.GLNSLCompiler</a>.</span>
+            <span class="ancestors"><a href="NEngine.html">NEngine</a><a href="NEngine.Media.html">.Media</a>.</span>
         
-        Shader
+        AudioAnalyser
         </h2>
         
     
@@ -56,11 +56,19 @@
 
     
 
-    <h4 class="name" id="Shader"><span class="type-signature"></span>new Shader<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="AudioAnalyser"><span class="type-signature"></span>new AudioAnalyser<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
+
+<div class="description">
+    Wrapper for Web Audio API AnalyserNode, adds some basic processing to
+  normalize and clean the raw data of an analyser for easy visualization. To
+  activate a processing filter on the update function, the processing type
+  needs to be included in the instance "updates" array. Then you can access
+  the results from corresponding entries in the "data" object .
+</div>
 
 
 
@@ -100,13 +108,13 @@
 
         <tr>
             
-                <td class="name"><code>js_variables</code></td>
+                <td class="name"><code>ctx</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object.&lt;varname, value></span>
+<span class="param-type">AudioContext</span>
 
 
             
@@ -116,9 +124,216 @@
 
             
 
-            <td class="description last">A dictionary indicating the
-    js variable values in glnsl js interpolation, they represent a state
-    machine for computing the final shader projection</td>
+            <td class="description last">The Web Audio AudioContext</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>node</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">AnalyserNode</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The wrapped node</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Holds results of processings on the node buffer
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>raw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">UInt8Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Data extracted using</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>normalize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The "normalize" filter main results.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>normalizeFrecUnit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The normalize filter dividing factor.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>normalizeFrecPow</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The normalize exponent.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>usableLog</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The update_usable_log results.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>usableLogMean</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The mean of all the usableLog values</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -157,7 +372,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line3787">line 3787</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4972">line 4972</a>
     </li></ul></dd>
     
 
@@ -198,6 +413,344 @@
 
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".update"><span class="type-signature">(static) </span>update<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Executes the processors indicated int he "updates" array
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line5016">line 5016</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".update_normalize"><span class="type-signature">(static) </span>update_normalize<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Executes a simple "normalize" filter. <br/>
+      final_value = (start_value/dividing_factor)^(exponent)
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line5041">line 5041</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".update_raw"><span class="type-signature">(static) </span>update_raw<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Extracts the data from the analyser node using
+      node.getByteFrecuencyData(node.frecuencyBinCount)
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line5026">line 5026</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".update_usable_log"><span class="type-signature">(static) </span>update_usable_log<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Executes a "reducer" filter <br />
+      The last entry indicates the index of last
+      not null value in the raw array, each time it gets executed the processor
+      adds a new value up to a maximum, where it starts deleting the oldest
+      entry
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line5058">line 5058</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 
     
