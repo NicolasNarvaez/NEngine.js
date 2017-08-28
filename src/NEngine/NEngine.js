@@ -91,7 +91,8 @@ global_root.NEngine = (function NEngineInit () {
     vec4=NMath.vec4,
     vec5=NMath.vec5,
     mat4=NMath.mat4,
-    mat5=NMath.mat5;
+    mat5=NMath.mat5,
+    _module;
 
   util = {
     //return a + every prop not in a but in b
@@ -111,11 +112,9 @@ global_root.NEngine = (function NEngineInit () {
 
   @import 'Physic.js'
 
-  @import 'NMusicPorts.js'
-
   @import 'Engine.js'
 
-  return {
+  _module = {
     Obj: Obj,
     geometry: geometry,
     obj: obj,
@@ -127,5 +126,9 @@ global_root.NEngine = (function NEngineInit () {
     Entity: Entity,
     Physics: Physics,
     GLNSLCompiler: GLNSLCompiler,
-  };
+  }
+
+  @import 'Media.js'
+
+  return  _module
 })();

@@ -34,7 +34,7 @@ fs.readdir(__dirname+'/expo/games/', (err, files) => {
 			href: '/expo/games/'+encodeURI(e)+'/',
 		}
 	})
-	while(files.length < 7)
+	while(files.length < 14)
 		files.unshift({
 			name: '', href: ''
 		})

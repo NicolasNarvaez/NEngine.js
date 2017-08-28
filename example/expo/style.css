@@ -32,13 +32,13 @@ body {
   height: 17vw;
   float: right;
   text-align: center;
-  transition: all 1s;
+  transition: all 4s;
   /*font-size: 56%;*/
 }
 
 .game-section:hover {
   background-color: rgba(100, 100, 100, 0.5);
-  transition: all 1s;
+  transition: all 4s;
 }
 
 .game-back-container {
@@ -55,7 +55,7 @@ body {
   height: 8vw;
   transform: rotate(0);
   animation: cardrotate 10s linear infinite;
-  transition: transform 2s, animation 2s;
+  transition: transform 4s, animation 4s;
   /*animation-fill-mode: forward;*/
 }
 /*.game-link:hover .game-back {
