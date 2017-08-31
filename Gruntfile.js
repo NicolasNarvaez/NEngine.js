@@ -10,6 +10,10 @@ module.exports = function(grunt) {
 					'src/browser.js'],
 				tasks: ['compile']
 			},
+			less: {
+				files: 'example/**/*.less',
+				tasks: ['less:dev']
+			}
 		},
 
 		nodemon: {
@@ -22,6 +26,18 @@ module.exports = function(grunt) {
 			main: {
 				src: 'src/browser.js',
 				dest: 'dist/NEngine.js'
+			}
+		},
+
+		less: {
+			dev: {
+				options: {},
+				files: [{
+					expand: true,
+					src: ['example/**/style.less'],
+					ext: '.css',
+					extDot: 'last',
+				}]
 			}
 		},
 
@@ -39,8 +55,9 @@ module.exports = function(grunt) {
 
 		focus: {
 			dev: {
-				include: ['main']
-			}
+				include: ['main', 'less']
+			},
+
 		},
 
 		karma: {
@@ -70,11 +87,12 @@ module.exports = function(grunt) {
 
 	npm_tasks = ['grunt-import', 'grunt-contrib-watch',
 		'grunt-jsdoc', 'grunt-contrib-copy', 'grunt-focus',
-		'grunt-nodemon', 'grunt-concurrent', 'grunt-karma']
+		'grunt-nodemon', 'grunt-concurrent', 'grunt-karma',
+		'grunt-contrib-less',]
 
 	npm_tasks.forEach(function(e){grunt.loadNpmTasks(e)})
 
-	grunt.registerTask('compile', ['import:main', 'jsdoc'])
+	grunt.registerTask('compile', ['import:main', 'jsdoc', 'less:dev'])
 
 	grunt.registerTask('dev', ['compile:dev','concurrent:dev'])
 	grunt.registerTask('devall', ['compile:dev','concurrent:devall'])
