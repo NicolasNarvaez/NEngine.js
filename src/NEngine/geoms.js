@@ -103,10 +103,12 @@ function grid4(ops) {
       recursion_i = Array(4);
 
 
+    //first execution
     if(!ops.recursion_depth_total) {
       ops.recursion_depth_total = ops.recursion_depth;
       ops.recursion_depth_current = 0;
     }
+
     // console.log('ops.recursion_is');
     if(!ops.recursion_is)
       ops.recursion_is = [recursion_i];
@@ -264,6 +266,76 @@ function grid4(ops) {
     return twglize(g)
 }
 grid4.prototype = Geom.prototype;
+
+grid4.it = function(ops) {
+  if(ops.iteration || ops.recursion_depth) {
+    var p = NMath.vec4.create(),
+      recursion_i = Array(4);
+
+
+    //first execution
+    if(!ops.recursion_depth_total) {
+      ops.recursion_depth_total = ops.recursion_depth;
+      ops.recursion_depth_current = 0;
+    }
+
+    // console.log('ops.recursion_is');
+    if(!ops.recursion_is)
+      ops.recursion_is = [recursion_i];
+    else
+    ops.recursion_is.push(recursion_i);
+
+    // console.log('ops.recursion_is', ops.recursion_is);
+
+
+    if(!ops.recursion_ps)
+      ops.recursion_ps = [p];
+    else
+      ops.recursion_ps.push(p);
+
+    for(recursion_i[3] = size_w; recursion_i[3]--;)
+      for(recursion_i[2] = size_z; recursion_i[2]--;)
+        for(recursion_i[1] = size_y; recursion_i[1]--;)
+          for(recursion_i[0] = size_x; recursion_i[0]--;) {
+
+            p[0] =  recursion_i[0]*length_step_x - length_x_m;
+            p[1] =  recursion_i[1]*length_step_y - length_y_m;
+            p[2] =  recursion_i[2]*length_step_z - length_z_m;
+            p[3] =  recursion_i[3]*length_step_w - length_w_m;
+
+            ops.recursion_i = recursion_i;
+            if(ops.iteration)
+              ops.iteration(p, ops);
+
+            if(ops.recursion_continue === false)
+              continue
+            if(ops.recursion_depth) {
+              // console.log('starting new grid', ops.recursion_depth)
+              ops.recursion_depth--;
+              ops.recursion_depth_current++;
+              grid4(ops);
+              ops.recursion_depth++;
+              ops.recursion_depth_current--;
+            }
+          }
+    ops.recursion_ps.pop();
+    ops.recursion_is.pop();
+      if(ops.functional)
+        return
+  }
+}
+
+function RecursiveIterator(ops) {
+  this.geom = ops.g;
+
+}
+RecursiveIterator.prototype = {
+  next: function next() {
+    
+  }
+}
+
+// grid4.it =
 
 /**
 @memberof NEngine.geometry

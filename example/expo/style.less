@@ -1,3 +1,5 @@
+@expo-box-size : 0.75;
+
 * {
   font-family: 'Anton', sans-serif;
 }
@@ -28,8 +30,8 @@ body {
 }
 
 .game-section {
-  width: 17vw;
-  height: 17vw;
+  width: 17vw*@expo-box-size;
+  height: 17vw*@expo-box-size;
   float: right;
   text-align: center;
   transition: all 4s;
@@ -42,8 +44,8 @@ body {
 }
 
 .game-back-container {
-  left: 3.5vw;
-  top: 3.5vw;
+  left: 3.5vw*@expo-box-size;
+  top: 3.5vw*@expo-box-size;
   position: relative;
   width: 0;
   height: 0;
@@ -51,8 +53,8 @@ body {
 .game-back {
   position: absolute;
   border: 1vw solid black;
-  width: 8vw;
-  height: 8vw;
+  width: 8vw*@expo-box-size;
+  height: 8vw*@expo-box-size;
   transform: rotate(0);
   animation: cardrotate 10s linear infinite;
   transition: transform 4s, animation 4s;
@@ -87,8 +89,8 @@ body {
 .game-title p {
   font-size: 2em;
   margin: 0;
-  margin-top: 8.5vw;
-  top: -0.8em;
+  margin-top: 8.5vw*@expo-box-size;
+  top: -0.8em*@expo-box-size;
   position: relative;
 }
 

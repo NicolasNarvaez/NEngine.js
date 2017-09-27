@@ -510,8 +510,6 @@ try {
           size: o.size,
           length: o.cube_length*o.size,
           iteration: function(p, options) {
-            // console.log(options.recursion_is,
-            //  options.recursion_depth_current)
             var i, recursion, frontier = false, frontier_current
 
             for(i = 4; i--;) {
@@ -520,7 +518,7 @@ try {
               frontier_current = true
               for(recursion = options.recursion_is.length;
                 recursion--;) {
-                  // console.log(options.recursion_is[recursion])
+
                 if(options.recursion_is[recursion][i] != 0)
                   frontier_current = false
               }
@@ -533,11 +531,6 @@ try {
                   frontier_current = false
               if(frontier_current) frontier = true
             }
-            // console.log('frontier', frontier)
-            // if(!frontier) {
-            //   console.log('outside frontier')
-            //   return options.recursion_continue = false
-            // }
 
             if(frontier)  {
               NMath.vec4.copy(e.p, [0,0,0,0])
