@@ -4,6 +4,7 @@
   "description": "A full feature n-dimensional physics, graphics and game engine.",
   "main": "dist/node/nengine.js",
   "scripts": {
+    "run": "grunt dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -37,7 +38,7 @@
     "karma-chai": "^0.1.0",
     "karma-mocha": "^1.3.0",
     "karma-nyan-reporter": "^0.2.5",
-    "mocha": "^3.4.2",
+    "mocha": "^4.0.1",
     "nodemon": "^1.11.0",
     "pug-static": "^1.0.1",
     "qs": "^6.4.0",

@@ -46,7 +46,7 @@ module.exports = function(grunt) {
 				src:['./dist/*.js'],
 				jsdoc: './node_modules/.bin/jsdoc',
 				options: {
-					destination: 'doc',
+					destination: './doc',
 					configure: './jsdoc.json',
 					template: './node_modules/minami'
 				}
@@ -71,12 +71,6 @@ module.exports = function(grunt) {
 
 		concurrent: {
 			dev: {
-				tasks: ['focus:dev', 'nodemon:dev' ],
-				options: {
-					logConcurrentOutput: true
-				}
-			},
-			devall: {
 				tasks: ['focus:dev', 'nodemon:dev' , 'karma:dev'],
 				options: {
 					logConcurrentOutput: true
@@ -95,7 +89,6 @@ module.exports = function(grunt) {
 	grunt.registerTask('compile', ['import:main', 'jsdoc', 'less:dev'])
 
 	grunt.registerTask('dev', ['compile:dev','concurrent:dev'])
-	grunt.registerTask('devall', ['compile:dev','concurrent:devall'])
-	grunt.registerTask('default', 'devall')
+	grunt.registerTask('default', 'dev')
 
 }

@@ -153,7 +153,7 @@ try {
 
 	  // camera.p[3] = -15
     ///////////////////////////###examples start here:
-    
+
 	  var g = new NEngine.geometry.grid4({
           size: 2,
           length: 2,
@@ -186,69 +186,117 @@ try {
           g1 = new NEngine.geometry.grid4({
             size: 2, length: 3, wire:true
           }),
-          g2 = new NEngine.geometry.grid4({
-            size: 2, length: 0.25, wire:true
+          g2 = new NEngine.geometry.octahedron4({
+            // size: 2,
+            length: 0.25, wire:true
           }),
           e = new NEngine.Entity(),
           scales = [1, 0.15]
 
         g1 = NEngine.geometry.grid4({size: 2, length: 0.1, wire:true})
         // g2 = NEngine.geometry.octahedron4({size: 0.15, wire:true})
-        g2 = NEngine.geometry.axis4({size: 0.25, wire:true})
         // g2 = NEngine.geometry.axis4({size: 0.25, wire:true})
+        // g2 = NEngine.geometry.octahedron4({
+        g2 = new NEngine.geometry.grid4({
+          size: 2, length: 3, wire:true
+        })
+        // g2 = NEngine.geometry.simplex4({
+        //   size: 5,
+        //   wire:true
+        // })
 
-        new NEngine.geometry.grid4({
-          size: o.size,
-          length: o.cube_length*o.size,
-          iteration: function(p, options) {
-            // console.log(options.recursion_is,
-            //  options.recursion_depth_current)
-            var i, recursion, frontier = false, frontier_current
+        const coord_indexes = [0,0,0]
+        const coords = [0,0,0]
+        const slices = 12
+        const radius = 30
 
-            for(i = 4; i--;) {
-              if(frontier) break;
-
-              frontier_current = true
-              for(recursion = options.recursion_is.length;
-                recursion--;) {
-                  // console.log(options.recursion_is[recursion])
-                if(options.recursion_is[recursion][i] != 0)
-                  frontier_current = false
+        while(coord_indexes.ended !== true) {
+          for(let j = 2; j >= 0; j--) {
+            // Linear indexes
+            if(coord_indexes[j] == slices-1) {
+              if(j == 0) {
+                coord_indexes.ended = true
+                continue
               }
-              if(frontier_current) frontier = true
 
-              frontier_current = true
-              for(recursion = options.recursion_is.length;
-                recursion--;)
-                if(options.recursion_is[recursion][i] != o.size-1)
-                  frontier_current = false
-              if(frontier_current) frontier = true
+              coord_indexes[j-1]++
+              coord_indexes[j] = 0
             }
-            // console.log('frontier', frontier)
-            // if(!frontier) {
-            //   console.log('outside frontier')
-            //   return options.recursion_continue = false
-            // }
-
-            if(frontier)  {
-              NMath.vec4.copy(e.p, [0,0,0,0])
-
-              for(i = options.recursion_ps.length; i--;)
-              NMath.vec4.scaleAndAdd(
-                e.p, e.p, options.recursion_ps[i], scales[i] )
-
-              if(options.recursion_depth_current == 0)
-                e.geom = g1
-              else
-                e.geom = g2
-
-              NEngine.geometry.concat(g_join, e, true);
+            else if(j == 2){
+              coord_indexes[j]++
             }
-            options.recursion_continue = frontier
-          },
-          functional: true,
-          recursion_depth: 1
-        });
+
+          }
+
+          e.geom = g2
+          const r = coord_indexes.map( v => Math.PI*2*v/slices )
+
+          const sen_0 = Math.sin(r[0])
+          const cos_0 = Math.cos(r[0])
+
+          const sen_1 = cos_0*Math.sin(r[1])
+          const cos_1 = cos_0*Math.cos(r[1])
+
+          const sen_2 = cos_1*Math.sin(r[2])
+          const cos_2 = cos_1*Math.cos(r[2])
+
+          e.p = [sen_0, sen_1, sen_2, cos_2].map(c => c*radius)
+
+          NEngine.geometry.concat(g_join, e, true);
+        }
+
+        // new NEngine.geometry.grid4({
+        //   size: o.size,
+        //   length: o.cube_length*o.size,
+        //   iteration: function(p, options) {
+        //     // console.log(options.recursion_is,
+        //     //  options.recursion_depth_current)
+        //     var i, recursion, frontier = false, frontier_current
+        //
+        //     for(i = 4; i--;) {
+        //       if(frontier) break;
+        //
+        //       frontier_current = true
+        //       for(recursion = options.recursion_is.length;
+        //         recursion--;) {
+        //           // console.log(options.recursion_is[recursion])
+        //         if(options.recursion_is[recursion][i] != 0)
+        //           frontier_current = false
+        //       }
+        //       if(frontier_current) frontier = true
+        //
+        //       frontier_current = true
+        //       for(recursion = options.recursion_is.length;
+        //         recursion--;)
+        //         if(options.recursion_is[recursion][i] != o.size-1)
+        //           frontier_current = false
+        //       if(frontier_current) frontier = true
+        //     }
+        //     // console.log('frontier', frontier)
+        //     // if(!frontier) {
+        //     //   console.log('outside frontier')
+        //     //   return options.recursion_continue = false
+        //     // }
+        //
+        //     if(frontier)  {
+        //       NMath.vec4.copy(e.p, [0,0,0,0])
+        //
+        //       for(i = options.recursion_ps.length; i--;)
+        //       NMath.vec4.scaleAndAdd(
+        //         e.p, e.p, options.recursion_ps[i], scales[i] )
+        //
+        //       if(options.recursion_depth_current == 0)
+        //         e.geom = g1
+        //       else
+        //         e.geom = g2
+        //
+        //       NEngine.geometry.concat(g_join, e, true);
+        //     }
+        //     options.recursion_continue = frontier
+        //   },
+        //   functional: true,
+        //   recursion_depth: 1
+        // });
         return g_join
       }
 

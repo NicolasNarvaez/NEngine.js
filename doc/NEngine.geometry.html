@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>geometry - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
@@ -23,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NEngine.Camera.html">Camera</a></li><li><a href="NEngine.Entity.html">Entity</a><ul class='methods'><li data-type='method'><a href="NEngine.Entity.html#set">set</a></li></ul></li><li><a href="NEngine.geometry.Geom.html">Geom</a><ul class='methods'><li data-type='method'><a href="NEngine.geometry.Geom.html#concat">concat</a></li><li data-type='method'><a href="NEngine.geometry.Geom.html#twglize">twglize</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.CodeTree.html">CodeTree</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.CodeTree.html#interpret">interpret</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.CodeTree.html#translate">translate</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.CodeTree.html#write">write</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Expression.html">Expression</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Expression.html#interpret">interpret</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Expression.html#replicates">replicates</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Expression.html#translate">translate</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Expression.html#vartype">vartype</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Scope.html">Scope</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#addBuiltinGLSL">addBuiltinGLSL</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#addPrecode">addPrecode</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#addSentence">addSentence</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#ensureTypeCache">ensureTypeCache</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#ensureVariableDynamic">ensureVariableDynamic</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#getTypeCache">getTypeCache</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#getVariable">getVariable</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#getVariableBuiltin">getVariableBuiltin</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#getVariableDynamic">getVariableDynamic</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#isRoot">isRoot</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#precode">precode</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#setParent">setParent</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Scope.html#unsetParent">unsetParent</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Sentence.html">Sentence</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Sentence.html#interpret">interpret</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Sentence.html#needsTranslation">needsTranslation</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Sentence.html#translate">translate</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Shader.html">Shader</a></li><li><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html">SymbolTree</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#addSymbol">addSymbol</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#interpolate">interpolate</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#map">map</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#root">root</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#strip">strip</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#symbols">symbols</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Variable.html">Variable</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Variable.html#declare">declare</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Variable.html#identifierToken">identifierToken</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Variable.html#translatable">translatable</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Variable.html#translate">translate</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Vartypes.VarType.html">VarType</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Vartypes.VarType.html#codename">codename</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Vartypes.VarType.html#translateType">translateType</a></li></ul></li><li><a href="NEngine.Media.AudioAnalyser.html">AudioAnalyser</a><ul class='methods'><li data-type='method'><a href="NEngine.Media.AudioAnalyser.html#update">update</a></li><li data-type='method'><a href="NEngine.Media.AudioAnalyser.html#update_normalize">update_normalize</a></li><li data-type='method'><a href="NEngine.Media.AudioAnalyser.html#update_raw">update_raw</a></li><li data-type='method'><a href="NEngine.Media.AudioAnalyser.html#update_usable_log">update_usable_log</a></li></ul></li><li><a href="NEngine.Media.AudioSourceSoundcloud.html">AudioSourceSoundcloud</a><ul class='methods'><li data-type='method'><a href="NEngine.Media.AudioSourceSoundcloud.html#loadURL">loadURL</a></li><li data-type='method'><a href="NEngine.Media.AudioSourceSoundcloud.html#loadURLErr">loadURLErr</a></li><li data-type='method'><a href="NEngine.Media.AudioSourceSoundcloud.html#loadURLSucc">loadURLSucc</a></li><li data-type='method'><a href="NEngine.Media.AudioSourceSoundcloud.html#play">play</a></li></ul></li><li><a href="NEngine.Obj.html">Obj</a></li><li><a href="NEngine.Physic.Space.html">Space</a><ul class='methods'><li data-type='method'><a href="NEngine.Physic.Space.html#addEnt">addEnt</a></li><li data-type='method'><a href="NEngine.Physic.Space.html#enlarge">enlarge</a></li><li data-type='method'><a href="NEngine.Physic.Space.html#remEnt">remEnt</a></li></ul></li><li><a href="NEngine.Physic.SpaceNode.html">SpaceNode</a><ul class='methods'><li data-type='method'><a href="NEngine.Physic.SpaceNode.html#indextop">indextop</a></li><li data-type='method'><a href="NEngine.Physic.SpaceNode.html#parentPSeparation">parentPSeparation</a></li><li data-type='method'><a href="NEngine.Physic.SpaceNode.html#setP">setP</a></li></ul></li><li><a href="NEngine.SubSpace.html">SubSpace</a></li></ul><h3>Namespaces</h3><ul><li><a href="NEngine.html">NEngine</a></li><li><a href="NEngine.geometry.html">geometry</a><ul class='methods'><li data-type='method'><a href="NEngine.geometry.html#.axis%257Bn%257D">axis{n}</a></li><li data-type='method'><a href="NEngine.geometry.html#.boundingBox">boundingBox</a></li><li data-type='method'><a href="NEngine.geometry.html#.boundingSphere">boundingSphere</a></li><li data-type='method'><a href="NEngine.geometry.html#.clone">clone</a></li><li data-type='method'><a href="NEngine.geometry.html#.concat">concat</a></li><li data-type='method'><a href="NEngine.geometry.html#.forEach">forEach</a></li><li data-type='method'><a href="NEngine.geometry.html#.grid%257Bn%257D">grid{n}</a></li><li data-type='method'><a href="NEngine.geometry.html#.octahedron%257Bn%257D">octahedron{n}</a></li><li data-type='method'><a href="NEngine.geometry.html#.simplex%257Bn%257D">simplex{n}</a></li><li data-type='method'><a href="NEngine.geometry.html#.twglize">twglize</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.html">GLNSLCompiler</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.html#.compile">compile</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Util.html">Util</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.html#.is_scaped">is_scaped</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.html#.serialize">serialize</a></li><li data-type='method'><a href="NEngine.GLNSLCompiler.Util.html#.strip_balanced">strip_balanced</a></li></ul></li><li><a href="NEngine.GLNSLCompiler.Util.Grammar.html">Grammar</a></li><li><a href="NEngine.GLNSLCompiler.Vartypes.html">Vartypes</a><ul class='methods'><li data-type='method'><a href="NEngine.GLNSLCompiler.Vartypes.html#.get_type">get_type</a></li></ul></li><li><a href="NEngine.Media.html">Media</a></li><li><a href="NEngine.Physic.html">Physic</a></li></ul><h3>Global</h3><ul><li><a href="global.html#translate">translate</a></li></ul>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.Camera.html">Camera</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.Entity.html">Entity</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Entity.html#set">set</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.geometry.Geom.html">Geom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.Geom.html#concat">concat</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.Geom.html#twglize">twglize</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.CodeTree.html">CodeTree</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.CodeTree.html#interpret">interpret</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.CodeTree.html#translate">translate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.CodeTree.html#write">write</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Expression.html">Expression</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Expression.html#interpret">interpret</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Expression.html#replicates">replicates</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Expression.html#translate">translate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Expression.html#vartype">vartype</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html">Scope</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#addBuiltinGLSL">addBuiltinGLSL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#addPrecode">addPrecode</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#addSentence">addSentence</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#ensureTypeCache">ensureTypeCache</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#ensureVariableDynamic">ensureVariableDynamic</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#getTypeCache">getTypeCache</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#getVariable">getVariable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#getVariableBuiltin">getVariableBuiltin</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#getVariableDynamic">getVariableDynamic</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#isRoot">isRoot</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#precode">precode</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#setParent">setParent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Scope.html#unsetParent">unsetParent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Sentence.html">Sentence</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Sentence.html#interpret">interpret</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Sentence.html#needsTranslation">needsTranslation</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Sentence.html#translate">translate</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Shader.html">Shader</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html">SymbolTree</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#addSymbol">addSymbol</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#interpolate">interpolate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#map">map</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#root">root</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#strip">strip</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.SymbolTree.html#symbols">symbols</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Variable.html">Variable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Variable.html#declare">declare</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Variable.html#identifierToken">identifierToken</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Variable.html#translatable">translatable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Variable.html#translate">translate</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Vartypes.VarType.html">VarType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Vartypes.VarType.html#codename">codename</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Vartypes.VarType.html#translateType">translateType</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.Media.AudioAnalyser.html">AudioAnalyser</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Media.AudioAnalyser.html#update">update</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Media.AudioAnalyser.html#update_normalize">update_normalize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Media.AudioAnalyser.html#update_raw">update_raw</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Media.AudioAnalyser.html#update_usable_log">update_usable_log</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.Media.AudioSourceSoundcloud.html">AudioSourceSoundcloud</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Media.AudioSourceSoundcloud.html#loadURL">loadURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Media.AudioSourceSoundcloud.html#loadURLErr">loadURLErr</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Media.AudioSourceSoundcloud.html#loadURLSucc">loadURLSucc</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Media.AudioSourceSoundcloud.html#play">play</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.Obj.html">Obj</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.Physic.Space.html">Space</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Physic.Space.html#addEnt">addEnt</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Physic.Space.html#enlarge">enlarge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Physic.Space.html#remEnt">remEnt</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.Physic.SpaceNode.html">SpaceNode</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Physic.SpaceNode.html#indextop">indextop</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Physic.SpaceNode.html#parentPSeparation">parentPSeparation</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.Physic.SpaceNode.html#setP">setP</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NEngine.SubSpace.html">SubSpace</a></span></li><li class="nav-heading">Namespaces</li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="NEngine.html">NEngine</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="NEngine.geometry.html">geometry</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.axis%257Bn%257D">axis{n}</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.boundingBox">boundingBox</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.boundingSphere">boundingSphere</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.clone">clone</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.concat">concat</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.forEach">forEach</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.grid%257Bn%257D">grid{n}</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.octahedron%257Bn%257D">octahedron{n}</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.simplex%257Bn%257D">simplex{n}</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.geometry.html#.twglize">twglize</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.html">GLNSLCompiler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.html#.compile">compile</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.html">Util</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.html#.is_scaped">is_scaped</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.html#.serialize">serialize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.html#.strip_balanced">strip_balanced</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Util.Grammar.html">Grammar</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Vartypes.html">Vartypes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NEngine.GLNSLCompiler.Vartypes.html#.get_type">get_type</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="NEngine.Media.html">Media</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="NEngine.Physic.html">Physic</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#translate">translate</a></span></li>
 </nav>
 
 <div id="main">
@@ -128,6 +129,7 @@
 
         
             
+<div class="section-method">
 
     
 
@@ -145,63 +147,6 @@ You specify de dimension choosing the n letter: (axis3, axis4)
 <br/><br/>
 TODO: extend to N
 </div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>ops</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">cfg object</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
 
 
 
@@ -255,58 +200,6 @@ TODO: extend to N
 
 
 
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    axis finished geometry
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Geom</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".boundingBox"><span class="type-signature">(static) </span>boundingBox<span class="signature">(geom)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
-
-    
-
-
-
-<div class="description">
-    configures Geom boundingBox data
-</div>
-
-
-
-
-
-
-
-
-
     <h5>Parameters:</h5>
     
 
@@ -332,13 +225,13 @@ TODO: extend to N
 
         <tr>
             
-                <td class="name"><code>geom</code></td>
+                <td class="name"><code>ops</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Geom</span>
+<span class="param-type"><code>Object</code></span>
 
 
             
@@ -348,13 +241,72 @@ TODO: extend to N
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                cfg object
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Geom</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    axis finished geometry
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".boundingBox"><span class="type-signature">(static) </span>boundingBox<span class="signature">(geom)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
+
+    
+
+
+
+<div class="description">
+    configures Geom boundingBox data
+</div>
 
 
 
@@ -408,59 +360,6 @@ TODO: extend to N
 
 
 
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    this
-  @
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Geom</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".boundingSphere"><span class="type-signature">(static) </span>boundingSphere<span class="signature">(geom)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
-
-    
-
-
-
-<div class="description">
-    sets value of boundingSphereRadius
-</div>
-
-
-
-
-
-
-
-
-
     <h5>Parameters:</h5>
     
 
@@ -492,7 +391,7 @@ TODO: extend to N
             <td class="type">
             
                 
-<span class="param-type">Geom</span>
+<span class="param-type"><code>Geom</code></span>
 
 
             
@@ -502,13 +401,73 @@ TODO: extend to N
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Geom</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    this
+  @
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".boundingSphere"><span class="type-signature">(static) </span>boundingSphere<span class="signature">(geom)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
+
+    
+
+
+
+<div class="description">
+    sets value of boundingSphereRadius
+</div>
 
 
 
@@ -562,58 +521,6 @@ TODO: extend to N
 
 
 
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    this
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Geom</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".clone"><span class="type-signature">(static) </span>clone<span class="signature">(original)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Creates a copy in memory of the geometry
-</div>
-
-
-
-
-
-
-
-
-
     <h5>Parameters:</h5>
     
 
@@ -639,13 +546,13 @@ TODO: extend to N
 
         <tr>
             
-                <td class="name"><code>original</code></td>
+                <td class="name"><code>geom</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Geom</span>
+<span class="param-type"><code>Geom</code></span>
 
 
             
@@ -655,13 +562,72 @@ TODO: extend to N
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Geom</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    this
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".clone"><span class="type-signature">(static) </span>clone<span class="signature">(original)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates a copy in memory of the geometry
+</div>
 
 
 
@@ -715,37 +681,101 @@ TODO: extend to N
 
 
 
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>original</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Geom</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
 <h5>Returns:</h5>
 
         
-<div class="param-desc">
-    copy
-</div>
-
-
 
 <dl class="param-type">
     <dt>
-        Type
+        Type:
     </dt>
     <dd>
         
-<span class="param-type">Geom</span>
+<span class="param-type"><code>Geom</code></span>
 
 
     </dd>
 </dl>
 
+
+<div class="param-desc">
+    copy
+</div>
+
     
+</div>
 
 
 
+</div>
         
             
+<div class="section-method">
 
     
 
@@ -760,154 +790,6 @@ TODO: extend to N
   if an entity is passed, applies transformations before adding
   TODO: n geoms to one (optimize)
 </div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>a</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Geom</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">first geom</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>b</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Geom</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">last geom</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>keep_geom</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">if true, then the first geom will be
-  modified and returned as the joined geom</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
 
 
 
@@ -961,15 +843,173 @@ TODO: extend to N
 
 
 
+    <h5>Parameters:</h5>
+    
 
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
 
-
-
-
-
+        <th>Type</th>
 
         
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
             
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Geom</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">
+                first geom
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Geom</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">
+                last geom
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keep_geom</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Boolean</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">
+                if true, then the first geom will be
+  modified and returned as the joined geom
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
 
     
 
@@ -983,14 +1023,6 @@ TODO: extend to N
     String forEach for geometries, applies transformations if it
   recieves an entity
 </div>
-
-
-
-
-
-
-
-
 
 
 
@@ -1051,8 +1083,17 @@ TODO: extend to N
 
 
 
+
+
+
+
+
+
+
+</div>
         
             
+<div class="section-method">
 
     
 
@@ -1070,288 +1111,6 @@ letter: (grid3, grid4)
 <br/><br/>
 TODO: extend to N
 </div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">cfg object
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Integer</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the subdivisions of the grid for each axis</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size_{component}</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Integer</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">you can target specific components
-(x, y, z, w) to override options.size on it</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>length</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Float</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the length of the grid on all axis</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>length_{component}</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Float</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">you can target specific components
-(x, y, z, w) to override options.length on it</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>wire</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">if generate wire or face data on data buffers</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>iteration</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">function to execute on each vertex.
-  Receives vertex position according to parametters and the options object
-  itself with extra fields for locating the iteration function in the fractal.
-  <br/><br/>
-  iteration : function(p, options) {} <br/>
-  p: the position of the current vertex according to initial parametters
-  (size, length) <br/>
-  options: options + {recursion_i, recursion_is, recursion_p, recursion_ps} <br/>
-  recursion_i is the index of the current vertex in integer, internall format,
-  recursion_p is the scaled to world coordinates format. </br>
-  options.recursion_is, recursion_ps to get the index of the vertex in the
-  fractal grid in the format [ p1 = [p1x, p1y, ..], p2, .. ] for each format.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>recursion_depth</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Integer</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">To execute recursively, indicating
-  height (0 is normal).</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>functional</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">True if to only execute vertex iteration
-  and exit avoiding geometry computation.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
 
 
 
@@ -1405,62 +1164,6 @@ TODO: extend to N
 
 
 
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    grid finished geometry
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Geom</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".octahedron%7Bn%7D"><span class="type-signature">(static) </span>octahedron{n}<span class="signature">(options, size)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
-
-    
-
-
-
-<div class="description">
-    just the n-dimensional extension of the octahedron
-<br/><br/>
-You specify de dimension choosing the n letter: (octahedron3, octahedron4)
-<br/><br/>
-TODO: extend to N
-</div>
-
-
-
-
-
-
-
-
-
     <h5>Parameters:</h5>
     
 
@@ -1492,7 +1195,7 @@ TODO: extend to N
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type"><code>Object</code></span>
 
 
             
@@ -1502,9 +1205,29 @@ TODO: extend to N
 
             
 
-            <td class="description last">cfg object</td>
-        </tr>
+            <td class="description last">
+                cfg object
+                
+                    
 
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
@@ -1515,7 +1238,7 @@ TODO: extend to N
             <td class="type">
             
                 
-<span class="param-type">Float</span>
+<span class="param-type"><code>Integer</code></span>
 
 
             
@@ -1525,13 +1248,281 @@ TODO: extend to N
 
             
 
-            <td class="description last">its length, size</td>
+            <td class="description last">
+                the subdivisions of the grid for each axis
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size_{component}</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                you can target specific components
+(x, y, z, w) to override options.size on it
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Float</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                the length of the grid on all axis
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length_{component}</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Float</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                you can target specific components
+(x, y, z, w) to override options.length on it
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>wire</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Boolean</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                if generate wire or face data on data buffers
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>iteration</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>function</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                function to execute on each vertex.
+  Receives vertex position according to parametters and the options object
+  itself with extra fields for locating the iteration function in the fractal.
+  <br/><br/>
+  iteration : function(p, options) {} <br/>
+  p: the position of the current vertex according to initial parametters
+  (size, length) <br/>
+  options: options + {recursion_i, recursion_is, recursion_p, recursion_ps} <br/>
+  recursion_i is the index of the current vertex in integer, internall format,
+  recursion_p is the scaled to world coordinates format. </br>
+  options.recursion_is, recursion_ps to get the index of the vertex in the
+  fractal grid in the format [ p1 = [p1x, p1y, ..], p2, .. ] for each format.
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>recursion_depth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                To execute recursively, indicating
+  height (0 is normal).
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>functional</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Boolean</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                True if to only execute vertex iteration
+  and exit avoiding geometry computation.
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
 
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Geom</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    grid finished geometry
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".octahedron%7Bn%7D"><span class="type-signature">(static) </span>octahedron{n}<span class="signature">(options, size)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
+
+    
+
+
+
+<div class="description">
+    just the n-dimensional extension of the octahedron
+<br/><br/>
+You specify de dimension choosing the n letter: (octahedron3, octahedron4)
+<br/><br/>
+TODO: extend to N
+</div>
 
 
 
@@ -1585,64 +1576,6 @@ TODO: extend to N
 
 
 
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    octahedron finished geometry
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Geom</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".simplex%7Bn%7D"><span class="type-signature">(static) </span>simplex{n}<span class="signature">(options)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
-
-    
-
-
-
-<div class="description">
-    creates a simplex, a simplex is the simplest regular polyhedra on a given
-dimension, resembles the triangle but in the given dimension. For n-d a simplex
-has n-1 vertex and many faces has (n-1)-d subsimplex (subcollections) that
-tesellate it (dont collide when filling it)  <br/><br/>
-You specify de dimension choosing the n letter: (simplex3, simplex4)
-<br/><br/>
-TODO: extend to N
-</div>
-
-
-
-
-
-
-
-
-
     <h5>Parameters:</h5>
     
 
@@ -1674,7 +1607,7 @@ TODO: extend to N
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type"><code>Object</code></span>
 
 
             
@@ -1684,28 +1617,12 @@ TODO: extend to N
 
             
 
-            <td class="description last">cfg object
-                <h6>Properties</h6>
+            <td class="description last">
+                cfg object
                 
+            </td>
+        </tr>
 
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
     
 
         <tr>
@@ -1716,7 +1633,7 @@ TODO: extend to N
             <td class="type">
             
                 
-<span class="param-type">Integer</span>
+<span class="param-type"><code>Float</code></span>
 
 
             
@@ -1726,36 +1643,9 @@ TODO: extend to N
 
             
 
-            <td class="description last">the size (length) of the simplex</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>wire</code></td>
-            
-
-            <td class="type">
-            
+            <td class="description last">
+                its length, size
                 
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">if generate wire or face data on data buffers</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
             </td>
         </tr>
 
@@ -1763,6 +1653,68 @@ TODO: extend to N
     </tbody>
 </table>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Geom</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    octahedron finished geometry
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".simplex%7Bn%7D"><span class="type-signature">(static) </span>simplex{n}<span class="signature">(options)</span><span class="type-signature"> &rarr; {Geom}</span></h4>
+
+    
+
+
+
+<div class="description">
+    creates a simplex, a simplex is the simplest regular polyhedra on a given
+dimension, resembles the triangle but in the given dimension. For n-d a simplex
+has n-1 vertex and many faces has (n-1)-d subsimplex (subcollections) that
+tesellate it (dont collide when filling it)  <br/><br/>
+You specify de dimension choosing the n letter: (simplex3, simplex4)
+<br/><br/>
+TODO: extend to N
+</div>
 
 
 
@@ -1816,59 +1768,6 @@ TODO: extend to N
 
 
 
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    simplex finished geometry
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Geom</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".twglize"><span class="type-signature">(static) </span>twglize<span class="signature">(Geom)</span><span class="type-signature"> &rarr; {twglGeom}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Convierte una geometria desde el formato Geom a el de twgl para
-  usarse con la libreria
-</div>
-
-
-
-
-
-
-
-
-
     <h5>Parameters:</h5>
     
 
@@ -1894,13 +1793,13 @@ TODO: extend to N
 
         <tr>
             
-                <td class="name"><code>Geom</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Geom</span>
+<span class="param-type"><code>Object</code></span>
 
 
             
@@ -1910,13 +1809,150 @@ TODO: extend to N
 
             
 
-            <td class="description last">La geometria a convertir</td>
+            <td class="description last">
+                cfg object
+                
+                    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                the size (length) of the simplex
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>wire</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Boolean</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                if generate wire or face data on data buffers
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
 
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Geom</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    simplex finished geometry
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".twglize"><span class="type-signature">(static) </span>twglize<span class="signature">(Geom)</span><span class="type-signature"> &rarr; {twglGeom}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Convierte una geometria desde el formato Geom a el de twgl para
+  usarse con la libreria
+</div>
 
 
 
@@ -1970,35 +2006,98 @@ TODO: extend to N
 
 
 
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>Geom</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Geom</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                La geometria a convertir
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
 <h5>Returns:</h5>
 
         
-<div class="param-desc">
-    La geometria transformada
-</div>
-
-
 
 <dl class="param-type">
     <dt>
-        Type
+        Type:
     </dt>
     <dd>
         
-<span class="param-type">twglGeom</span>
+<span class="param-type"><code>twglGeom</code></span>
 
 
     </dd>
 </dl>
 
+
+<div class="param-desc">
+    La geometria transformada
+</div>
+
     
+</div>
 
 
 
+</div>
         
     
 
@@ -2017,7 +2116,7 @@ TODO: extend to N
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Dec 05 2017 04:17:28 GMT-0300 (-03) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Apr 30 2018 20:34:56 GMT-0300 (-03) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
