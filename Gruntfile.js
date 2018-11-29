@@ -19,6 +19,9 @@ module.exports = function(grunt) {
 		nodemon: {
 			dev: {
 				script: 'example/dev.js'
+			},
+			expo: {
+				script: 'example/dev.js'
 			}
 		},
 
@@ -86,6 +89,7 @@ module.exports = function(grunt) {
 
 	npm_tasks.forEach(function(e){grunt.loadNpmTasks(e)})
 
+	grunt.registerTask('expo', ['jsdoc', 'less:dev', ''])
 	grunt.registerTask('compile', ['import:main', 'jsdoc', 'less:dev'])
 
 	grunt.registerTask('dev', ['compile:dev','concurrent:dev'])
