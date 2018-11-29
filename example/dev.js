@@ -65,7 +65,7 @@ fs.readdir(__dirname+'/expo/games/', (err, files) => {
 			name: e,
 			href: '/expo/games/'+encodeURI(e)+'/',
 		}
-	})
+	}).reverse()
 
 	files.forEach((f) => {
 		app.use( __dirname + f.href, pug_static({
