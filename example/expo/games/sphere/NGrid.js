@@ -763,20 +763,25 @@ try {
           var dt = Date.now() - last_time_key, tmp_v = vec4.create();
           //console.log(e.keyCode);
           switch(e.keyCode) {
-            case 77:
+            case 77: // m
               renderer.pointerLockAlternate();
               break;
-            case 73: //i
+            case 73: // i
               ui.info_basic_panel_es.classList.toggle('hide');
               ui.info_basic_panel_en.classList.toggle('hide');
               break;
-            case 72: //h
+            case 72: // h
               ui.info_basic_buttons.classList.toggle('hide');
               break;
-			 case 76: //l
-			  renderer.config.stereo_crossed = !renderer.config.stereo_crossed
-			  // console.log(renderer.config.stereo_crossed)
-			  break;
+            case 75: // k
+              renderer.set({
+                stereo_dim: renderer.config.stereo_dim? null:4
+              })
+              break;
+      			case 76: // l
+      			  renderer.config.stereo_crossed = !renderer.config.stereo_crossed
+      			  // console.log(renderer.config.stereo_crossed)
+      			  break;
           }
           last_time_key = Date.now();
           //e.preventDefault();
