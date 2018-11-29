@@ -111,6 +111,7 @@ try {
       //set renderer
       var renderer_default = {
         stereo_dim: 4,
+        // stereo_dim: null,
 		    stereo_crossed: true,
 
         projection_type: 'direct',  //1 proj mat
@@ -150,6 +151,15 @@ try {
       camera.rzy = 0.0;
       camera.rzx = 0.0;
       camera.ryx = 0.0;
+
+      // renderer.set()
+      renderer.set({
+        stereo_dim: null
+      })
+
+      // renderer.set({
+      //   stereo_dim: 4
+      // })
 
 	  // camera.p[3] = -15
     ///////////////////////////###examples start here:

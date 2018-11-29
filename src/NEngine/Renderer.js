@@ -36,7 +36,6 @@ renderer = (function() {
     shader_info = null,
     vertexShader, fragmentShader,
     attrib_vertex, attrib_color,
-    uniforms = {},
     config = {},
     math = {
       mat : null,
@@ -90,7 +89,54 @@ renderer = (function() {
     obj_list_obj,
     camera = new Obj(),
     camera3 = new Obj(),
-    interface_obj;
+    uniforms = {
+      uPMVMatrix1,
+      uPMVMatrix2,
+
+      uPMatrix1,
+      uPMatrix2,
+      uMVMatrix1,
+      uMVMatrix2,
+
+      uPMVMatrix3D,
+    },
+    interface_obj,
+    default_options = {
+      //no config here relates to NEngine config, but to renderer
+      container: document.body,
+      resolution_density: 1.0,
+      dim : 4,
+
+      color_clear: [0.0, 0.0, 0.0, 1.0],
+
+      //stereo model
+      stereo_dim: 3,
+      //splited, polarized, alternation timer, etc.
+      stereo_mode: 'splited',
+      stereo_angle: Math.PI/60,
+      stereo_separation: 0.07616,
+      view_3d_stereo_angle: Math.PI/60,
+
+      //projection schemes
+      projection: 'perspective',
+      projection_angle: Math.PI/2,
+      projection_near: 1.0,
+      projection_far: 3000.0,
+
+      projection_3: 'perspective',
+      projection_3_near: 1.0, //used on  ortogonal
+      projection_3_far: 200.0,
+      projection_3_perspective_angle: Math.PI/2,
+      projection_3_orthogonal_size: 300,
+      projection_3_orthogonal_aspect_x: 1.0,
+      projection_3_orthogonal_aspect_y: 1.0,
+
+      projection_3d_angle: Math.PI/2,
+      projection_3d_near: 1.0,
+      projection_3d_far: 100.0,
+
+      camera_disposition_3: 'hexagon',
+    }
 
   var tmp_debug = false;
 
@@ -124,85 +170,33 @@ renderer = (function() {
       this.pointerLock();
   }
 
+  function sanitizeOptions(options) {
+    // camera related
+    if(!options.stereo_separator && options.stereo_dim) {
+      if(options.stereo_dim === 3) options.stereo_separator = [-1, 0, 0, 0];
+      if(options.stereo_dim === 4) options.stereo_separator = [-1, 0, 0, 0];
+
+      if(options.stereo_separation === undefined)
+        options.stereo_separation = default_options.stereo_separation
+
+      vec4.scale(options.stereo_separator,
+        options.stereo_separator,
+        options.stereo_separation)
+    }
+  }
+
   function init(options) {
     //create context
     if(!options) options = {};
 
     //config defaults
-    var options_default = {
+    var field;
 
-      //no config here relates to NEngine config, but to renderer
-      container: document.body,
-      resolution_density: 1.0,
-      dim : 4,
-
-      color_clear: [0.0, 0.0, 0.0, 1.0],
-
-      //stereo model
-      stereo_dim: 3,
-      stereo_mode: 'splited',    //splited, polarized, alternation timer, etc.
-      stereo_angle: Math.PI/60,
-      stereo_separation: 0.07616,
-      view_3d_stereo_angle: Math.PI/60,
-
-      //projection schemes
-      projection: 'perspective',
-      projection_angle: Math.PI/2,
-      projection_near: 1.0,
-      projection_far: 3000.0,
-
-      projection_3: 'perspective',
-      projection_3_near: 1.0, //used on  ortogonal
-      projection_3_far: 200.0,
-      projection_3_perspective_angle: Math.PI/2,
-      projection_3_orthogonal_size: 300,
-      projection_3_orthogonal_aspect_x: 1.0,
-      projection_3_orthogonal_aspect_y: 1.0,
-
-      projection_3d_angle: Math.PI/2,
-      projection_3d_near: 1.0,
-      projection_3d_far: 100.0,
-
-      camera_disposition_3: 'hexagon',
-    }, field;
-
-    for(field in options_default)
+    for(field in default_options)
       if(options[field] === undefined)
-        options[field] = options_default[field];
+        options[field] = default_options[field]
 
-    //those are camera related configs
-    if(!options.stereo_separator && options.stereo_dim) {
-      if(options.stereo_dim === 3) options.stereo_separator = [-1, 0, 0, 0];
-      if(options.stereo_dim === 4) options.stereo_separator = [-1, 0, 0, 0];
-
-      vec4.scale(options.stereo_separator, options.stereo_separator, options.stereo_separation);
-    }
-    for(field in options)
-        config[field] = options[field];
-
-    if(config.camera_disposition_3 === 'observer') {
-      vec3.rotateNormalizedRelative(camera3, camera3.rz, camera3.ry, Math.PI/2);
-      camera3.p[2] =200;
-      camera3.p[1] = -200;
-    }
-
-    if(config.camera_disposition_3 === 'hexagon') {
-      vec3.rotateNormalizedRelative(camera3, camera3.rz, camera3.ry, -Math.PI/4);
-      camera3.p[1] += 200;
-
-      /*
-      camera3.p[0] += 200;
-      camera3.p[2] += 200;
-      vec3.rotateNormalizedRelative(camera3, camera3.rz, camera3.rx, -Math.PI/4);
-      */
-      if(config.projection_3 === 'perspective')  {
-      }
-      else if(config.projection_3 === 'ortogonal') {
-        //camera3.p[0] =200;
-        //camera3.p[1] =-120;
-      }
-    }
-
+    // Create renderer container
     ///Normalize context to twgl
     if(options.container === document.body) {
       options.container = document.createElement('canvas',
@@ -210,42 +204,25 @@ renderer = (function() {
       options.container.className = 'NEngine_canvas';
       document.body.appendChild(options.container);
     }
-    context = twgl.getWebGLContext(options.container,{alpha:false});
+    context = twgl.getWebGLContext(options.container, {alpha:false});
 
-    //create shader program, deprecated, use generator:
-    //new NEngine.shader(flags)
-    //obj.code(), obj.set(), renderer.use(obj)
-    //camera: list of n-dimensional cameras for each lower dim
-    //rederer.cameras(camera instance, renderer.shader)
+    // create shader program, deprecated, use generator:
+    // new NEngine.shader(flags)
+    // obj.code(), obj.set(), renderer.use(obj)
+    // camera: list of n-dimensional cameras for each lower dim
+    // rederer.cameras(camera instance, renderer.shader)
     twgl.setAttributePrefix('a_');
     shader_info = twgl.createProgramInfo(context, ["vs", "fs"]);
     context.useProgram(shader_info.program);
 
-    //fill uniform pointers
-    uniforms.uPMVMatrix1 = uPMVMatrix1;
-    uniforms.uPMVMatrix2 = uPMVMatrix2;
-
-    uniforms.uPMatrix1 = uPMatrix1;
-    uniforms.uPMatrix2 = uPMatrix2;
-    uniforms.uMVMatrix1 = uMVMatrix1;
-    uniforms.uMVMatrix2 = uMVMatrix2;
-
-    uniforms.uPMVMatrix3D = uPMVMatrix3D;
-
     //adjust canvas size
     interface_obj.canvas = canvas = context.canvas;
-    canvas.requestPointerLock = canvas.requestPointerLock ||
-                        canvas.mozRequestPointerLock ||
-                        canvas.webkitRequestPointerLock;
+    canvas.requestPointerLock =
+      canvas.requestPointerLock ||
+      canvas.mozRequestPointerLock ||
+      canvas.webkitRequestPointerLock
 
-    context.clearColor(config.color_clear[0],config.color_clear[1],config.color_clear[2],config.color_clear[3]);
-    context.enable( context.DEPTH_TEST );
-
-    //blending
-    context.enable( context.BLEND );
-    //context.disable( context.DEPTH_TEST );
-    context.blendFunc( context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA );
-
+    set(options)
 
     math.mat = global_root.NMath['mat'+(config.dim+1)];
     math.mat_cartesian = global_root.NMath['mat'+config.dim];
@@ -255,20 +232,9 @@ renderer = (function() {
 
     //deprecated, to renderer object
     global_root.addEventListener('resize', resize, false);
-    resize();
   }
 
-  //reconfigure complex NEngine properties .... duno wich xD
-  function set(options) {
-    var config_field;
-    for(config_field in options.config)
-      config[config_field] = options.config[config_field];
 
-    //multiple simultaneous NEngine wont need this, but just renderers
-    if(options.mouse_axisRotation) {
-    }
-
-  }
   function resize() {
     //regenerate renderer transform matrix to catch canvas reshape
     if(emit_log) {
@@ -314,6 +280,73 @@ renderer = (function() {
         projection_3_orthogonal_aspect_y: 1.0
         */
     //console.log(mat.str(PMatrix3))
+  }
+
+  function updateRendererView() {
+    camera3.rx = [1,0,0,0]
+    camera3.ry = [0,1,0,0]
+    camera3.rz = [0,0,1,0]
+    camera3.rw = [0,0,0,1]
+    camera3.p = [0,0,0,0]
+
+    // Fix camera3.p
+    if(config.camera_disposition_3 === 'observer') {
+      vec3.rotateNormalizedRelative(
+        camera3, camera3.rz, camera3.ry, Math.PI/2 )
+      camera3.p[2] = 200
+      camera3.p[1] = -200
+    }
+
+    if(config.camera_disposition_3 === 'hexagon') {
+      vec3.rotateNormalizedRelative(
+        camera3, camera3.rz, camera3.ry, -Math.PI/4 )
+      camera3.p[1] += 200
+
+      /*
+      camera3.p[0] += 200;
+      camera3.p[2] += 200;
+      vec3.rotateNormalizedRelative(camera3, camera3.rz, camera3.rx, -Math.PI/4);
+      */
+      if(config.projection_3 === 'perspective')  {
+      }
+      else if(config.projection_3 === 'ortogonal') {
+        //camera3.p[0] =200;
+        //camera3.p[1] =-120;
+      }
+    }
+
+
+    context.clearColor(
+      config.color_clear[0],
+      config.color_clear[1],
+      config.color_clear[2],
+      config.color_clear[3]);
+
+    context.enable( context.DEPTH_TEST )
+
+    //blending
+    context.enable( context.BLEND )
+    //context.disable( context.DEPTH_TEST )
+    context.blendFunc( context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA )
+
+    resize()
+  }
+
+  //reconfigure complex NEngine properties
+  function set(options) {
+    if(!options) options = {}
+    var config_field;
+
+    sanitizeOptions(options)
+
+    for(config_field in options)
+      config[config_field] = options[config_field];
+
+    updateRendererView()
+
+    //multiple simultaneous NEngine wont need this, but just renderers
+    // if(options.mouse_axisRotation) {
+    // }
   }
 
   //renderer iterator will handle renderer-space camera, and thus posible
@@ -511,7 +544,9 @@ renderer = (function() {
     config: config,
     pointerLock : pointerLock,
     pointerUnlock: pointerUnlock,
-    pointerLockAlternate: pointerLockAlternate
+    pointerLockAlternate: pointerLockAlternate,
+
+    set: set,
   };
 
   return interface_obj;
