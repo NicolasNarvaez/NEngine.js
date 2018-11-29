@@ -177,135 +177,118 @@ try {
 	      e.geom = g;
 
 
-      function room(o) {
-        o = o || {}
-        o.size = o.size || 3
-        o.cube_length = o.cube_length || 3
+      new  NEngine.geometry.grid4({
+        size: 3,
+        length: 4,
+        iteration: function(p, options) {
+          //create object
+          //grid = new Obj();
+          grid = new NEngine.Entity();
+          grid.geom = enemy_octahedron0;
+          if(grid_size != 1)
+            NMath.vec4.copy(grid.p,p);
 
-        var g_join = new NEngine.geometry.Geom(),
-          g1 = new NEngine.geometry.grid4({
-            size: 2, length: 3, wire:true
-          }),
-          g2 = new NEngine.geometry.octahedron4({
-            // size: 2,
-            length: 0.25, wire:true
-          }),
-          e = new NEngine.Entity(),
-          scales = [1, 0.15]
+          grid.sp = 1;
+          enemigos.add(grid);
+          generators.add(grid);
+          randoms.add(grid);
+          renderer.objAdd(grid);
 
-        g1 = NEngine.geometry.grid4({size: 2, length: 0.1, wire:true})
-        // g2 = NEngine.geometry.octahedron4({size: 0.15, wire:true})
-        // g2 = NEngine.geometry.axis4({size: 0.25, wire:true})
-        // g2 = NEngine.geometry.octahedron4({
-        g2 = new NEngine.geometry.grid4({
-          size: 2, length: 3, wire:true
-        })
-        // g2 = NEngine.geometry.simplex4({
-        //   size: 5,
-        //   wire:true
-        // })
+        },functional: true
+      })
 
-        const coord_indexes = [0,0,0]
-        const coords = [0,0,0]
-        const slices = 12
-        const radius = 30
 
-        while(coord_indexes.ended !== true) {
-          for(let j = 2; j >= 0; j--) {
-            // Linear indexes
-            if(coord_indexes[j] == slices-1) {
-              if(j == 0) {
-                coord_indexes.ended = true
-                continue
-              }
+      new  NEngine.geometry.grid4({
+         size: 3,
+         length: 80,
+         iteration: function(p, options) {
+           var p,
+           geom = NEngine.geometry.simplex4({size: 5,enemy:true, wire:true})
+           geom = NEngine.geometry.octahedron4({size: 5, wire:true})
+           geom = new NEngine.geometry.grid4({size:4, length:6, wire:true});
 
-              coord_indexes[j-1]++
-              coord_indexes[j] = 0
-            }
-            else if(j == 2){
-              coord_indexes[j]++
-            }
+           if(grid_size == 1) return
+           //ascensor
+           grid = new NEngine.Entity();
+           grid.geom = geom;
+           vec4.copy(grid.p, p)
+           p = grid.p
+           renderer.objAdd(grid);
 
-          }
+         },functional: true
+       })
 
-          e.geom = g2
-          const r = coord_indexes.map( v => Math.PI*2*v/slices )
+      new  NEngine.geometry.grid4({
+        size: 3,
+        length: 80,
+        iteration: function(p, options) {
+          var p
 
-          const sen_0 = Math.sin(r[0])
-          const cos_0 = Math.cos(r[0])
+          if(grid_size == 1) return
+          //ascensor
+          grid = new NEngine.Entity();
+          grid.geom = new NEngine.geometry.grid4({size:2, size_x:10, length:2, length_x:40, wire:true});
+          vec4.copy(grid.p, p)
+          p = grid.p
+          renderer.objAdd(grid);
+          //ascensor
+          grid = new NEngine.Entity();
+          grid.geom = new NEngine.geometry.grid4({size:2, size_z:10, length:2, length_z:40, wire:true});
+          grid.p = p
+          renderer.objAdd(grid);
+          //ascensor
+          grid = new NEngine.Entity();
+          grid.geom = new NEngine.geometry.grid4({size:2, size_w:10, length:2, length_w:40, wire:true});
+          grid.p = p
+          renderer.objAdd(grid);
+          //ascensor
+          grid = new NEngine.Entity();
+          grid.geom = new NEngine.geometry.grid4({size:2, size_y:10, length:2, length_y:40, wire:true});
+          grid.p = p
+          renderer.objAdd(grid);
 
-          const sen_1 = cos_0*Math.sin(r[1])
-          const cos_1 = cos_0*Math.cos(r[1])
+        },functional: true
+      })
 
-          const sen_2 = cos_1*Math.sin(r[2])
-          const cos_2 = cos_1*Math.cos(r[2])
+      //ascensor
+      grid = new NEngine.Entity();
+      grid.geom = new NEngine.geometry.grid4({size:2, size_x:10, length:2, length_x:20, wire:true});
+      renderer.objAdd(grid);
+      //ascensor
+      grid = new NEngine.Entity();
+      grid.geom = new NEngine.geometry.grid4({size:2, size_z:10, length:2, length_z:20, wire:true});
+      renderer.objAdd(grid);
+      //ascensor
+      grid = new NEngine.Entity();
+      grid.geom = new NEngine.geometry.grid4({size:2, size_w:10, length:2, length_w:20, wire:true});
+      renderer.objAdd(grid);
+      //ascensor
+      grid = new NEngine.Entity();
+      grid.geom = new NEngine.geometry.grid4({size:2, size_y:10, length:2, length_y:20, wire:true});
+      renderer.objAdd(grid);
 
-          e.p = [sen_0, sen_1, sen_2, cos_2].map(c => c*radius)
+      grid = new NEngine.Entity();
+      grid.geom = new NEngine.geometry.grid4({size:10, size_y:2, length:2, length_y:4, wire:true});
+      grid.p[1] = 12.0;
+      //renderer.objAdd(grid);
 
-          NEngine.geometry.concat(g_join, e, true);
-        }
+      grid = new NEngine.Entity();
+      grid.geom = new NEngine.geometry.grid4({size:4,size_y:2, length:2, length_y:0.5, wire:true});
+      grid.p[1] = -2.2;
+      //renderer.objAdd(grid);
 
-        // new NEngine.geometry.grid4({
-        //   size: o.size,
-        //   length: o.cube_length*o.size,
-        //   iteration: function(p, options) {
-        //     // console.log(options.recursion_is,
-        //     //  options.recursion_depth_current)
-        //     var i, recursion, frontier = false, frontier_current
-        //
-        //     for(i = 4; i--;) {
-        //       if(frontier) break;
-        //
-        //       frontier_current = true
-        //       for(recursion = options.recursion_is.length;
-        //         recursion--;) {
-        //           // console.log(options.recursion_is[recursion])
-        //         if(options.recursion_is[recursion][i] != 0)
-        //           frontier_current = false
-        //       }
-        //       if(frontier_current) frontier = true
-        //
-        //       frontier_current = true
-        //       for(recursion = options.recursion_is.length;
-        //         recursion--;)
-        //         if(options.recursion_is[recursion][i] != o.size-1)
-        //           frontier_current = false
-        //       if(frontier_current) frontier = true
-        //     }
-        //     // console.log('frontier', frontier)
-        //     // if(!frontier) {
-        //     //   console.log('outside frontier')
-        //     //   return options.recursion_continue = false
-        //     // }
-        //
-        //     if(frontier)  {
-        //       NMath.vec4.copy(e.p, [0,0,0,0])
-        //
-        //       for(i = options.recursion_ps.length; i--;)
-        //       NMath.vec4.scaleAndAdd(
-        //         e.p, e.p, options.recursion_ps[i], scales[i] )
-        //
-        //       if(options.recursion_depth_current == 0)
-        //         e.geom = g1
-        //       else
-        //         e.geom = g2
-        //
-        //       NEngine.geometry.concat(g_join, e, true);
-        //     }
-        //     options.recursion_continue = frontier
-        //   },
-        //   functional: true,
-        //   recursion_depth: 1
-        // });
-        return g_join
-      }
+      pointer = new NEngine.Entity();
+      pointer.geom = pointer_geom;
+      //pointer.p= [0,0,0,0];
+      //renderer.objAdd(pointer);
 
-      var room_0 = new NEngine.Entity()
-      // // room_0.p = []
-      room_0.geom = room()
-      // room_0.p[0] =10;
-      NEngine.geometry.twglize(room_0.geom);
-      renderer.objAdd(room_0)
+
+      // var room_0 = new NEngine.Entity()
+      // // // room_0.p = []
+      // room_0.geom = room()
+      // // room_0.p[0] =10;
+      // NEngine.geometry.twglize(room_0.geom);
+      // renderer.objAdd(room_0)
 
       /*
       axis = new NEngine.Entity();
@@ -319,14 +302,11 @@ try {
         grid : grid,
         renderer: renderer
       }
+      
       controls.generate();
       set({ mouse_axisRotation:0 });
       set({ config: { camera_disposition_3 : renderer_default.camera_disposition_3 } })
       Input.connectAll();
-
-      // var ev = new Event('keydown');
-      // ev.keyCode = 72;
-      // window.dispatchEvent(ev)
     }
 
     function set(options) {
