@@ -89,9 +89,9 @@ module.exports = function(grunt) {
 
 	npm_tasks.forEach(function(e){grunt.loadNpmTasks(e)})
 
-	grunt.registerTask('expo', ['jsdoc', 'less:dev', ''])
 	grunt.registerTask('compile', ['import:main', 'jsdoc', 'less:dev'])
 
+	grunt.registerTask('expo', ['compile', 'nodemon:expo'])
 	grunt.registerTask('dev', ['compile:dev','concurrent:dev'])
 	grunt.registerTask('default', 'dev')
 

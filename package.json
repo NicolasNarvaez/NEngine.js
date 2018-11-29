@@ -5,6 +5,7 @@
   "main": "dist/node/nengine.js",
   "scripts": {
     "dev": "grunt dev",
+    "expo": "grunt expo",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
