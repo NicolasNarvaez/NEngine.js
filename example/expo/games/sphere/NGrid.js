@@ -58,14 +58,23 @@ try {
       world_grid_geom, world_grid = [], world_grid_size = 0, world_grid_length = 300,
       world_grid_unit_length = 2, world_grid_unit_size = 2,
       i_w, i_z, i_y, i_x, obj,
-      enemy_geom0 = new NEngine.geometry.grid4({size:2, length:size*0.5, wire:true}),
-      pointer_geom = new NEngine.geometry.grid4({size:2, length:size*0.5, wire:true}),
-      axis_geom = NEngine.geometry.axis4({size:size}),
-      enemy_geom4 = new NEngine.geometry.grid4({size:4, length:size*0.2, wire:true}),
-      enemy_octahedron0 = NEngine.geometry.octahedron4({size: size/4, wire:true}),
-      bullet = NEngine.geometry.simplex4({size:size/2,enemy:false,wire:true}),
-      enemy_simplex0 = NEngine.geometry.simplex4({size:size/3,enemy:true, wire:true}),
-      //enemy_simplex0 = new NEngine.geometry.grid4({size:4, length:size*0.2, wire:true}),
+      axis_geom = NEngine.geometry.axis4({
+        size:size
+      }),
+      pointer_geom = new NEngine.geometry.grid4({
+        size:2, length:size*0.5, wire:true
+      }),
+      bullet = NEngine.geometry.simplex4({
+        size:size/2,enemy:false,wire:true
+      }),
+      enemy_octahedron0 = NEngine.geometry.octahedron4({
+        size: size/4, wire:true
+      }),
+      enemy_simplex0 = NEngine.geometry.simplex4({
+        size:size/3,enemy:true, wire:true
+      }),
+      enemy_geom_generator = enemy_octahedron0,
+      enemy_geom_child = enemy_simplex0,
       //console
       config = {
         mouse_rotation : Math.PI/200,
@@ -151,10 +160,10 @@ try {
       camera.rzx = 0.0;
       camera.ryx = 0.0;
 
-	  // camera.p[3] = -15
-    ///////////////////////////###examples start here:
+  	  // camera.p[3] = -15
+      ///////////////////////////###examples start here:
 
-	  var g = new NEngine.geometry.grid4({
+  	  var g = new NEngine.geometry.grid4({
           size: 2,
           length: 2,
           wire:true
@@ -176,44 +185,21 @@ try {
 
 	      e.geom = g;
 
+      function gridSphere(options) {
+        var size = options.size || 8,
+          radius = options.radius || 10
 
-      function room(o) {
-        o = o || {}
-        o.size = o.size || 3
-        o.cube_length = o.cube_length || 3
+        var sphere_vertex = new NEngine.Entity()
+        sphere_vertex.geom = options.vertex_geom
 
-        var g_join = new NEngine.geometry.Geom(),
-          g1 = new NEngine.geometry.grid4({
-            size: 2, length: 3, wire:true
-          }),
-          g2 = new NEngine.geometry.octahedron4({
-            // size: 2,
-            length: 0.25, wire:true
-          }),
-          e = new NEngine.Entity(),
-          scales = [1, 0.15]
-
-        g1 = NEngine.geometry.grid4({size: 2, length: 0.1, wire:true})
-        // g2 = NEngine.geometry.octahedron4({size: 0.15, wire:true})
-        // g2 = NEngine.geometry.axis4({size: 0.25, wire:true})
-        // g2 = NEngine.geometry.octahedron4({
-        g2 = new NEngine.geometry.grid4({
-          size: 2, length: 3, wire:true
-        })
-        // g2 = NEngine.geometry.simplex4({
-        //   size: 5,
-        //   wire:true
-        // })
-
-        const coord_indexes = [0,0,0]
-        const coords = [0,0,0]
-        const slices = 12
-        const radius = 30
+        var sphere_geom = new NEngine.geometry.Geom()
+        var coord_indexes = [0,0,0]
+        var coords = [0,0,0]
 
         while(coord_indexes.ended !== true) {
           for(let j = 2; j >= 0; j--) {
             // Linear indexes
-            if(coord_indexes[j] == slices-1) {
+            if(coord_indexes[j] == size-1) {
               if(j == 0) {
                 coord_indexes.ended = true
                 continue
@@ -228,84 +214,69 @@ try {
 
           }
 
-          e.geom = g2
-          const r = coord_indexes.map( v => Math.PI*2*v/slices )
+          var r = coord_indexes.map( v => Math.PI*2*v/size )
 
-          const sen_0 = Math.sin(r[0])
-          const cos_0 = Math.cos(r[0])
+          var sen_0 = Math.sin(r[0])
+          var cos_0 = Math.cos(r[0])
 
-          const sen_1 = cos_0*Math.sin(r[1])
-          const cos_1 = cos_0*Math.cos(r[1])
+          var sen_1 = cos_0*Math.sin(r[1])
+          var cos_1 = cos_0*Math.cos(r[1])
 
-          const sen_2 = cos_1*Math.sin(r[2])
-          const cos_2 = cos_1*Math.cos(r[2])
+          var sen_2 = cos_1*Math.sin(r[2])
+          var cos_2 = cos_1*Math.cos(r[2])
 
-          e.p = [sen_0, sen_1, sen_2, cos_2].map(c => c*radius)
+          sphere_vertex.p = [sen_0, sen_1, sen_2, cos_2].map( c => c*radius )
 
-          NEngine.geometry.concat(g_join, e, true);
+          NEngine.geometry.concat(sphere_geom, sphere_vertex, true);
         }
 
-        // new NEngine.geometry.grid4({
-        //   size: o.size,
-        //   length: o.cube_length*o.size,
-        //   iteration: function(p, options) {
-        //     // console.log(options.recursion_is,
-        //     //  options.recursion_depth_current)
-        //     var i, recursion, frontier = false, frontier_current
-        //
-        //     for(i = 4; i--;) {
-        //       if(frontier) break;
-        //
-        //       frontier_current = true
-        //       for(recursion = options.recursion_is.length;
-        //         recursion--;) {
-        //           // console.log(options.recursion_is[recursion])
-        //         if(options.recursion_is[recursion][i] != 0)
-        //           frontier_current = false
-        //       }
-        //       if(frontier_current) frontier = true
-        //
-        //       frontier_current = true
-        //       for(recursion = options.recursion_is.length;
-        //         recursion--;)
-        //         if(options.recursion_is[recursion][i] != o.size-1)
-        //           frontier_current = false
-        //       if(frontier_current) frontier = true
-        //     }
-        //     // console.log('frontier', frontier)
-        //     // if(!frontier) {
-        //     //   console.log('outside frontier')
-        //     //   return options.recursion_continue = false
-        //     // }
-        //
-        //     if(frontier)  {
-        //       NMath.vec4.copy(e.p, [0,0,0,0])
-        //
-        //       for(i = options.recursion_ps.length; i--;)
-        //       NMath.vec4.scaleAndAdd(
-        //         e.p, e.p, options.recursion_ps[i], scales[i] )
-        //
-        //       if(options.recursion_depth_current == 0)
-        //         e.geom = g1
-        //       else
-        //         e.geom = g2
-        //
-        //       NEngine.geometry.concat(g_join, e, true);
-        //     }
-        //     options.recursion_continue = frontier
-        //   },
-        //   functional: true,
-        //   recursion_depth: 1
-        // });
-        return g_join
+        return NEngine.geometry.twglize(sphere_geom);
       }
 
-      var room_0 = new NEngine.Entity()
-      // // room_0.p = []
-      room_0.geom = room()
-      // room_0.p[0] =10;
-      NEngine.geometry.twglize(room_0.geom);
-      renderer.objAdd(room_0)
+      var sphere_vertex_geom = new NEngine.geometry.grid4({
+          size: 2,
+          length: 1.5,
+          wire: true
+        })
+
+      sphere = new NEngine.Entity()
+      sphere.geom = new gridSphere({
+        size: 14,
+        radius: 30,
+        vertex_geom: sphere_vertex_geom,
+      })
+      // sphere.p[0] =10;
+      renderer.objAdd(sphere)
+
+      // enemy_geom_child = new gridSphere({
+      //   size: 6,
+      //   radius: 1,
+      //   vertex_geom: new NEngine.geometry.grid4({
+      //       size: 2,
+      //       length: 0.1,
+      //       wire: true
+      //     }),
+      // })
+      // Enemy generators generator
+      new  NEngine.geometry.grid4({
+        size: 2,
+        length: 4,
+        iteration: function(p, options) {
+          //create object
+          //grid = new Obj();
+          grid = new NEngine.Entity();
+          grid.geom = enemy_geom_generator;
+          if(grid_size != 1)
+            NMath.vec4.copy(grid.p,p);
+
+          grid.sp = 1;
+          enemigos.add(grid);
+          generators.add(grid);
+          randoms.add(grid);
+          renderer.objAdd(grid);
+
+        },functional: true
+      })
 
       /*
       axis = new NEngine.Entity();
@@ -367,7 +338,7 @@ try {
           vec4.copy(child.p, generators.list[i].p);
           mat4.copy(child.r, generators.list[i].r);
 
-          child.geom = enemy_simplex0;
+          child.geom = enemy_geom_child;
           child.sp = 0.5;
 
           randoms.add(child);

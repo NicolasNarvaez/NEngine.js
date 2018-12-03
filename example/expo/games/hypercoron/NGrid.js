@@ -65,21 +65,21 @@ try {
       enemy_octahedron0 = NEngine.geometry.octahedron4({size: size/4, wire:true}),
       bullet = NEngine.geometry.simplex4({size:size/2,enemy:false,wire:true}),
       enemy_simplex0 = NEngine.geometry.simplex4({size:size/3,enemy:true, wire:true}),
-      //enemy_simplex0 = new NEngine.geometry.grid4({size:4, length:size*0.2, wire:true}),
-      //console
+      // enemy_simplex0 = new NEngine.geometry.grid4({size:4, length:size*0.2, wire:true}),
+      // console
       config = {
         mouse_rotation : Math.PI/200,
         speed : 1/100,
         camera_rotation: 'absolute',
         camera_rotation_y: 'normal',
         camera_rotation_absolute_y_amplitud: Math.PI/2,
-        //mouse position transformation
+        // mouse position transformation
         mouse_y_trans_x: 0,
         mouse_y_trans_y: 1,
         mouse_x_trans_x: 1,
         mouse_x_trans_y: 0,
         controls: {
-          //camera-mouse rotation asociation
+          // camera-mouse rotation asociation
           camera_y : 'ry',
           camera_x : 'rx',
           camera_y_altern : 'ry',
@@ -302,7 +302,7 @@ try {
         grid : grid,
         renderer: renderer
       }
-      
+
       controls.generate();
       set({ mouse_axisRotation:0 });
       set({ config: { camera_disposition_3 : renderer_default.camera_disposition_3 } })

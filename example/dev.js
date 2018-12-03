@@ -62,7 +62,7 @@ fs.readdir(__dirname+'/expo/games/', (err, files) => {
 
 	files = pug_locals.files = files.map( e => {
 		return {
-			name: e,
+			name: e.toUpperCase(),
 			href: '/expo/games/'+encodeURI(e)+'/',
 		}
 	}).reverse()
