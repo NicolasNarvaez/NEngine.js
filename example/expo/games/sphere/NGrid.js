@@ -486,6 +486,7 @@ try {
         grid.geom = bullet;
 
         NMath.vec4.copy(grid.p, camera.p);
+        NMath.vec4.add(grid.p, grid.p, camera.rw)
         //NMath.mat4.copy(grid.r, camera.r);
 
         balas.add(grid);
