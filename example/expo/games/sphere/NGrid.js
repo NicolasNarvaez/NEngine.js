@@ -181,7 +181,6 @@ try {
 
         world = new NEngine.Entity();
         world.geom = world_geom;
-        renderer.objAdd(world);
 
 	      e.geom = g;
 
@@ -258,6 +257,7 @@ try {
       //     }),
       // })
       // Enemy generators generator
+
       new  NEngine.geometry.grid4({
         size: 2,
         length: 4,
@@ -278,18 +278,13 @@ try {
         },functional: true
       })
 
-      /*
-      axis = new NEngine.Entity();
-      axis.geom = axis_geom;
-      renderer.objAdd(axis);
-      */
-
       window.game = {
         pointer: pointer,
         enemigos: enemigos,
         grid : grid,
         renderer: renderer
       }
+
       controls.generate();
       set({ mouse_axisRotation:0 });
       set({ config: { camera_disposition_3 : renderer_default.camera_disposition_3 } })
