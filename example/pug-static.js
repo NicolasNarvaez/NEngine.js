@@ -52,18 +52,20 @@ module.exports = function(options) {
     options.html = true;
   }
   return function(req, res, next) {
-    var d;
-    d = path.join(options.src, req.url);
+    var url = req.url.split('?')[0]
+    var d
+    d = path.join(options.src, url)
+
     return fs.lstat(d, function(err, stats) {
-      var locals = options.locals;
+      var locals = options.locals
       if ((err == null) && stats.isDirectory()) {
-        return checkFileAndProcess(d + "/index.pug", res, next, locals);
+        return checkFileAndProcess(d + "/index.pug", res, next, locals)
       } else if ((err == null) && stats.isFile() && path.extname(d) === '.pug') {
-        return readAndSendTemplate(d, res, next, locals);
+        return readAndSendTemplate(d, res, next, locals)
       } else if ((options.html != null) && path.extname(d) === '.html') {
-        return checkFileAndProcess(d.replace(/html$/, 'pug'), res, next, locals);
+        return checkFileAndProcess(d.replace(/html$/, 'pug'), res, next, locals)
       } else {
-        return next();
+        return next()
       }
     });
   };
