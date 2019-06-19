@@ -1,6 +1,6 @@
 {
   "name": "@xors/nengine",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A full feature n-dimensional physics, graphics and game engine.",
   "main": "dist/node/nengine.js",
   "scripts": {
