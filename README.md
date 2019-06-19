@@ -1,6 +1,10 @@
 # NEngine.js
 A n-dimensional, full featured graphical-physical engine for the web.
 
+## Usage
+
+Currently its on early development, so for examples try the dev.js node server in the examples/ dir. Remember to copy cfg.example.js into cfg.js configuring its values for it to work.
+
 ## Features:
 
 ### N-dimensional geometry library and N-dimensional physical library:
@@ -26,7 +30,3 @@ Currently uses a little bit of twgl to work.
 
 ## Testing:
 Uses Mocha + Chai + Karma, curently all src/**/*.test.js files are added automatically in the tests, after the test/config.js is included, so put all global-variable definitions there. The testing files are preprocessed on babel whit latest features by default
-
-## Usage:
-
-See the /docs or http://ngrid.cl/doc
