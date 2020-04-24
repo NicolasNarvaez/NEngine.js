@@ -100,25 +100,36 @@ http_server.listen(cfg.port)
 var users = {},
 	last_user
 
+var last_users = []
+	
+
 io.on('connection', sk => {
-	// if(last_user)
-	// 	io.to(sk.id).emit('set_id', last_user)
-	console.log('connecion', sk.id)
+	console.log('connection', sk.id)
+	
 	users[sk.id] = sk
 	last_user = sk.id
+	
+	last_users = Object.assign({}, users)
+	delete last_users[sk.id]
 
 	sk.on('key', key => {
-		console.log('event key')
-		// console.log('key, users:', users, 'last_user:', last_user)
-		if(last_user)
-			io.to(last_user).emit('key_press', key)
+		var last_users_keys = Object.keys(last_users)
+		console.log(
+			'keyCode', key.keyCode,
+			'code', key.code,
+			'key_ev', JSON.stringify(key),
+			// 'last_users_keys:', last_users_keys,
+			// 'last_user:', last_user
+		)
+		last_users_keys.forEach( user =>
+			io.to(user).emit('key_press', key)
+		)
+		
 	})
 
 	sk.on('log', log_arguments => {
-		console.log(log_arguments);
-		// console.log.apply(console, log_arguments)
+		console.log('####### logging event \n', log_arguments);
 	})
 })
 
-// console.log(server)
-console.log('running in '+cfg.port, 'parametters: ', process.argv)
+console.log('running in ' + cfg.port, 'parametters: ', process.argv)

@@ -727,13 +727,11 @@ Physic = (function() {
   Transform = (function() {
 
   })();
-
   PhysicModulesEnum = [];
 
   /**
   interfaze PhysicModule
   */
-
   PhysicModules = {
     /**
     * placeholder for normal entity instance
@@ -753,9 +751,9 @@ Physic = (function() {
       }
     })(),
     /**
-    * Represents a basic cynetic object
+    * Represents a basic kinetic object
     */
-    Cynetic : (function() {
+    Kinetic: (function() {
       var mod;
       function convert(opts) {
         if(!this.dp)

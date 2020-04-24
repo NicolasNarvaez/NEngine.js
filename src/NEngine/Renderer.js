@@ -290,11 +290,24 @@ renderer = (function() {
     camera3.p = [0,0,0,0]
 
     // Fix camera3.p
+    if(config.camera_disposition_3 === 'neutral') {}
+    
+    if(config.camera_disposition_3 === 'experiment') {
+      vec3.rotateNormalizedRelative(
+        camera3, camera3.rz, camera3.ry,  -Math.PI/4 )
+      // vec3.rotateNormalizedRelative(
+      //   camera3, camera3.rz, camera3.rx,  Math.PI/4 )
+      // camera3.p[2] = 200
+      camera3.p[1] = 200
+    }
+    
     if(config.camera_disposition_3 === 'observer') {
       vec3.rotateNormalizedRelative(
-        camera3, camera3.rz, camera3.ry, Math.PI/2 )
+        camera3, camera3.rz, camera3.ry, -Math.PI/4 )
+        // camera3.p[2] = 200
       camera3.p[2] = 200
-      camera3.p[1] = -200
+      camera3.p[1] = -100
+      // camera3.p[1] = -1
     }
 
     if(config.camera_disposition_3 === 'hexagon') {

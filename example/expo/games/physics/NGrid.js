@@ -120,6 +120,7 @@ try {
         projection_3: 'ortogonal',
         projection_3_near: 1,
         projection_3_far: 200,
+        // projection_3_perspective_angle: 0,
         projection_3_perspective_angle: Math.PI/1.8,
 
         camera_disposition_3: 'hexagon',
@@ -144,6 +145,7 @@ try {
       camera.rrw = vec.create();
       camera.rrw[3] = 1.0;
 
+      // multicoord cam viewport rotate
       camera.rwz = 0.0;
       camera.rwy = 0.0;
       camera.rwx = 0.0;
@@ -154,32 +156,33 @@ try {
 	  // camera.p[3] = -15
     ///////////////////////////###examples start here:
 
-	  var g = new NEngine.geometry.grid4({
+  	  var g = new NEngine.geometry.grid4({
           size: 2,
           length: 2,
-          wire:true
-        }), g2 = new NEngine.geometry.grid4({
+          wire: true
+        })
+      var g2 = new NEngine.geometry.grid4({
           size:3,
           length: 3,
-          wire:true
-        }), g_joined = new NEngine.geometry.Geom(),
-
-         world_geom = new NEngine.geometry.grid4({
+          wire: true
+        })
+      var g_joined = new NEngine.geometry.Geom()
+      var world_geom = new NEngine.geometry.grid4({
           size: 2,
           length: 200,
-          wire:true
-        }), e = new NEngine.Entity(),
+          wire: true
+        })
+      var e = new NEngine.Entity()
+      var world = new NEngine.Entity();
+      
+      world.geom = world_geom;
+      renderer.objAdd(world);
 
-        world = new NEngine.Entity();
-        world.geom = world_geom;
-        renderer.objAdd(world);
-
-	      e.geom = g;
-
+      e.geom = g;
 
       new  NEngine.geometry.grid4({
-        size: 3,
-        length: 4,
+        size: 2,
+        length: 6,
         functional: true,
         iteration: function(p, options) {
           //create object
@@ -201,13 +204,13 @@ try {
 
       new  NEngine.geometry.grid4({
          size: 3,
-         length: 80,
+         length: 100,
          functional: true,
          iteration: function(p, options) {
            var p,
-           geom = NEngine.geometry.simplex4({size: 5,enemy:true, wire:true})
-           geom = NEngine.geometry.octahedron4({size: 5, wire:true})
-           geom = new NEngine.geometry.grid4({size:4, length:6, wire:true});
+           // geom = NEngine.geometry.simplex4({size: 5,enemy:true, wire:true})
+           // geom = NEngine.geometry.octahedron4({size: 5, wire:true})
+           geom = new NEngine.geometry.grid4({size:2, length:4, wire:true});
 
            if(grid_size == 1) return
            //ascensor
@@ -218,70 +221,97 @@ try {
            renderer.objAdd(grid);
 
          },
-       })
-
-      new  NEngine.geometry.grid4({
-        size: 3,
-        length: 80,
-        iteration: function(p, options) {
-          var p
-
-          if(grid_size == 1) return
-          //ascensor
-          grid = new NEngine.Entity();
-          grid.geom = new NEngine.geometry.grid4({size:2, size_x:10, length:2, length_x:40, wire:true});
-          vec4.copy(grid.p, p)
-          p = grid.p
-          renderer.objAdd(grid);
-          //ascensor
-          grid = new NEngine.Entity();
-          grid.geom = new NEngine.geometry.grid4({size:2, size_z:10, length:2, length_z:40, wire:true});
-          grid.p = p
-          renderer.objAdd(grid);
-          //ascensor
-          grid = new NEngine.Entity();
-          grid.geom = new NEngine.geometry.grid4({size:2, size_w:10, length:2, length_w:40, wire:true});
-          grid.p = p
-          renderer.objAdd(grid);
-          //ascensor
-          grid = new NEngine.Entity();
-          grid.geom = new NEngine.geometry.grid4({size:2, size_y:10, length:2, length_y:40, wire:true});
-          grid.p = p
-          renderer.objAdd(grid);
-
-        },functional: true
       })
 
-      //ascensor
-      grid = new NEngine.Entity();
-      grid.geom = new NEngine.geometry.grid4({size:2, size_x:10, length:2, length_x:20, wire:true});
-      renderer.objAdd(grid);
-      //ascensor
-      grid = new NEngine.Entity();
-      grid.geom = new NEngine.geometry.grid4({size:2, size_z:10, length:2, length_z:20, wire:true});
-      renderer.objAdd(grid);
-      //ascensor
-      grid = new NEngine.Entity();
-      grid.geom = new NEngine.geometry.grid4({size:2, size_w:10, length:2, length_w:20, wire:true});
-      renderer.objAdd(grid);
-      //ascensor
-      grid = new NEngine.Entity();
-      grid.geom = new NEngine.geometry.grid4({size:2, size_y:10, length:2, length_y:20, wire:true});
-      renderer.objAdd(grid);
+      ///////////////////// central big axis
+      // grid = new NEngine.Entity();  // X
+      // grid.geom = new NEngine.geometry.grid4({size:2, size_x:10, length:2, length_x:20, wire:true});
+      // renderer.objAdd(grid);
+      // grid = new NEngine.Entity();  // Z
+      // grid.geom = new NEngine.geometry.grid4({size:2, size_z:10, length:2, length_z:20, wire:true});
+      // renderer.objAdd(grid);
+      // grid = new NEngine.Entity();  // W
+      // grid.geom = new NEngine.geometry.grid4({size:2, size_w:10, length:2, length_w:20, wire:true});
+      // renderer.objAdd(grid);
+      // grid = new NEngine.Entity();  // Y
+      // grid.geom = new NEngine.geometry.grid4({size:2, size_y:10, length:2, length_y:20, wire:true});
+      // renderer.objAdd(grid);
+      
+      ///////////////////// Playful park scenario
+      
+      ///////////////////////// Ball study scenario
+      // Ground
+      // grid = new NEngine.Entity();
+      // grid.geom = new NEngine.geometry.grid4({
+      //   size:10, size_y:2, length:100, length_y:2, wire: true
+      // });
+      // grid.p[1] = -4.0;
+      // renderer.objAdd(grid);
+      
+      // Anything but a wall
+      function wall(options) {
+        obj = new NEngine.Entity();
+        obj.geom = new NEngine.geometry.grid4(Object.assign({
+          size: 2, length: 2, wire: true
+        }, options.geometry));
+        obj.p = options.p || obj.p;
+        renderer.objAdd(obj);
+        return obj;
+      }
+      
+      var PHI = (1 + Math.sqrt(5))/2;
+      
+      //  Carpet
+      wall({
+        geometry: {
+          size: 2,
+          size_y: 2,
+          length: 2,
+          length_y: 0.15,
+        },
+        p: [0, -1.5, 0, 0],
+      })
+      
+      Array.from({length: 3}).forEach(function (v, i, a) {
+        wall({
+          geometry: {
+            length: ((3-i)+1)*0.2,
+          },
+          p: [-Math.pow(3-i,2)*0.2, ((3-i)+1)*0.2/2, 0, 4]
+        })
+      })
+      
+      //  Weird sculpture
+      Array.from({length:13}).forEach(function (v, i, a) {
+        wall({
+          geometry: {
+            length: Math.pow(PHI - 0.3, i+1) - 1,
+          },
+          p: [20, (Math.pow(PHI - 0.3, i+1) - 1)/2, 0, 10 - Math.pow(PHI - 0.2, i+1)]
+        })
+      })
+      
+      
+      // grid = new NEngine.Entity();
+      // grid.geom = new NEngine.geometry.grid4({
+      //   size:10, size_y:2, length:100, length_y:1, wire:true
+      // });
+      // grid.p[1] = 4.0;
+      // renderer.objAdd(grid);
+      //
+      // grid = new NEngine.Entity();
+      // grid.geom = new NEngine.geometry.grid4({size:10, size_y:2, length:2, length_y:4, wire:true});
+      // grid.p[1] = 12.0;
+      // renderer.objAdd(grid);
 
-      grid = new NEngine.Entity();
-      grid.geom = new NEngine.geometry.grid4({size:10, size_y:2, length:2, length_y:4, wire:true});
-      grid.p[1] = 12.0;
-      //renderer.objAdd(grid);
-
-      grid = new NEngine.Entity();
-      grid.geom = new NEngine.geometry.grid4({size:4,size_y:2, length:2, length_y:0.5, wire:true});
-      grid.p[1] = -2.2;
-      //renderer.objAdd(grid);
+      // grid = new NEngine.Entity();
+      // grid.geom = new NEngine.geometry.grid4({size:4,size_y:2, length:2, length_y:0.5, wire:true});
+      // grid.p[1] = -2.2;
+      // renderer.objAdd(grid);
 
       pointer = new NEngine.Entity();
       pointer.geom = pointer_geom;
-      //pointer.p= [0,0,0,0];
+      // pointer.p= [0,0,0,0];
       //renderer.objAdd(pointer);
 
 
