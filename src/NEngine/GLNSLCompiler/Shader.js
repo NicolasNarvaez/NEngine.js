@@ -25,10 +25,16 @@ function Shader(opts) {
 
 Shader.prototype = {
 	/**
-	executes the src str adding code_tree.shader.js_variables to its context
-	TODO currently only one line expression evaluation functions allowed
-	TODO develop arbitrarily complex js (possible using function expression)
-	*/
+	 * @memberof NEngine.GLNSLCompiler.Shader
+	 * @method js_execute
+	 * @desc executes the src str adding code_tree.shader.js_variables
+	 * to its context. </br></br>
+	 * TODO currently only one line expression evaluation functions
+	 * allowed. </br>
+	 * TODO develop arbitrarily complex js (possible using function
+	 * expression). </br>
+	 * @arg {string}
+	 */
 	js_execute: function js_execute(src, opts) {
 		var f, args, keys , body, res, vars
 
