@@ -64,12 +64,12 @@ Engine = (function() {
 * any other frame executed from it
 *
 * They can automatically loop, on 3 ways:
-*   custom function, a requestAnimationFrame, and a normal timeout
+*   custom function, a requestAnimationFrame (temporary), and a normal timeout
 *
 * They can be linked to other frames to adapt to them
 * the types of link are:
 *   ends: this frame will trigger the execution of the next, next being
-*           frames wich relate trought this relation, and those frames that
+*           frames which relate throught this relation, and those frames that
 *           will be executed after this, are counted like being parts of
 *           this, "endings"
 *   requires: the frames here have to be executed at least one time in

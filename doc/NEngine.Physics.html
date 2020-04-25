@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>SubSpace - Documentation</title>
+    <title>Physics - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">SubSpace</h1>
+    <h1 class="page-title">Physics</h1>
     
 
     
@@ -44,7 +44,7 @@
         <h2>
             <span class="ancestors"><a href="NEngine.html">NEngine</a>.</span>
         
-        SubSpace
+        Physics
         </h2>
         
     
@@ -54,103 +54,38 @@
     <div class="container-overview">
     
         
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="SubSpace"><span class="type-signature"></span>new SubSpace<span class="signature">(cfg)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    represents minimal space data, used in defining entities or similar
-stuff, a rotation plus a translation, possible deprecated on the near future
-when processing efficiency gets more tested
-</div>
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
+            <div class="description">All physics related stuff, structures to index and optimize n-dimensional
+  spaces with lots or hundreds of entities like space-trees and boxes. It also
+  holds the PhysicsModules which define diferent kinds of physics processors
+  and types, and defines the SpaceGraph for easy space handling (lots of
+  TODO here). <br/><br/>
+  
+  <a href="NEngine.Physics.SpaceGraph.html">SpaceGraph</a> implements a multi-topology
+  space "network", nodes are <a href="NEngine.Physics.Space.html">Space</a>
+  trees (or other types) that hold
+  Entity core data which gets proyected onto other Space's throught
+  <a href="NEngine.Physics.Transform.html">Transforms</a> (the graph arcs). <br/><br/>
+  
+  <a href="NEngine.Physics.Space.html">Space</a> and
+  <a href="NEngine.Physics.SpaceNode.html">SpaceNode</a> implement a clean tree topology
+  capable of optimizing objects for collisions and interspace
+  intersections (different SpaceGraph nodes), providing basic
+  functions to iterate the tree topology or modify nodes. <br/><br/>
+  
+  <a href="NEngine.Physics.Space.html">Space</a> is the
+  space tree root container, and holds
+  global properties for every SpaceNode. <br/>
+  <a href="NEngine.Physics.SpaceNode.html">SpaceNode</a> is a recursive generalized
+  tree, currently limited to
+  "Hexadeca"trees (4D) or octrees in 3D, in other words a 2^n
+  generalized n-[t]et tree (you can get a normal binary partition tree by
+  setting the size to 2). Its designed to be lazy evaluated and includes
+  plumbing functions to iterate and modify subnodes.
+  SpaceNode tries to keep the tree references
+  coherent so it can be slow, try deactivating stuff (help here). <br/><br/></div>
         
 
         
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>p</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Vector</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">position, length = dim</td>
-        </tr>
-
-        
-
-    
-
-        <tr>
-            
-                <td class="name"><code>r</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Matrix</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">rotation, length = dim*dim</td>
-        </tr>
-
-        
-
-    
-    </tbody>
-</table>
-
-
 
 
 <dl class="details">
@@ -182,7 +117,7 @@ when processing efficiency gets more tested
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line1139">line 1139</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4030">line 4030</a>
     </li></ul></dd>
     
 
@@ -194,131 +129,7 @@ when processing efficiency gets more tested
 </dl>
 
 
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>cfg</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Object</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                
-                
-                    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>dim</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Integer</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                dimension of the subspace
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
     
     </div>
 
@@ -326,6 +137,22 @@ when processing efficiency gets more tested
 
     
 
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="NEngine.Physics.Space.html">Space</a></dt>
+            <dd></dd>
+        
+            <dt><a href="NEngine.Physics.SpaceGraph.html">SpaceGraph</a></dt>
+            <dd></dd>
+        
+            <dt><a href="NEngine.Physics.SpaceNode.html">SpaceNode</a></dt>
+            <dd></dd>
+        
+            <dt><a href="NEngine.Physics.Transform.html">Transform</a></dt>
+            <dd></dd>
+        </dl>
     
 
      

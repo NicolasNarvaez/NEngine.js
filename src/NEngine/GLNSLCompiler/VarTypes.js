@@ -51,7 +51,7 @@ var type, types = {
 					/**
 					* expresion operator is an expression!!, not a variable!!
 					* expresions only contain datatype info and expresion identifier
-					* wich can be a variable identifier or a transparent temporary
+					* which can be a variable identifier or a transparent temporary
 					* identifier for temporal operantions cache
 					*
 					* into_variable can be a variable name or false,indicating to

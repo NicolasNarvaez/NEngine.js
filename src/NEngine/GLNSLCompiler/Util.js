@@ -248,7 +248,7 @@ SymbolTree.prototype = {
 	/**
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
 	@desc Adds a symbol to the map, reading the node "symbol_from", scaping the
-		content defined by "target", wich can be an index pair [a,b] or
+		content defined by "target", which can be an index pair [a,b] or
 		the content itself.
 	@param {String} symbol_from - The symbol to modify
 	@param {String|Integer[]} target - The phrase to scape by symbol, if index

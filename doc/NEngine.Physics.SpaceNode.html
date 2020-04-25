@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>SubSpace - Documentation</title>
+    <title>SpaceNode - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">SubSpace</h1>
+    <h1 class="page-title">SpaceNode</h1>
     
 
     
@@ -42,9 +42,9 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="NEngine.html">NEngine</a>.</span>
+            <span class="ancestors"><a href="NEngine.html">NEngine</a><a href="NEngine.Physics.html">.Physics</a>.</span>
         
-        SubSpace
+        SpaceNode
         </h2>
         
     
@@ -58,16 +58,15 @@
 
     
 
-    <h4 class="name" id="SubSpace"><span class="type-signature"></span>new SubSpace<span class="signature">(cfg)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="SpaceNode"><span class="type-signature"></span>new SpaceNode<span class="signature">(space, parent, level, dim, size, index)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    represents minimal space data, used in defining entities or similar
-stuff, a rotation plus a translation, possible deprecated on the near future
-when processing efficiency gets more tested
+    Represents single space net unit, if its a bottom SpaceNode
+it will contain lists for objects inside their respective physics    * processor type (for example, Entities in Dynamic array)
 </div>
 
 
@@ -100,13 +99,13 @@ when processing efficiency gets more tested
 
         <tr>
             
-                <td class="name"><code>p</code></td>
+                <td class="name"><code>space</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>Vector</code></span>
+<span class="param-type"><code>Space</code></span>
 
 
             
@@ -116,7 +115,7 @@ when processing efficiency gets more tested
 
             
 
-            <td class="description last">position, length = dim</td>
+            <td class="description last">Space containing general configs</td>
         </tr>
 
         
@@ -125,13 +124,13 @@ when processing efficiency gets more tested
 
         <tr>
             
-                <td class="name"><code>r</code></td>
+                <td class="name"><code>level</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>Matrix</code></span>
+<span class="param-type"><code>Integer</code></span>
 
 
             
@@ -141,7 +140,192 @@ when processing efficiency gets more tested
 
             
 
-            <td class="description last">rotation, length = dim*dim</td>
+            <td class="description last">Space Index depnes, 0 equals bottom</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>p</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Array.&lt;Integer></code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">system relative position, integer nd vector,</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>parent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>SpaceNode</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Spatially containing node</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>siblings</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Array.&lt;SpaceNode></code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Siblings linear Array</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>capsuled</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Boolean</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">indicates whether all siblings are occupied</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>last_visited</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">last time it was processed by physicsprocessor</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>active</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Boolean</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">If registered for physics processing</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">index for fast translation into parent relative
+  position the mapping is from a n-d vector such as <br/>
+        p[0] + p[1]*size + p[2]*size**2 [..]
+
+childs - Child Spaces linear Array
+objects - Dictionary containing the objects inside the SpaceNode
+      separated in arrays, each for each corresponding processor type
+
+constructor: fill isnt an automatic option because is rarely needed and
+extremply complicates code simplicity and opts caching
+    +</td>
         </tr>
 
         
@@ -182,7 +366,7 @@ when processing efficiency gets more tested
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line1139">line 1139</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4243">line 4243</a>
     </li></ul></dd>
     
 
@@ -226,13 +410,13 @@ when processing efficiency gets more tested
 
         <tr>
             
-                <td class="name"><code>cfg</code></td>
+                <td class="name"><code>space</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>Object</code></span>
+<span class="param-type"><code>Space</code></span>
 
 
             
@@ -243,28 +427,63 @@ when processing efficiency gets more tested
             
 
             <td class="description last">
+                -
                 
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>parent</code></td>
+            
+
+            <td class="type">
+            
                 
-                    
+<span class="param-type"><code>Space</code></span>
 
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
 
-        <th>Type</th>
+            
+            </td>
 
-        
+            
 
-        
+            
 
-        <th class="last">Description</th>
-    </tr>
-    </thead>
+            <td class="description last">
+                -
+                
+            </td>
+        </tr>
 
-    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>level</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                -
+                
+            </td>
+        </tr>
+
     
 
         <tr>
@@ -286,15 +505,61 @@ when processing efficiency gets more tested
             
 
             <td class="description last">
-                dimension of the subspace
+                -
                 
             </td>
         </tr>
 
     
-    </tbody>
-</table>
 
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                -
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                p - requires
+         undefined = calculate with setP, index and parent required
+         null = leave empty
                 
             </td>
         </tr>
@@ -334,6 +599,510 @@ when processing efficiency gets more tested
 
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="indextop"><span class="type-signature"></span>indextop<span class="signature">(index, p)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    converts index to its corresponding n-d position
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4703">line 4703</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                index for parent.childs array child
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>p</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                -
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="parentPSeparation"><span class="type-signature"></span>parentPSeparation<span class="signature">(child_index, child_level, p<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {NVector}</span></h4>
+
+    
+
+
+
+<div class="description">
+    calculates the position traslation from parent p vector
+to child p given the index and child level
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4328">line 4328</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>child_index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+|
+
+<span class="param-type"><code>Array.&lt;Integer></code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">
+                Index relative to parent, can
+ be the computed index or a positional index
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>child_level</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">
+                childNode.level
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>p</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>NVector</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    NVector0
+                
+                </td>
+            
+
+            <td class="description last">
+                vector to store data
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>NVector</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    p - result container
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="setP"><span class="type-signature"></span>setP<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    configures p according to parent data
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4346">line 4346</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
     
 
     

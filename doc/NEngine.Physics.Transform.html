@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>SubSpace - Documentation</title>
+    <title>Transform - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">SubSpace</h1>
+    <h1 class="page-title">Transform</h1>
     
 
     
@@ -42,10 +42,12 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="NEngine.html">NEngine</a>.</span>
+            <span class="ancestors"><a href="NEngine.html">NEngine</a><a href="NEngine.Physics.html">.Physics</a>.</span>
         
-        SubSpace
+        Transform
         </h2>
+        
+            <div class="class-description">Transform</div>
         
     
 </header>
@@ -57,98 +59,15 @@
 <div class="section-method">
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="name" id="SubSpace"><span class="type-signature"></span>new SubSpace<span class="signature">(cfg)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Transform"><span class="type-signature"></span>new Transform<span class="signature">(template)</span><span class="type-signature"></span></h4>
 
     
 
 
 
-<div class="description">
-    represents minimal space data, used in defining entities or similar
-stuff, a rotation plus a translation, possible deprecated on the near future
-when processing efficiency gets more tested
-</div>
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>p</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Vector</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">position, length = dim</td>
-        </tr>
-
-        
-
-    
-
-        <tr>
-            
-                <td class="name"><code>r</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Matrix</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">rotation, length = dim*dim</td>
-        </tr>
-
-        
-
-    
-    </tbody>
-</table>
 
 
 
@@ -182,7 +101,7 @@ when processing efficiency gets more tested
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line1139">line 1139</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4754">line 4754</a>
     </li></ul></dd>
     
 
@@ -226,15 +145,10 @@ when processing efficiency gets more tested
 
         <tr>
             
-                <td class="name"><code>cfg</code></td>
+                <td class="name"><code>template</code></td>
             
 
             <td class="type">
-            
-                
-<span class="param-type"><code>Object</code></span>
-
-
             
             </td>
 
@@ -243,58 +157,7 @@ when processing efficiency gets more tested
             
 
             <td class="description last">
-                
-                
-                    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>dim</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Integer</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                dimension of the subspace
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
+                [description]
                 
             </td>
         </tr>

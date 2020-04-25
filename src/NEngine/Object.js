@@ -200,9 +200,9 @@ Entity = (function() {
     /**
     @memberof NEngine.Entity.prototype
     @method set
-    @param {(PhysicModule|String|Integer)} type - The module that defines the
+    @param {(PhysicsModule|String|Integer)} type - The module that defines the
     type you want to set into this entity, it can be the module, its
-    registered name, or its enum Integer in the PhysicModulesEnum
+    registered name, or its enum Integer in the PhysicsModulesEnum
     @param {Object} opt - The options passed to the convert function of the
     module.
     @desc Requires that the entity is previously registered on a space node.
@@ -221,9 +221,9 @@ Entity = (function() {
 
       //sanitizes type parameter
       if(type instanceof String || typeof type == 'string')
-        type = NEngine.Physics.PhysicModules[type];
+        type = NEngine.Physics.PhysicsModules[type];
       else  if(type instanceof 'Number' || typeof type == 'number')
-        type = NEngine.Physics.PhysicModulesEnum[type];
+        type = NEngine.Physics.PhysicsModulesEnum[type];
 
       //sanitize objects array in ent.container
       objects = container.objects[type.i];

@@ -89,7 +89,7 @@ _module.Media = (function() {
     /**
     @memberof NEngine.Media.AudioAnalyser.prototype
     @method update
-    @desc Executes the processors indicated int the "updates" array, wich are
+    @desc Executes the processors indicated int the "updates" array, which are
     by default, those names get mapped to update_"processor_name" and executed
     on the same order.
     */

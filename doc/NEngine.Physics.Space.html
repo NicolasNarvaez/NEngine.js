@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>SubSpace - Documentation</title>
+    <title>Space - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">SubSpace</h1>
+    <h1 class="page-title">Space</h1>
     
 
     
@@ -42,9 +42,9 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="NEngine.html">NEngine</a>.</span>
+            <span class="ancestors"><a href="NEngine.html">NEngine</a><a href="NEngine.Physics.html">.Physics</a>.</span>
         
-        SubSpace
+        Space
         </h2>
         
     
@@ -58,16 +58,14 @@
 
     
 
-    <h4 class="name" id="SubSpace"><span class="type-signature"></span>new SubSpace<span class="signature">(cfg)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Space"><span class="type-signature"></span>new Space<span class="signature">(dim, size, length, level, fill)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    represents minimal space data, used in defining entities or similar
-stuff, a rotation plus a translation, possible deprecated on the near future
-when processing efficiency gets more tested
+    SpaceNode graph container, holds global SpaceNode properties.
 </div>
 
 
@@ -100,13 +98,13 @@ when processing efficiency gets more tested
 
         <tr>
             
-                <td class="name"><code>p</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>Vector</code></span>
+<span class="param-type"><code>String</code></span>
 
 
             
@@ -116,7 +114,7 @@ when processing efficiency gets more tested
 
             
 
-            <td class="description last">position, length = dim</td>
+            <td class="description last">kind of space graph that holds // add opts new types or separate them??</td>
         </tr>
 
         
@@ -125,13 +123,13 @@ when processing efficiency gets more tested
 
         <tr>
             
-                <td class="name"><code>r</code></td>
+                <td class="name"><code>dim</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>Matrix</code></span>
+<span class="param-type"><code>Integer</code></span>
 
 
             
@@ -141,7 +139,159 @@ when processing efficiency gets more tested
 
             
 
-            <td class="description last">rotation, length = dim*dim</td>
+            <td class="description last">dims of SpaceNode graph</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">number of subnodes along an axis</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Number</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">length of the subnode on depth 0, to generate
+    space coordinates</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>root</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>SpaceNode</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the root node of the SpaceNodes graph,
+    root.parent equals null</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>level</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the number of levels deper the graph is</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lib_vec</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">corresponding vectorial lib (example: NMath.vec5)</td>
+        </tr>
+
+        
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lib_mat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">corresponding matrix lib (same as lib_vec)</td>
         </tr>
 
         
@@ -182,7 +332,7 @@ when processing efficiency gets more tested
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line1139">line 1139</a>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4093">line 4093</a>
     </li></ul></dd>
     
 
@@ -226,49 +376,6 @@ when processing efficiency gets more tested
 
         <tr>
             
-                <td class="name"><code>cfg</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Object</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                
-                
-                    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
                 <td class="name"><code>dim</code></td>
             
 
@@ -286,15 +393,111 @@ when processing efficiency gets more tested
             
 
             <td class="description last">
-                dimension of the subspace
+                -
                 
             </td>
         </tr>
 
     
-    </tbody>
-</table>
 
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                -
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Number</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                -
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>level</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                0 is for bottom, give the level for root, huper node
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fill</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Boolean</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                if fill Space graph on creation
                 
             </td>
         </tr>
@@ -334,6 +537,418 @@ when processing efficiency gets more tested
 
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="addEnt"><span class="type-signature"></span>addEnt<span class="signature">(Entity)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    adds an entity to the space system
+checks that the systems has instantiated the corresponding space
+node and then adds it to the objects array[0] (entity) (checking
+coherent instantiation of it)
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4210">line 4210</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>Entity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Entity</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="enlarge"><span class="type-signature"></span>enlarge<span class="signature">(repeat)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    add hupper levels to the space system
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4154">line 4154</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>repeat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Number of levels to generate
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="remEnt"><span class="type-signature"></span>remEnt<span class="signature">(Entity)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    removes an entity from the space system
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NEngine.js.html">NEngine.js</a>, <a href="NEngine.js.html#line4193">line 4193</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>Entity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Entity</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
     
 
     

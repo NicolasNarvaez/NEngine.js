@@ -16,7 +16,7 @@ try {
 
   ### N-dimensional geometry library and N-dimensional physical library:
   <br/>
-  It contains basic n-dimensional polyhedrals and a basic geometry collision library to use in the physical system.
+  It contains basic n-dimensional polyhedrons and a basic geometry collision library to use in the physical system.
 <br/><br/>
 
   ### Extended shader language:
@@ -87,7 +87,7 @@ global_root.NEngine = (function NEngineInit () {
     //generates materials data canvases
     Shader,
     Entity,
-    //TODO:optimized physical sysstem, collisions, force fields, n-dimensional boxing system
+    //TODO:optimized physical system, collisions, force fields, n-dimensional boxing system
     //Huge-Nano space handling
     //fixed world object handler: environment variables, force-fields
     //object factories, for fast replication, on preconfigured engines
@@ -1310,9 +1310,9 @@ Entity = (function() {
     /**
     @memberof NEngine.Entity.prototype
     @method set
-    @param {(PhysicModule|String|Integer)} type - The module that defines the
+    @param {(PhysicsModule|String|Integer)} type - The module that defines the
     type you want to set into this entity, it can be the module, its
-    registered name, or its enum Integer in the PhysicModulesEnum
+    registered name, or its enum Integer in the PhysicsModulesEnum
     @param {Object} opt - The options passed to the convert function of the
     module.
     @desc Requires that the entity is previously registered on a space node.
@@ -1331,9 +1331,9 @@ Entity = (function() {
 
       //sanitizes type parameter
       if(type instanceof String || typeof type == 'string')
-        type = NEngine.Physics.PhysicModules[type];
+        type = NEngine.Physics.PhysicsModules[type];
       else  if(type instanceof 'Number' || typeof type == 'number')
-        type = NEngine.Physics.PhysicModulesEnum[type];
+        type = NEngine.Physics.PhysicsModulesEnum[type];
 
       //sanitize objects array in ent.container
       objects = container.objects[type.i];
@@ -2371,7 +2371,7 @@ SymbolTree.prototype = {
 	/**
 	@memberof NEngine.GLNSLCompiler.Util.SymbolTree.prototype
 	@desc Adds a symbol to the map, reading the node "symbol_from", scaping the
-		content defined by "target", wich can be an index pair [a,b] or
+		content defined by "target", which can be an index pair [a,b] or
 		the content itself.
 	@param {String} symbol_from - The symbol to modify
 	@param {String|Integer[]} target - The phrase to scape by symbol, if index
@@ -2960,7 +2960,7 @@ var type, types = {
 					/**
 					* expresion operator is an expression!!, not a variable!!
 					* expresions only contain datatype info and expresion identifier
-					* wich can be a variable identifier or a transparent temporary
+					* which can be a variable identifier or a transparent temporary
 					* identifier for temporal operantions cache
 					*
 					* into_variable can be a variable name or false,indicating to
@@ -4028,45 +4028,61 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 /**
-@namespace Physic
-@memberof NEngine
-@desc All physic related stuff, structures to index and optimize n-dimensional
-spaces with lots or hundreds of entities like space trees and boxes. It also
-holds the PhysicModules wich define diferent kinds of physic processors and
-physic types, and defines the SpaceGraph for easy space configuration (lots of
-TODO here)
-<br/><br/>
-Space and SpaceNode implement an tree topology
-cappable of optimize objects for collisisions and interspace
-intersections (different SpaceGraph nodes).
-<br/><br/>
-Space is the SpaceNode network container, and holds common configurations
-for every SpaceNode.<br/>
-SpaceNode is a "Hexakaideca"tree (in 4D) or an octree in 3D, in other words a
-  n^2 generalized tree (Currently isnt implemented this way, but using more subdivided
-  trees, you can get a normal binary partition tree by setting the size to 2).
-  Multiple optimization algorithms should be present.
-  Space Node keeps the netowork refrences coherent on multiple situations so
-  it can be slow, try deactivating stuff. (Help here)
+  @namespace Physics
+  @memberof NEngine
+  @desc All physics related stuff, structures to index and optimize n-dimensional
+  spaces with lots or hundreds of entities like space-trees and boxes. It also
+  holds the PhysicsModules which define diferent kinds of physics processors
+  and types, and defines the SpaceGraph for easy space handling (lots of
+  TODO here). <br/><br/>
+  
+  [SpaceGraph]{@link NEngine.Physics.SpaceGraph} implements a multi-topology
+  space "network", nodes are [Space]{@link NEngine.Physics.Space}
+  trees (or other types) that hold
+  Entity core data which gets proyected onto other Space's throught
+  [Transforms]{@link NEngine.Physics.Transform} (the graph arcs). <br/><br/>
+  
+  [Space]{@link NEngine.Physics.Space} and
+  [SpaceNode]{@link NEngine.Physics.SpaceNode} implement a clean tree topology
+  capable of optimizing objects for collisions and interspace
+  intersections (different SpaceGraph nodes), providing basic
+  functions to iterate the tree topology or modify nodes. <br/><br/>
+  
+  [Space]{@link NEngine.Physics.Space} is the
+  space tree root container, and holds
+  global properties for every SpaceNode. <br/>
+  [SpaceNode]{@link NEngine.Physics.SpaceNode} is a recursive generalized
+  tree, currently limited to
+  "Hexadeca"trees (4D) or octrees in 3D, in other words a 2^n
+  generalized n-[t]et tree (you can get a normal binary partition tree by
+  setting the size to 2). Its designed to be lazy evaluated and includes
+  plumbing functions to iterate and modify subnodes.
+  SpaceNode tries to keep the tree references
+  coherent so it can be slow, try deactivating stuff (help here). <br/><br/>
 */
-Physic = (function() {
+Physics = (function() {
 
   var SpaceGraph,
     Space,
     SpaceNode,
     Transform,
-    PhysicModules;
+    PhysicsModules;
 
   SpaceGraph = (function() {
-
+    
+    /**
+     * @memberof NEngine.Physics
+     * @class SpaceGraph
+     * @desc SpaceGraph is a graph where nodes are Spaces and arcs are Transforms
+     */
     function SpaceGraph() {
       this.spaces = {}
-      this.transforms = {}
+      this.transforms = []
     }
 
-    SpaceGraph.prototype = {
-
-    }
+    Object.assign(SpaceGraph.prototype, {
+      
+    })
 
     return SpaceGraph;
   })()
@@ -4075,21 +4091,20 @@ Physic = (function() {
   Space = (function() {
 
     /**
-    * @memberof NEngine.Physic
+    * @memberof NEngine.Physics
     * @class Space
-    * @desc SpaceNode network container, holds common configurations
-    * for every SpaceNode.
+    * @desc SpaceNode graph container, holds global SpaceNode properties.
     *
-    * @prop {String} type - kind of space network that holds // add opts new types or separate them??
+    * @prop {String} type - kind of space graph that holds // add opts new types or separate them??
 
-    * @prop {Integer} dim - dims of SpaceNode network
+    * @prop {Integer} dim - dims of SpaceNode graph
     * @prop {Integer} size - number of subnodes along an axis
     * @prop {Number} length - length of the subnode on depth 0, to generate
     space coordinates
 
-    * @prop {SpaceNode} root - the root node of the SpaceNodes network,
+    * @prop {SpaceNode} root - the root node of the SpaceNodes graph,
     root.parent equals null
-    * @prop {Integer} level - the number of levels deper the network is
+    * @prop {Integer} level - the number of levels deper the graph is
 
     * @prop {Object} lib_vec - corresponding vectorial lib (example: NMath.vec5)
     * @prop {Object} lib_mat - corresponding matrix lib (same as lib_vec)
@@ -4100,10 +4115,10 @@ Physic = (function() {
     * @param {Number} length -
     * @param {Integer} level -  0 is for bottom, give the level for root, huper node
     *
-    * @param {Boolean} fill - if fill Space Network on creation
+    * @param {Boolean} fill - if fill Space graph on creation
     */
     function Space(opts) {
-      this.type = 'Euclid';
+      this.type = 'euclidean';
 
       this.dim = opts.dim;
       this.size = opts.size;
@@ -4137,7 +4152,7 @@ Physic = (function() {
 
     Space.prototype = {
       /**
-      * @memberof NEngine.Physic.Space.prototype
+      * @memberof NEngine.Physics.Space.prototype
       * @method enlarge
       * @desc add hupper levels to the space system
       * @param {Integer} repeat - Number of levels to generate
@@ -4176,7 +4191,7 @@ Physic = (function() {
           this.enlarge(--repeat);
       },
       /**
-      * @memberof NEngine.Physic.Space.prototype
+      * @memberof NEngine.Physics.Space.prototype
       * @method remEnt
       * @param {Entity} Entity
       * @desc removes an entity from the space system
@@ -4193,7 +4208,7 @@ Physic = (function() {
         ent.container = null;
       },
       /**
-      * @memberof NEngine.Physic.Space.prototype
+      * @memberof NEngine.Physics.Space.prototype
       * @method addEnt
       * @param {Entity} Entity
       * @desc adds an entity to the space system
@@ -4226,11 +4241,10 @@ Physic = (function() {
   SpaceNode = (function() {
 
     /**
-    * @memberof NEngine.Physic
+    * @memberof NEngine.Physics
     * @class SpaceNode
     * @desc Represents single space net unit, if its a bottom SpaceNode
-    * it will contain lists for objects inside their respective physic
-    * processor type (for example, Entities in Dynamic array)
+    * it will contain lists for objects inside their respective physics    * processor type (for example, Entities in Dynamic array)
     *
     * @prop {Space} space - Space containing general configs
     * @prop {Integer} level - Space Index depnes, 0 equals bottom
@@ -4240,7 +4254,7 @@ Physic = (function() {
     * @prop {SpaceNode[]} siblings - Siblings linear Array
     * @prop {Boolean} capsuled - indicates whether all siblings are occupied
     *
-    * @prop {Integer} last_visited - last time it was processed by physic processor
+    * @prop {Integer} last_visited - last time it was processed by physicsprocessor
     * @prop {Boolean} active - If registered for physics processing
     * @prop {Integer} index - index for fast translation into parent relative
     *   position the mapping is from a n-d vector such as <br/>
@@ -4302,7 +4316,7 @@ Physic = (function() {
     */
     SpaceNode.prototype = {
       /**
-      * @memberof NEngine.Physic.SpaceNode.prototype
+      * @memberof NEngine.Physics.SpaceNode.prototype
       * @desc  calculates the position traslation from parent p vector
       * to child p given the index and child level
       * @param {Integer|Integer[]} child_index - Index relative to parent, can
@@ -4326,7 +4340,7 @@ Physic = (function() {
         return p;
         },
       /**
-      * @memberof NEngine.Physic.SpaceNode.prototype
+      * @memberof NEngine.Physics.SpaceNode.prototype
       * @desc configures p according to parent data
       */
       setP: function(p) {
@@ -4681,7 +4695,7 @@ Physic = (function() {
         return index;
       },
       /**
-      * @memberof NEngine.Physic.SpaceNode.prototype
+      * @memberof NEngine.Physics.SpaceNode.prototype
       * @desc converts index to its corresponding n-d position
       * @param {Integer} index - index for parent.childs array child
       * @param {} p -
@@ -4730,15 +4744,22 @@ Physic = (function() {
     return SpaceNode;
   })();
 
-  Transform = (function() {
-
-  })();
-  PhysicModulesEnum = [];
+  /**
+   * @memberof NEngine.Physics
+   * @class Transform
+   * @desc
+   * @param       {} template [description]
+   * @constructor
+   */
+  Transform = (function Transform(template) {
+    Object.assign(this, template)
+  });
+  PhysicsModulesEnum = [];
 
   /**
-  interfaze PhysicModule
+  interface PhysicsModule
   */
-  PhysicModules = {
+  PhysicsModules = {
     /**
     * placeholder for normal entity instance
     */
@@ -4825,26 +4846,24 @@ Physic = (function() {
 
     },
   };
-  //instantiates the physic modules enumeration object for fastmodule access
-  (function(){
-    PhysicModulesEnum.push(PhysicModules.Entity);
-    PhysicModules.Entity.i = 0;
+  
+  PhysicsModulesEnum.push(PhysicsModules.Entity);
+  PhysicsModules.Entity.i = 0;
 
-    var i=1;
-    for(module in PhysicModules) {
-      if(module === PhysicModules.Entity) continue;
+  var i=1;
+  for(module in PhysicsModules) {
+    if(module === PhysicsModules.Entity) continue;
 
-      module.i = i++;
-      PhysicModulesEnum.push(module);
-    }
-  })();
-
+    module.i = i++;
+    PhysicsModulesEnum.push(module);
+  }
+  
   return {
     SpaceGraph: SpaceGraph,
     Space: Space,
     SpaceNode: SpaceNode,
     Transform: Transform,
-    PhysicModules: PhysicModules,
+    PhysicsModules: PhysicsModules,
   }
 })()
 
@@ -4915,12 +4934,12 @@ Engine = (function() {
 * any other frame executed from it
 *
 * They can automatically loop, on 3 ways:
-*   custom function, a requestAnimationFrame, and a normal timeout
+*   custom function, a requestAnimationFrame (temporary), and a normal timeout
 *
 * They can be linked to other frames to adapt to them
 * the types of link are:
 *   ends: this frame will trigger the execution of the next, next being
-*           frames wich relate trought this relation, and those frames that
+*           frames which relate throught this relation, and those frames that
 *           will be executed after this, are counted like being parts of
 *           this, "endings"
 *   requires: the frames here have to be executed at least one time in
@@ -5145,7 +5164,7 @@ _module.Media = (function() {
     /**
     @memberof NEngine.Media.AudioAnalyser.prototype
     @method update
-    @desc Executes the processors indicated int the "updates" array, wich are
+    @desc Executes the processors indicated int the "updates" array, which are
     by default, those names get mapped to update_"processor_name" and executed
     on the same order.
     */

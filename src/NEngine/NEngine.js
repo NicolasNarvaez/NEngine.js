@@ -9,7 +9,7 @@
 
   ### N-dimensional geometry library and N-dimensional physical library:
   <br/>
-  It contains basic n-dimensional polyhedrals and a basic geometry collision library to use in the physical system.
+  It contains basic n-dimensional polyhedrons and a basic geometry collision library to use in the physical system.
 <br/><br/>
 
   ### Extended shader language:
@@ -80,7 +80,7 @@ global_root.NEngine = (function NEngineInit () {
     //generates materials data canvases
     Shader,
     Entity,
-    //TODO:optimized physical sysstem, collisions, force fields, n-dimensional boxing system
+    //TODO:optimized physical system, collisions, force fields, n-dimensional boxing system
     //Huge-Nano space handling
     //fixed world object handler: environment variables, force-fields
     //object factories, for fast replication, on preconfigured engines
@@ -110,7 +110,7 @@ global_root.NEngine = (function NEngineInit () {
   @import 'Shading.js'
   @import 'GLNSLCompiler.js'
 
-  @import 'Physic.js'
+  @import 'Physics.js'
 
   @import 'Engine.js'
 
